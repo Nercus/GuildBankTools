@@ -1,0 +1,10 @@
+## Interface: 90100
+## Author: Nerc
+## Title: GuildBankTools
+## Version: 1.1
+## Notes: GuildBankTools for filling up the guild bank
+## SavedVariables: GuildBankToolsDB
+
+embeds.xml
+
+core.lua
