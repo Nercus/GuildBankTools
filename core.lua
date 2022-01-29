@@ -120,6 +120,7 @@ local vendorReagents = {
     [172058] = 4500, -- Smuggled Azerothian Produce
     [172057] = 3750 -- Inconceivably Aged Vinegar
 }
+local LDBIcon = LibStub("LibDBIcon-1.0")
 
 local vendorItems = {}
 local boughtVendorItems = {}
@@ -187,8 +188,25 @@ local defaults = {
     }
 }
 
+-- Broker
+GuildBankToolsBroker = LibStub("LibDataBroker-1.1"):NewDataObject("GuildBankTools", {
+    type = "data source",
+    text = "GuildBankTools",
+    icon = "Interface\\MINIMAP\\TRACKING\\Auctioneer",
+    OnClick = function(_, button)
+        if button == "LeftButton" then
+            GuildBankTools:ToggleShoppingListFrame()
+        end
+    end,
+    OnTooltipShow = function(tt)
+        tt:AddLine("Left-Click to open shopping list")
+    end
+})
+
 function GuildBankTools:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("GuildBankToolsDB", defaults, true)
+
+    LDBIcon:Register("GuildBankTools", GuildBankToolsBroker, self.db.profile.minimap)
 
     local GBT_Frame = CreateFrame("Frame", nil, UIParent)
     GBT_Frame:SetFrameStrata("BACKGROUND")
@@ -274,7 +292,7 @@ function GuildBankTools:OnInitialize()
     GBT_ObjectiveTrackerHeader:SetPoint("bottom", GBT_Frame, "top", 0, -20)
     GBT_ObjectiveTrackerHeader:Show()
 
-    function self:TogglePinTrackerWindow()
+    function self:ToggleShoppingListFrame()
         if GBT_Frame:IsShown() then
             GBT_Frame:Hide()
         else
