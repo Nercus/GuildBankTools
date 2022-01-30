@@ -1,5 +1,4 @@
-local GuildBankTools = LibStub("AceAddon-3.0"):NewAddon("GuildBankTools", "AceConsole-3.0", "AceEvent-3.0",
-    "AceTimer-3.0")
+local GuildBankTools = LibStub("AceAddon-3.0"):NewAddon("GuildBankTools", "AceConsole-3.0", "AceEvent-3.0")
 
 local ItemsPerTab = 98
 local recipeReagents = {
@@ -121,6 +120,7 @@ local vendorReagents = {
     [172057] = 3750 -- Inconceivably Aged Vinegar
 }
 local LDBIcon = LibStub("LibDBIcon-1.0")
+local LibAddonUtils = LibStub("LibAddonUtils-1.0")
 
 local vendorItems = {}
 local boughtVendorItems = {}
@@ -156,34 +156,202 @@ local defaults = {
         },
         prices = {},
         desiredItems = {
-            [171439] = 70, -- Shaded Weightstone
-            [172051] = 140, -- Steak a la Mode
-            [172045] = 140, -- Tenebrous Crown Roast Aspic
-            [172049] = 140, -- Iridescent Ravioli with Apple Sauce
-            [172041] = 140, -- Spinefin Souffle and Fries
-            [171270] = 210, -- Potion of Spectral Agility
-            [176811] = 40, -- Potion of Sacrificial Anima
-            [172347] = 84, -- Heavy Desolate Armor Kit
-            [181468] = 420, -- Veiled Augment Rune
-            [171351] = 70, -- Potion of Deathly Fixation
-            [172233] = 28, -- Drums of Deathly Ferocity
-            [171276] = 108, -- Spectral Flask of Power
-            [109076] = 140, -- Goblin Glider Kit
-            [171286] = 70, -- Embalmer's Oil
-            [171267] = 840, -- Spiritual Healing Potion
-            [171268] = 120, -- Spiritual Mana Potion
-            [171273] = 210, -- Potion of Spectral Intellect
-            [171266] = 21, -- Potion of the Hidden Spirit
-            [171349] = 140, -- Potion of Phantom Fire
-            [132514] = 14, -- Auto-Hammer
-            [171285] = 70, -- Shadowcore Oil
-            [171272] = 40, -- Potion of Spiritual Clarity
-            [171275] = 210, -- Potion of Spectral Strength
-            [173049] = 56, -- Tome of the Still Mind
-            [186662] = 49, -- Vantus Rune: Sanctum of Domination
-            [171437] = 70, -- Shaded Sharpening Stone
-            [180457] = 20, -- Shadestone
-            [172043] = 100 -- Feast of Gluttonous Hedonism
+            [171273] = { -- Potion of Spectral Intellect
+                ["itemName"] = "Potion of Spectral Intellect",
+                ["count"] = 210,
+                ["itemLink"] = "|cffffffff|Hitem:171273::::::::60:270:::::::::|h[Potion of Spectral Intellect]|h|r",
+                ["icon"] = 3566836,
+                ["itemId"] = 171273
+            },
+            [180457] = { -- Shadestone
+                ["itemName"] = "Shadestone",
+                ["count"] = 20,
+                ["itemLink"] = "|cff1eff00|Hitem:180457::::::::60:270:::::::::|h[Shadestone]|h|r",
+                ["icon"] = 1778229,
+                ["itemId"] = 180457
+            },
+            [171285] = { -- Shadowcore Oil
+                ["itemName"] = "Shadowcore Oil",
+                ["count"] = 70,
+                ["itemLink"] = "|cffffffff|Hitem:171285::::::::60:270:::::::::|h[Shadowcore Oil]|h|r",
+                ["icon"] = 463543,
+                ["itemId"] = 171285
+            },
+            [171351] = { -- Potion of Deathly Fixation
+                ["itemName"] = "Potion of Deathly Fixation",
+                ["count"] = 70,
+                ["itemLink"] = "|cffffffff|Hitem:171351::::::::60:270:::::::::|h[Potion of Deathly Fixation]|h|r",
+                ["icon"] = 3566833,
+                ["itemId"] = 171351
+            },
+            [176811] = { -- Potion of Sacrificial Anima
+                ["itemName"] = "Potion of Sacrificial Anima",
+                ["count"] = 40,
+                ["itemLink"] = "|cffffffff|Hitem:176811::::::::60:270:::::::::|h[Potion of Sacrificial Anima]|h|r",
+                ["icon"] = 3566832,
+                ["itemId"] = 176811
+            },
+            [172041] = { -- Spinefin Souffle and Fries
+                ["itemName"] = "Spinefin Souffle and Fries",
+                ["count"] = 140,
+                ["itemLink"] = "|cffffffff|Hitem:172041::::::::60:270:::::::::|h[Spinefin Souffle and Fries]|h|r",
+                ["icon"] = 3671897,
+                ["itemId"] = 172041
+            },
+            [172045] = { -- Tenebrous Crown Roast Aspic
+                ["itemName"] = "Tenebrous Crown Roast Aspic",
+                ["count"] = 140,
+                ["itemLink"] = "|cffffffff|Hitem:172045::::::::60:270:::::::::|h[Tenebrous Crown Roast Aspic]|h|r",
+                ["icon"] = 3671905,
+                ["itemId"] = 172045
+            },
+            [172049] = { -- Iridescent Ravioli with Apple Sauce
+                ["itemName"] = "Iridescent Ravioli with Apple Sauce",
+                ["count"] = 140,
+                ["itemLink"] = "|cffffffff|Hitem:172049::::::::60:270:::::::::|h[Iridescent Ravioli with Apple Sauce]|h|r",
+                ["icon"] = 3671891,
+                ["itemId"] = 172049
+            },
+            [171437] = { -- Shaded Sharpening Stone
+                ["itemName"] = "Shaded Sharpening Stone",
+                ["count"] = 70,
+                ["itemLink"] = "|cff1eff00|Hitem:171437::::::::60:270:::::::::|h[Shaded Sharpening Stone]|h|r",
+                ["icon"] = 3528422,
+                ["itemId"] = 171437
+            },
+            [171286] = { -- Embalmer's Oil
+                ["itemName"] = "Embalmer's Oil",
+                ["count"] = 70,
+                ["itemLink"] = "|cffffffff|Hitem:171286::::::::60:270:::::::::|h[Embalmer's Oil]|h|r",
+                ["icon"] = 463544,
+                ["itemId"] = 171286
+            },
+            [171267] = { -- Spiritual Healing Potion
+                ["itemName"] = "Spiritual Healing Potion",
+                ["count"] = 840,
+                ["itemLink"] = "|cffffffff|Hitem:171267::::::::60:270:::::::::|h[Spiritual Healing Potion]|h|r",
+                ["icon"] = 3566860,
+                ["itemId"] = 171267
+            },
+            [172043] = { -- Feast of Gluttonous Hedonism
+                ["itemName"] = "Feast of Gluttonous Hedonism",
+                ["count"] = 100,
+                ["itemLink"] = "|cffffffff|Hitem:172043::::::::60:270:::::::::|h[Feast of Gluttonous Hedonism]|h|r",
+                ["icon"] = 3760523,
+                ["itemId"] = 172043
+            },
+            [171275] = { -- Potion of Spectral Strength
+                ["itemName"] = "Potion of Spectral Strength",
+                ["count"] = 210,
+                ["itemLink"] = "|cffffffff|Hitem:171275::::::::60:270:::::::::|h[Potion of Spectral Strength]|h|r",
+                ["icon"] = 3566838,
+                ["itemId"] = 171275
+            },
+            [172051] = { -- Steak a la Mode
+                ["itemName"] = "Steak a la Mode",
+                ["count"] = 140,
+                ["itemLink"] = "|cffffffff|Hitem:172051::::::::60:270:::::::::|h[Steak a la Mode]|h|r",
+                ["icon"] = 3671904,
+                ["itemId"] = 172051
+            },
+            [172347] = { -- Heavy Desolate Armor Kit
+                ["itemName"] = "Heavy Desolate Armor Kit",
+                ["count"] = 84,
+                ["itemLink"] = "|cffffffff|Hitem:172347::::::::60:270:::::::::|h[Heavy Desolate Armor Kit]|h|r",
+                ["icon"] = 3528447,
+                ["itemId"] = 172347
+            },
+            [171349] = { -- Potion of Phantom Fire
+                ["itemName"] = "Potion of Phantom Fire",
+                ["count"] = 140,
+                ["itemLink"] = "|cffffffff|Hitem:171349::::::::60:270:::::::::|h[Potion of Phantom Fire]|h|r",
+                ["icon"] = 3566829,
+                ["itemId"] = 171349
+            },
+            [186662] = { -- Vantus Rune: Sanctum of Domination
+                ["itemName"] = "Vantus Rune: Sanctum of Domination",
+                ["count"] = 49,
+                ["itemLink"] = "|cffffffff|Hitem:186662::::::::60:270:::::::::|h[Vantus Rune: Sanctum of Domination]|h|r",
+                ["icon"] = 4074774,
+                ["itemId"] = 186662
+            },
+            [132514] = { -- Auto-Hammer
+                ["itemName"] = "Auto-Hammer",
+                ["count"] = 14,
+                ["itemLink"] = "|cff1eff00|Hitem:132514::::::::60:270:::::::::|h[Auto-Hammer]|h|r",
+                ["icon"] = 1405803,
+                ["itemId"] = 132514
+            },
+            [171268] = { -- Spiritual Mana Potion
+                ["itemName"] = "Spiritual Mana Potion",
+                ["count"] = 120,
+                ["itemLink"] = "|cffffffff|Hitem:171268::::::::60:270:::::::::|h[Spiritual Mana Potion]|h|r",
+                ["icon"] = 3566858,
+                ["itemId"] = 171268
+            },
+            [171272] = { -- Potion of Spiritual Clarity
+                ["itemName"] = "Potion of Spiritual Clarity",
+                ["count"] = 40,
+                ["itemLink"] = "|cffffffff|Hitem:171272::::::::60:270:::::::::|h[Potion of Spiritual Clarity]|h|r",
+                ["icon"] = 3566828,
+                ["itemId"] = 171272
+            },
+            [109076] = { -- Goblin Glider Kit
+                ["itemName"] = "Goblin Glider Kit",
+                ["count"] = 140,
+                ["itemLink"] = "|cffffffff|Hitem:109076::::::::60:270:::::::::|h[Goblin Glider Kit]|h|r",
+                ["icon"] = 133632,
+                ["itemId"] = 109076
+            },
+            [171270] = { -- Potion of Spectral Agility
+                ["itemName"] = "Potion of Spectral Agility",
+                ["count"] = 210,
+                ["itemLink"] = "|cffffffff|Hitem:171270::::::::60:270:::::::::|h[Potion of Spectral Agility]|h|r",
+                ["icon"] = 3566835,
+                ["itemId"] = 171270
+            },
+            [171439] = { -- Shaded Weightstone
+                ["itemName"] = "Shaded Weightstone",
+                ["count"] = 70,
+                ["itemLink"] = "|cff1eff00|Hitem:171439::::::::60:270:::::::::|h[Shaded Weightstone]|h|r",
+                ["icon"] = 3528423,
+                ["itemId"] = 171439
+            },
+            [171276] = { -- Spectral Flask of Power
+                ["itemName"] = "Spectral Flask of Power",
+                ["count"] = 108,
+                ["itemLink"] = "|cffffffff|Hitem:171276::::::::60:270:::::::::|h[Spectral Flask of Power]|h|r",
+                ["icon"] = 3566840,
+                ["itemId"] = 171276
+            },
+            [171266] = { -- Potion of the Hidden Spirit
+                ["itemName"] = "Potion of the Hidden Spirit",
+                ["count"] = 21,
+                ["itemLink"] = "|cffffffff|Hitem:171266::::::::60:270:::::::::|h[Potion of the Hidden Spirit]|h|r",
+                ["icon"] = 3566868,
+                ["itemId"] = 171266
+            },
+            [172233] = { -- Drums of Deathly Ferocity
+                ["itemName"] = "Drums of Deathly Ferocity",
+                ["count"] = 28,
+                ["itemLink"] = "|cff1eff00|Hitem:172233::::::::60:270:::::::::|h[Drums of Deathly Ferocity]|h|r",
+                ["icon"] = 3528453,
+                ["itemId"] = 172233
+            },
+            [181468] = { -- Veiled Augment Rune
+                ["itemName"] = "Veiled Augment Rune",
+                ["count"] = 420,
+                ["itemLink"] = "|cff0070dd|Hitem:181468::::::::60:270:::::::::|h[Veiled Augment Rune]|h|r",
+                ["icon"] = 134078,
+                ["itemId"] = 181468
+            },
+            [173049] = { -- Tome of the Still Mind
+                ["itemName"] = "Tome of the Still Mind",
+                ["count"] = 56,
+                ["itemLink"] = "|cff1eff00|Hitem:173049::::::::60:270:::::::::|h[Tome of the Still Mind]|h|r",
+                ["icon"] = 3717418,
+                ["itemId"] = 173049
+            }
         }
     }
 }
@@ -196,10 +364,13 @@ GuildBankToolsBroker = LibStub("LibDataBroker-1.1"):NewDataObject("GuildBankTool
     OnClick = function(_, button)
         if button == "LeftButton" then
             GuildBankTools:ToggleShoppingListFrame()
+        elseif button == "RightButton" then
+            GuildBankTools:ToggleItemEditor()
         end
     end,
     OnTooltipShow = function(tt)
         tt:AddLine("Left-Click to open shopping list")
+        tt:AddLine("Right-Click to open item editor")
     end
 })
 
@@ -299,6 +470,103 @@ function GuildBankTools:OnInitialize()
             GBT_Frame:Show()
         end
     end
+end
+
+function GuildBankTools:ToggleItemEditor()
+    if not GuildBankTools.ItemEditor then
+        local AceGUI = LibStub("AceGUI-3.0")
+
+        local ItemEditor = AceGUI:Create("Frame")
+        ItemEditor:SetLayout("Fill")
+        ItemEditor:SetTitle("Item Editor")
+        ItemEditor:SetStatusText("")
+        ItemEditor:EnableResize(false)
+        ItemEditor:SetWidth(400)
+        ItemEditor:SetHeight(600)
+        ItemEditor:SetCallback("OnClose", function(widget)
+            AceGUI:Release(widget)
+            GuildBankTools.ItemEditor = nil
+        end)
+
+        self.ItemEditor = ItemEditor
+
+        local ItemEditor_ScrollContainer = AceGUI:Create("ScrollFrame")
+        ItemEditor_ScrollContainer:SetLayout("List")
+        ItemEditor:AddChild(ItemEditor_ScrollContainer)
+
+        local function refreshItemList()
+            ItemEditor_ScrollContainer:ReleaseChildren()
+            for i, v in pairs(GuildBankTools.db.profile.desiredItems) do
+                local itemframe = AceGUI:Create("SimpleGroup")
+                itemframe:SetLayout("Flow")
+                itemframe:SetFullWidth(true)
+                ItemEditor_ScrollContainer:AddChild(itemframe)
+
+                local itemicon = AceGUI:Create("Label")
+                itemicon:SetText("|T" .. v.icon .. ":16:16:0:0:64:64:4:60:4:60|t")
+                itemicon:SetWidth(20)
+                itemframe:AddChild(itemicon)
+
+                local itemname = AceGUI:Create("Label")
+                itemname:SetWidth(160)
+                itemname:SetText(v.itemLink)
+                itemframe:AddChild(itemname)
+
+                local itemId = AceGUI:Create("Label")
+                itemId:SetText(v.itemId)
+                itemId:SetWidth(50)
+                itemframe:AddChild(itemId)
+
+                local itemCount = AceGUI:Create("EditBox")
+                itemCount:SetLabel("Count")
+                itemCount:SetText(v.count)
+                itemCount:DisableButton(true)
+                itemCount:SetWidth(45)
+                itemCount:SetCallback("OnEnterPressed", function(widget, event, text)
+                    v.count = text
+                end)
+                itemframe:AddChild(itemCount)
+
+                local deleteItem = AceGUI:Create("Button")
+                deleteItem:SetText("|A:islands-markedarea:19:19|a")
+                deleteItem:SetWidth(55)
+                deleteItem:SetCallback("OnClick", function()
+                    GuildBankTools.db.profile.desiredItems[i] = nil
+                    refreshItemList()
+                end)
+                itemframe:AddChild(deleteItem)
+            end
+            local newItemFrame = AceGUI:Create("SimpleGroup")
+            newItemFrame:SetLayout("Flow")
+            newItemFrame:SetFullWidth(true)
+            newItemFrame:SetHeight(50)
+            ItemEditor_ScrollContainer:AddChild(newItemFrame)
+
+            local itemName = AceGUI:Create("EditBox")
+            itemName:SetFullWidth(true)
+            itemName:SetCallback("OnEnterPressed", function(widget, event, text)
+                LibAddonUtils.CacheItem(text, function(itemID)
+                    local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemID)
+                    local itemID = GetItemInfoFromHyperlink(itemLink)
+                    if not GuildBankTools.db.profie.desiredItems[itemID] then
+                        GuildBankTools.db.profile.desiredItems[itemID] = {
+                            itemId = itemID,
+                            icon = itemTexture,
+                            count = 1,
+                            itemLink = itemLink,
+                            itemName = itemName
+                        }
+                        refreshItemList()
+                    end
+                end, text)
+            end)
+            newItemFrame:AddChild(itemName)
+            ItemEditor_ScrollContainer:DoLayout()
+        end
+        refreshItemList()
+
+    end
+
 end
 
 local function isCraftingCheaper(itemID)
