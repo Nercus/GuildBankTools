@@ -1,6 +1,14 @@
 local GuildBankTools = LibStub("AceAddon-3.0"):NewAddon("GuildBankTools", "AceConsole-3.0", "AceEvent-3.0")
 
 local ItemsPerTab = 98
+
+local craftingCountperItem = {
+    [172041] = 3, -- Spinefin Souffle and Fries
+    [172049] = 3, -- Iridescent Ravioli with Apple Sauce
+    [172051] = 3, -- Steak a la Mode
+    [172045] = 3 -- Tenebrous Crown Roast Aspic
+}
+
 local recipeReagents = {
     --  Cooking
     [172043] = {{173036, 10}, -- Spinefin Piranha
@@ -34,6 +42,7 @@ local recipeReagents = {
     {172056, 4}, -- Medley of Transplanar Spices
     {172059, 2} -- Rich Grazer Milk
     }, -- Tenebrous Crown Roast Aspic
+
     --  Alchemy
     [171351] = {{180732, 1}, -- Rune Etched Vial
     {168583, 3}, -- Widowbloom
@@ -74,16 +83,11 @@ local recipeReagents = {
     [171285] = {{180732, 1}, -- Rune Etched Vial
     {169701, 2} -- Death Blossom
     }, -- Shadowcore Oil
-    [180457] = {{171287, 5}, -- Ground Death Blossom
-    {171288, 2}, -- Ground Vigil's Torch
-    {171289, 2}, -- Ground Widowbloom
-    {171290, 2}, -- Ground Marrowroot
-    {171291, 2} -- Ground Rising Glory
-    }, -- Shadestone
     [171266] = {{180732, 1}, -- Rune Etched Vial
     {169701, 2}, -- Death Blossom
     {168586, 3} -- Rising Glory
     }, -- Potion of the Hidden Spirit
+
     --  Engineering
     [132514] = {{123918, 20}, -- Leystone Ore
     {136637, 10}, -- Oversized Blasting Cap
@@ -92,11 +96,13 @@ local recipeReagents = {
     [109076] = {{109119, 8}, -- True Iron Ore
     {111557, 5} -- Sumptuous Fur
     }, -- Goblin Glider Kit
+
     --  Inscription
     [173049] = {{173059, 3}, -- Luminous Ink
     {173058, 3}, -- Umbral Ink
     {175886, 25} -- Dark Parchment
     }, -- Tome of the Still Mind
+
     --  Leatherworking
     [172347] = {{172096, 8}, -- Heavy Desolate Leather
     {177062, 4} -- Penumbra Thread
@@ -104,7 +110,79 @@ local recipeReagents = {
     [172233] = {{172096, 3}, -- Heavy Desolate Leather
     {172092, 3}, -- Pallid Bone
     {177062, 1} -- Penumbra Thread
-    } -- Drums of Deathly Ferocity
+    }, -- Drums of Deathly Ferocity
+
+    -- Enchanting
+    [172365] = {{172232, 2}, -- Eternal Crystal
+    {172231, 3} -- Sacred Shard
+    }, -- Enchant Weapon - Ascended Vigor
+    [172366] = {{172231, 2}, -- Sacred Shard
+    {172230, 4} -- Soul Dust
+    }, -- Enchant Weapon - Celestial Guidance
+    [172367] = {{172232, 2}, -- Eternal Crystal
+    {172231, 3} -- Sacred Shard
+    }, -- Enchant Weapon - Eternal Grace
+    [172370] = {{172232, 2}, -- Eternal Crystal
+    {172231, 3} -- Sacred Shard
+    }, -- Enchant Weapon - Lightless Force
+    [172368] = {{172232, 2}, -- Eternal Crystal
+    {172231, 3} -- Sacred Shard
+    }, -- Enchant Weapon - Sinful Revelation
+    [172411] = {{172231, 2}, -- Sacred Shard
+    {172230, 4} -- Soul Dust
+    }, -- Enchant Cloak - Fortified Avoidance
+    [172412] = {{172231, 2}, -- Sacred Shard
+    {172230, 4} -- Soul Dust
+    }, -- Enchant Cloak - Fortified Leech
+    [172410] = {{172231, 2}, -- Sacred Shard
+    {172230, 4} -- Soul Dust
+    }, -- Enchant Cloak - Fortified Speed
+    [172415] = {{172232, 2}, -- Eternal Crystal
+    {172231, 2} -- Sacred Shard
+    }, -- Enchant Bracers - Eternal Intellect
+    [172408] = {{172232, 2}, -- Eternal Crystal
+    {172231, 2} -- Sacred Shard
+    }, -- Enchant Gloves - Eternal Strength
+    [172419] = {{172232, 2}, -- Eternal Crystal
+    {172231, 2} -- Sacred Shard
+    }, -- Enchant Boots - Eternal Agility
+    [172418] = {{172232, 2}, -- Eternal Crystal
+    {172231, 2} -- Sacred Shard
+    }, -- Enchant Chest - Eternal Bulwark
+    [177659] = {{172232, 2}, -- Eternal Crystal
+    {172231, 2} -- Sacred Shard
+    }, -- Enchant Chest - Eternal Skirmish
+    [177962] = {{172232, 2}, -- Eternal Crystal
+    {172231, 2} -- Sacred Shard
+    }, -- Enchant Chest - Eternal Stats
+    [183738] = {{172232, 2}, -- Eternal Crystal
+    {172231, 2} -- Sacred Shard
+    }, -- Enchant Chest - Eternal Insight
+    [172361] = {{172231, 3} -- Sacred Shard
+    }, -- Enchant Ring - Tenet of Critical Strike
+    [172362] = {{172231, 3} -- Sacred Shard
+    }, -- Enchant Ring - Tenet of Haste
+    [172363] = {{172231, 3} -- Sacred Shard
+    }, -- Enchant Ring - Tenet of Mastery
+    [172364] = {{172231, 3} -- Sacred Shard
+    }, -- Enchant Ring - Tenet of Versatility
+
+    -- Jewelcrafting
+    [173127] = {{173109, 2}, -- Angerseye
+    {173108, 2}, -- Oriblase
+    {173168, 1} -- Laestrite Setting
+    }, -- Deadly Jewel Cluster
+    [173128] = {{173108, 4}, -- Oriblase
+    {173168, 1} -- Laestrite Setting
+    }, -- Quick Jewel Cluster
+    [173130] = {{173109, 2}, -- Angerseye
+    {173110, 2}, -- Umbryl
+    {173168, 1} -- Laestrite Setting
+    }, -- Masterful Jewel Cluster
+    [173129] = {{173110, 4}, -- Umbryl
+    {173168, 1} -- Laestrite Setting
+    } -- Versatile Jewel Cluster
+
 }
 
 local vendorReagents = {
@@ -117,13 +195,15 @@ local vendorReagents = {
     [172059] = 4250, -- Rich Grazer Milk
     [178786] = 3500, -- Lusterwheat Flour
     [172058] = 4500, -- Smuggled Azerothian Produce
-    [172057] = 3750 -- Inconceivably Aged Vinegar
+    [172057] = 3750, -- Inconceivably Aged Vinegar
+    [173168] = 1000 -- Laestrite Setting
 }
+
 local LDBIcon = LibStub("LibDBIcon-1.0")
 local LibAddonUtils = LibStub("LibAddonUtils-1.0")
 
 local vendorItems = {}
-local boughtVendorItems = {}
+local boughtItems = {}
 local queriedTabs = {}
 local gbankScanned = false
 
@@ -139,11 +219,9 @@ local itemspurchased = {}
 local initialQuery
 local lastQuery
 local auctions = {}
+local addedItems = {}
 
--- FIXME: If Materials are in Bag craft the item instead of buying it
--- FIXME: adjust crafting recipes for count of crafted item i.e Foodx3
--- FIXME: Count Materials in GBank
--- FIXME: add optional crafting steps (10 desolate leather to 1 heavy desolate leather)
+local startShopping = false
 
 local defaults = {
     profile = {
@@ -374,14 +452,102 @@ GuildBankToolsBroker = LibStub("LibDataBroker-1.1"):NewDataObject("GuildBankTool
     end
 })
 
+function TextEditBox_Show(text)
+    if not KethoEditBox then
+        local f = CreateFrame("Frame", "KethoEditBox", UIParent, "DialogBoxFrame")
+        f:SetPoint("CENTER")
+        f:SetSize(600, 500)
+
+        f:SetBackdrop({
+            bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+            edgeFile = "Interface\\PVPFrame\\UI-Character-PVP-Highlight", -- this one is neat
+            edgeSize = 16,
+            insets = {
+                left = 8,
+                right = 6,
+                top = 8,
+                bottom = 8
+            }
+        })
+        f:SetBackdropBorderColor(0, 0, 0, 0.5) -- darkblue
+
+        -- Movable
+        f:SetMovable(true)
+        f:SetClampedToScreen(true)
+        f:SetScript("OnMouseDown", function(self, button)
+            if button == "LeftButton" then
+                self:StartMoving()
+            end
+        end)
+        f:SetScript("OnMouseUp", f.StopMovingOrSizing)
+
+        -- ScrollFrame
+        local sf = CreateFrame("ScrollFrame", "KethoEditBoxScrollFrame", KethoEditBox, "UIPanelScrollFrameTemplate")
+        sf:SetPoint("LEFT", 16, 0)
+        sf:SetPoint("RIGHT", -32, 0)
+        sf:SetPoint("TOP", 0, -16)
+        sf:SetPoint("BOTTOM", KethoEditBoxButton, "TOP", 0, 0)
+
+        -- EditBox
+        local eb = CreateFrame("EditBox", "KethoEditBoxEditBox", KethoEditBoxScrollFrame)
+        eb:SetSize(sf:GetSize())
+        eb:SetMultiLine(true)
+        eb:SetAutoFocus(false) -- dont automatically focus
+        eb:SetFontObject("ChatFontNormal")
+        eb:SetScript("OnEscapePressed", function()
+            f:Hide()
+        end)
+        sf:SetScrollChild(eb)
+
+        -- Resizable
+        f:SetResizable(true)
+        f:SetMinResize(150, 100)
+
+        local rb = CreateFrame("Button", "KethoEditBoxResizeButton", KethoEditBox)
+        rb:SetPoint("BOTTOMRIGHT", -6, 7)
+        rb:SetSize(16, 16)
+
+        rb:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+        rb:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+        rb:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+
+        rb:SetScript("OnMouseDown", function(self, button)
+            if button == "LeftButton" then
+                f:StartSizing("BOTTOMRIGHT")
+                self:GetHighlightTexture():Hide() -- more noticeable
+            end
+        end)
+        rb:SetScript("OnMouseUp", function(self, button)
+            f:StopMovingOrSizing()
+            self:GetHighlightTexture():Show()
+            eb:SetWidth(sf:GetWidth())
+        end)
+        f:Show()
+    end
+
+    if text then
+        KethoEditBoxEditBox:SetText(text)
+    end
+    KethoEditBox:Show()
+end
+
+local function getTableLength(t)
+    local count = 0
+    for _ in pairs(t) do
+        count = count + 1
+    end
+    return count
+end
+
 function GuildBankTools:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("GuildBankToolsDB", defaults, true)
 
     LDBIcon:Register("GuildBankTools", GuildBankToolsBroker, self.db.profile.minimap)
+    GuildBankTools:UpdateMinimapButton()
 
     local GBT_Frame = CreateFrame("Frame", nil, UIParent)
     GBT_Frame:SetFrameStrata("BACKGROUND")
-    GBT_Frame:SetWidth(235)
+    GBT_Frame:SetWidth(300)
     GBT_Frame:SetHeight(500)
     local x = GuildBankTools.db.profile.slpositon.x
     local y = GuildBankTools.db.profile.slpositon.y - 500
@@ -397,25 +563,23 @@ function GuildBankTools:OnInitialize()
     GBT_Frame.movetexture:Hide()
 
     local GBT_ObjectiveTrackerHeader = CreateFrame("frame", "GBT_ObjectiveTrackerHeader", GBT_Frame)
-    GBT_ObjectiveTrackerHeader:SetPoint("TOPLEFT", GBT_Frame, "TOPLEFT", 0, 0)
-    GBT_ObjectiveTrackerHeader:SetSize(235, 25)
+    GBT_ObjectiveTrackerHeader:SetSize(300, 25)
 
     local GBT_ObjectiveTrackerHeaderTexture = GBT_Frame:CreateTexture(nil, "ARTWORK")
-    GBT_ObjectiveTrackerHeaderTexture:SetSize(235, 25)
+    GBT_ObjectiveTrackerHeaderTexture:SetSize(300, 25)
     GBT_ObjectiveTrackerHeaderTexture:SetAtlas('pvpqueue-button-up')
     GBT_ObjectiveTrackerHeaderTexture:SetPoint("TOPLEFT", GBT_ObjectiveTrackerHeader, "TOPLEFT", 0, 0)
 
     local GBT_ObjectiveTrackerHeaderText = GBT_Frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    GBT_ObjectiveTrackerHeaderText:SetPoint("TOPLEFT", GBT_ObjectiveTrackerHeader, "TOPLEFT", 15, -5)
+    GBT_ObjectiveTrackerHeaderText:SetPoint("LEFT", GBT_ObjectiveTrackerHeader, "LEFT", 15, 0)
     GBT_ObjectiveTrackerHeaderText:SetText("Shoppinglist")
 
     local minimizeButton = CreateFrame("button", "GBT_QuestsHeaderMinimizeButton", GBT_Frame, "BackdropTemplate")
-    local minimizeButtonText = minimizeButton:CreateFontString(nil, "overlay", "GameFontNormal")
-    minimizeButtonText:SetPoint("right", minimizeButton, "left", -3, 1)
-    minimizeButtonText:Hide()
     minimizeButton:SetSize(25, 25)
     minimizeButton:SetPoint("topright", GBT_ObjectiveTrackerHeader, "topright", 0, 0)
     minimizeButton:SetScript("OnClick", function()
+        startShopping = false
+
         GBT_Frame:Hide()
     end)
     minimizeButton:SetNormalAtlas("soulbinds_collection_categoryheader_collapse")
@@ -423,11 +587,6 @@ function GuildBankTools:OnInitialize()
     minimizeButton:SetFrameStrata("LOW")
 
     local MoverButton = CreateFrame("button", "GBT_QuestsHeaderMoverButton", GBT_Frame, "BackdropTemplate")
-    local MoverButtonText = MoverButton:CreateFontString(nil, "overlay", "GameFontNormal")
-    MoverButtonText:SetText("Map Pins")
-    MoverButtonText:SetPoint("right", MoverButton, "left", 0, 1)
-    MoverButtonText:Hide()
-
     MoverButton:SetSize(25, 25)
     MoverButton:SetPoint("right", minimizeButton, "left", 0, 0)
     MoverButton:SetScript("OnClick", function()
@@ -458,6 +617,36 @@ function GuildBankTools:OnInitialize()
     MoverButton:SetNormalAtlas("soulbinds_collection_categoryheader_expand")
     MoverButton:SetHighlightAtlas("128-redbutton-refresh-highlight")
     MoverButton:SetFrameStrata("LOW")
+
+    local ExportButton = CreateFrame("button", "GBT_QuestsHeaderExportButton", GBT_Frame, "BackdropTemplate")
+    ExportButton:SetSize(25, 25)
+    ExportButton:SetPoint("right", MoverButton, "left", 0, 0)
+    ExportButton:SetScript("OnClick", function()
+        local exportText = ""
+        local totalGoldSpent = 0
+        -- Vendor
+        for i, info in pairs(boughtItems) do
+            local itemName = GetItemInfo(i)
+            totalGoldSpent = totalGoldSpent + info[1]
+            local price = ("%d,%d,%d"):format(info[1] / 100 / 100, (info[1] / 100) % 100, info[1] % 100)
+            exportText = exportText .. itemName .. "," .. info[2] .. "," .. price .. "," .. date() .. "\n"
+        end
+
+        -- AuctionHouse
+        for i, j in pairs(itemspurchased) do
+            local itemName = GetItemInfo(i)
+            totalGoldSpent = totalGoldSpent + j.price
+            local price = ("%d,%d,%d"):format(j.price / 100 / 100, (j.price / 100) % 100, j.price % 100)
+            exportText = exportText .. itemName .. "," .. j.count .. "," .. price .. "," .. date() .. "\n"
+        end
+        exportText = exportText .. "Total spent: " .. GetCoinTextureString(totalGoldSpent)
+        if exportText ~= "" then
+            TextEditBox_Show(exportText)
+        end
+
+    end)
+    ExportButton:SetNormalAtlas("poi-workorders")
+    ExportButton:SetHighlightAtlas("128-redbutton-refresh-highlight")
 
     GBT_ObjectiveTrackerHeader:ClearAllPoints()
     GBT_ObjectiveTrackerHeader:SetPoint("bottom", GBT_Frame, "top", 0, -20)
@@ -495,8 +684,16 @@ function GuildBankTools:ToggleItemEditor()
         ItemEditor:AddChild(ItemEditor_ScrollContainer)
 
         local function refreshItemList()
-            ItemEditor_ScrollContainer:ReleaseChildren()
+            local sortedList = {}
             for i, v in pairs(GuildBankTools.db.profile.desiredItems) do
+                table.insert(sortedList, v)
+            end
+            ViragDevTool_AddData(sortedList, "sortedList")
+            table.sort(sortedList, function(a, b)
+                return a.itemName < b.itemName
+            end)
+            ItemEditor_ScrollContainer:ReleaseChildren()
+            for i, v in pairs(sortedList) do
                 local itemframe = AceGUI:Create("SimpleGroup")
                 itemframe:SetLayout("Flow")
                 itemframe:SetFullWidth(true)
@@ -522,7 +719,7 @@ function GuildBankTools:ToggleItemEditor()
                 itemCount:SetText(v.count)
                 itemCount:DisableButton(true)
                 itemCount:SetWidth(45)
-                itemCount:SetCallback("OnEnterPressed", function(widget, event, text)
+                itemCount:SetCallback("OnTextChanged", function(widget, event, text)
                     v.count = text
                 end)
                 itemframe:AddChild(itemCount)
@@ -531,7 +728,7 @@ function GuildBankTools:ToggleItemEditor()
                 deleteItem:SetText("|A:islands-markedarea:19:19|a")
                 deleteItem:SetWidth(55)
                 deleteItem:SetCallback("OnClick", function()
-                    GuildBankTools.db.profile.desiredItems[i] = nil
+                    GuildBankTools.db.profile.desiredItems[v.itemId] = nil
                     refreshItemList()
                 end)
                 itemframe:AddChild(deleteItem)
@@ -548,7 +745,7 @@ function GuildBankTools:ToggleItemEditor()
                 LibAddonUtils.CacheItem(text, function(itemID)
                     local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemID)
                     local itemID = GetItemInfoFromHyperlink(itemLink)
-                    if not GuildBankTools.db.profie.desiredItems[itemID] then
+                    if not GuildBankTools.db.profile.desiredItems[itemID] then
                         GuildBankTools.db.profile.desiredItems[itemID] = {
                             itemId = itemID,
                             icon = itemTexture,
@@ -587,6 +784,9 @@ local function isCraftingCheaper(itemID)
         local price = vendorReagents[reagent[1]] or GuildBankTools.db.profile.prices[reagent[1]] or 0
         craftingPrice = craftingPrice + price * reagent[2]
     end
+    if craftingCountperItem[itemID] then
+        craftingPrice = craftingPrice / craftingCountperItem[itemID]
+    end
     return craftingPrice < itemBuyPrice, craftingPrice, recipe
 end
 
@@ -598,8 +798,8 @@ function ShowTooltipLine(tooltip)
     if itemLink then
         local itemID = GetItemInfoFromHyperlink(itemLink)
         if itemID then
-            local gt = tooltip or GameTooltip
             if GuildBankTools.db.profile.prices[itemID] then
+                local gt = tooltip or GameTooltip
                 gt:AddLine("AH Price:  " .. GetCoinTextureString(GuildBankTools.db.profile.prices[itemID]), 1, 1, 1, 1,
                     1, 1)
                 if recipeReagents[itemID] then
@@ -618,16 +818,7 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 end)
 
 local function ScanAuctions()
-    local itemList = {}
-    for i, _ in pairs(GuildBankTools.db.profile.desiredItems) do
-        itemList[i] = true
-    end
-    for i, j in pairs(recipeReagents) do
-        for _, l in ipairs(j) do
-            itemList[l[1]] = true
-        end
-        itemList[i] = true
-    end
+    print("Scanning auctions...")
     wipe(auctions)
 
     local numReplicates = C_AuctionHouse.GetNumReplicateItems() - 1
@@ -638,15 +829,15 @@ local function ScanAuctions()
         for i = lastStart, (numReplicates / chunks) * iterationIndex do
             local item = {C_AuctionHouse.GetReplicateItemInfo(i)}
             if item[17] then
-                if itemList[item[17]] then
-                    if not auctions[item[17]] then
+
+                if not auctions[item[17]] then
+                    auctions[item[17]] = item[10] / item[3]
+                else
+                    if auctions[item[17]] > item[10] / item[3] then
                         auctions[item[17]] = item[10] / item[3]
-                    else
-                        if auctions[item[17]] > item[10] / item[3] then
-                            auctions[item[17]] = item[10] / item[3]
-                        end
                     end
                 end
+
             end
             lastStart = i
         end
@@ -660,86 +851,6 @@ local function ScanAuctions()
 
 end
 
-local TextEditBox
-
-local function TextEditBox_Show(text)
-    if not TextEditBox then
-        local f = CreateFrame("Frame", "TextEditBox", UIParent, "DialogBoxFrame")
-        f:SetPoint("CENTER")
-        f:SetSize(600, 500)
-
-        f:SetBackdrop({
-            bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-            edgeFile = "Interface\\PVPFrame\\UI-Character-PVP-Highlight", --  this one is neat
-            edgeSize = 16,
-            insets = {
-                left = 8,
-                right = 6,
-                top = 8,
-                bottom = 8
-            }
-        })
-        f:SetBackdropBorderColor(0.5, 0.5, 0.5, 0.5)
-
-        --  Movable
-        f:SetMovable(true)
-        f:SetClampedToScreen(true)
-        f:SetScript("OnMouseDown", function(self, button)
-            if button == "LeftButton" then
-                self:StartMoving()
-            end
-        end)
-        f:SetScript("OnMouseUp", f.StopMovingOrSizing)
-
-        --  ScrollFrame
-        local sf = CreateFrame("ScrollFrame", "TextEditBoxScrollFrame", TextEditBox, "UIPanelScrollFrameTemplate")
-        sf:SetPoint("LEFT", 16, 0)
-        sf:SetPoint("RIGHT", -32, 0)
-        sf:SetPoint("TOP", 0, -16)
-
-        --  EditBox
-        local eb = CreateFrame("EditBox", "TextEditBoxEditBox", TextEditBoxScrollFrame)
-        eb:SetSize(sf:GetSize())
-        eb:SetMultiLine(true)
-        eb:SetAutoFocus(false) --  dont automatically focus
-        eb:SetFontObject("ChatFontNormal")
-        eb:SetScript("OnEscapePressed", function()
-            f:Hide()
-        end)
-        sf:SetScrollChild(eb)
-
-        --  Resizable
-        f:SetResizable(true)
-        f:SetMinResize(150, 100)
-
-        local rb = CreateFrame("Button", "TextEditBoxResizeButton", TextEditBox)
-        rb:SetPoint("BOTTOMRIGHT", -6, 7)
-        rb:SetSize(16, 16)
-
-        rb:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-        rb:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
-        rb:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-
-        rb:SetScript("OnMouseDown", function(self, button)
-            if button == "LeftButton" then
-                f:StartSizing("BOTTOMRIGHT")
-                self:GetHighlightTexture():Hide() --  more noticeable
-            end
-        end)
-        rb:SetScript("OnMouseUp", function(self, button)
-            f:StopMovingOrSizing()
-            self:GetHighlightTexture():Show()
-            eb:SetWidth(sf:GetWidth())
-        end)
-        f:Show()
-    end
-
-    if text then
-        TextEditBoxEditBox:SetText(text)
-    end
-    TextEditBox:Show()
-end
-
 local function isItemLinkinGB(itemID)
     if not GBankItems then
         return
@@ -751,117 +862,391 @@ local function isItemLinkinGB(itemID)
     end
 end
 
-local function createShoppingList()
-    local addedItems = {}
+local framePool = {}
+
+local function createShoppingListEntry(itemID, countnum)
+    if #framePool == 0 then
+
+        local f = CreateFrame("Button", nil, GuildBankTools.ShoppingListFrame)
+        f:SetSize(300, 20)
+        f:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+        end)
+        f:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+        f.itemID = itemID
+        f.countnum = countnum
+        f.maxStack = select(8, GetItemInfo(itemID))
+
+        f:SetScript("OnClick", function(self, click)
+            if click == "RightButton" then
+                addedItems[f.itemID] = nil
+                shoppinglist[f.itemID] = nil
+                vendorItems[f.itemID] = nil
+
+            elseif click == "LeftButton" then
+                if vendorItems[f.itemID] and MerchantFrame then
+                    for i = 1, GetMerchantNumItems() do
+                        local itemID = GetMerchantItemID(i)
+                        if itemID == f.itemID then
+                            local _, _, price, quantity, _, _ = GetMerchantItemInfo(i)
+                            local buyRounds = math.floor(f.countnum / f.maxStack)
+                            local rest = f.countnum % f.maxStack
+                            print(f.itemID, quantity, buyRounds, rest)
+                            for k = 1, buyRounds do
+                                BuyMerchantItem(i, f.maxStack)
+                            end
+                            BuyMerchantItem(i, rest)
+
+                            print("Buying " .. f.countnum .. " of " .. itemID .. " for " ..
+                                      GetCoinTextureString(price / quantity * f.countnum))
+                            boughtItems[f.itemID] = {price / quantity * f.countnum, f.countnum}
+                            vendorItems[itemID] = nil
+                        end
+                    end
+                elseif shoppinglist[f.itemID] and AuctionHouseFrame then
+                    if AuctionHouseFrame then
+
+                        local slinfo = shoppinglist[f.itemID]
+                        if slinfo then
+                            itemtobuy.itemID = f.itemID
+                            itemtobuy.count = slinfo.count
+                            LibAddonUtils.CacheItem(f.itemID, function(i)
+
+                                local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(i)
+                                AuctionHouseFrame:SetSearchText(itemName)
+                                AuctionHouseFrame.SearchBar.SearchButton:Click()
+
+                            end, f.itemID)
+                        end
+                    end
+                end
+            end
+        end)
+
+        local icon = f:CreateTexture(nil, "ARTWORK")
+        icon:SetSize(18, 18)
+        icon:SetPoint("LEFT", f, "LEFT", 0, 0)
+        f.icon = icon
+
+        local link = f:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        link:SetPoint("LEFT", icon, "RIGHT", 2, 0)
+        f.link = link
+
+        local count = f:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        count:SetPoint("RIGHT", f, "RIGHT", -3, 0)
+        f.count = count
+
+        f:Hide()
+        LibAddonUtils.CacheItem(itemID, function(itemID)
+            local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemID)
+            icon:SetTexture(itemTexture)
+            link:SetText(itemLink)
+            count:SetText(countnum)
+            f:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:SetHyperlink(itemLink)
+                GameTooltip:Show()
+            end)
+        end, itemID)
+        return f
+    else
+        local f = table.remove(framePool)
+        LibAddonUtils.CacheItem(itemID, function(itemID)
+            local _, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemID)
+            f.icon:SetTexture(itemTexture)
+            f.link:SetText(itemLink)
+            f.count:SetText(countnum)
+            f:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:SetHyperlink(itemLink)
+                GameTooltip:Show()
+            end)
+        end, itemID)
+        f.itemID = itemID
+        f.countnum = countnum
+        f.maxStack = select(8, GetItemInfo(itemID))
+
+        f:SetScript("OnClick", function(self, click)
+            if click == "RightButton" then
+                addedItems[f.itemID] = nil
+                shoppinglist[f.itemID] = nil
+                vendorItems[f.itemID] = nil
+
+            elseif click == "LeftButton" then
+                if vendorItems[f.itemID] and MerchantFrame then
+                    for i = 1, GetMerchantNumItems() do
+                        local itemID = GetMerchantItemID(i)
+                        if itemID == f.itemID then
+                            local _, _, price, quantity, _, _ = GetMerchantItemInfo(i)
+                            local buyRounds = math.floor(f.countnum / f.maxStack)
+                            local rest = f.countnum % f.maxStack
+                            print(f.itemID, quantity, buyRounds, rest)
+                            for k = 1, buyRounds do
+                                BuyMerchantItem(i, f.maxStack)
+                            end
+                            BuyMerchantItem(i, rest)
+
+                            print("Buying " .. f.countnum .. " of " .. itemID .. " for " ..
+                                      GetCoinTextureString(price / quantity * f.countnum))
+                            boughtItems[f.itemID] = {price / quantity * f.countnum, f.countnum}
+                            vendorItems[itemID] = nil
+                        end
+                    end
+                elseif shoppinglist[f.itemID] and AuctionHouseFrame then
+                    if AuctionHouseFrame then
+
+                        local slinfo = shoppinglist[f.itemID]
+                        if slinfo then
+                            itemtobuy.itemID = f.itemID
+                            itemtobuy.count = slinfo.count
+                            LibAddonUtils.CacheItem(f.itemID, function(i)
+                                local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(i)
+                                AuctionHouseFrame:SetSearchText(itemName)
+                                AuctionHouseFrame.SearchBar.SearchButton:Click()
+                            end, f.itemID)
+                        end
+                    end
+                end
+            end
+        end)
+        return f
+    end
+
+end
+
+GuildBankTools.SLFEntries = {
+    ["crafted"] = {},
+    ["buy"] = {},
+    ["vendor"] = {}
+}
+
+function GuildBankTools:updateShoppingListFrame()
+    if not self.SLFEntries["craftedHeader"] then
+        local craftedHeader = CreateFrame("Frame", "GuildBankTools_CraftedHeader", self.ShoppingListFrame)
+        craftedHeader:SetSize(self.ShoppingListFrame:GetWidth(), 20)
+        self.SLFEntries["craftedHeader"] = craftedHeader
+    end
+    self.SLFEntries["craftedHeader"]:SetPoint("TOPLEFT", self.ShoppingListFrame, "TOPLEFT", 0, -20)
+
+    if not self.SLFEntries["craftedHeader"].text then
+        local craftedHeaderText = self.SLFEntries["craftedHeader"]:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        craftedHeaderText:SetPoint("LEFT", self.SLFEntries["craftedHeader"], "LEFT", 0, 0)
+        craftedHeaderText:SetText("Crafted Items")
+        self.SLFEntries["craftedHeader"].text = craftedHeaderText
+    end
+
+    local index = 0
+    local lastframeCrafted = nil
+    for i, v in ipairs(GuildBankTools.SLFEntries["crafted"]) do
+        v:Hide()
+        table.insert(framePool, v)
+    end
+    GuildBankTools.SLFEntries["crafted"] = {}
+    for itemID, v in pairs(addedItems) do
+        if v[2] == "craft" then
+            local f = createShoppingListEntry(itemID, v[1])
+            f:SetPoint("TOPLEFT", self.SLFEntries["craftedHeader"], "BOTTOMLEFT", 0, -(index * 20))
+            table.insert(GuildBankTools.SLFEntries["crafted"], f)
+            f:Show()
+            index = index + 1
+            lastframeCrafted = f
+        end
+    end
+
+    if #GuildBankTools.SLFEntries["crafted"] == 0 then
+        lastframeCrafted = self.SLFEntries["craftedHeader"]
+    end
+
+    if not self.SLFEntries["buyHeader"] then
+        local buyHeader = CreateFrame("Frame", "GuildBankTools_BuyHeader", self.ShoppingListFrame)
+        buyHeader:SetSize(self.ShoppingListFrame:GetWidth(), 20)
+        self.SLFEntries["buyHeader"] = buyHeader
+    end
+    self.SLFEntries["buyHeader"]:SetPoint("TOPLEFT", lastframeCrafted, "BOTTOMLEFT", 0, -10)
+
+    if not self.SLFEntries["buyHeader"].text then
+        local buyHeaderText = self.SLFEntries["buyHeader"]:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        buyHeaderText:SetPoint("LEFT", self.SLFEntries["buyHeader"], "LEFT", 0, 0)
+        buyHeaderText:SetText("Buy Items")
+        self.SLFEntries["buyHeader"].text = buyHeaderText
+    end
+
+    index = 0
+    local lastFrameBuy = nil
+    for i, v in ipairs(GuildBankTools.SLFEntries["buy"]) do
+        v:Hide()
+        table.insert(framePool, v)
+    end
+    GuildBankTools.SLFEntries["buy"] = {}
+    for itemID, v in pairs(shoppinglist) do
+        local f = createShoppingListEntry(itemID, v.count)
+        f:SetPoint("TOPLEFT", self.SLFEntries["buyHeader"], "BOTTOMLEFT", 0, -(index * 20))
+        table.insert(GuildBankTools.SLFEntries["buy"], f)
+        f:Show()
+        index = index + 1
+        lastFrameBuy = f
+    end
+    if #GuildBankTools.SLFEntries["buy"] == 0 then
+        lastFrameBuy = self.SLFEntries["buyHeader"]
+    end
+
+    if not self.SLFEntries["vendorHeader"] then
+        local vendorHeader = CreateFrame("Frame", "GuildBankTools_VendorHeader", self.ShoppingListFrame)
+        vendorHeader:SetSize(self.ShoppingListFrame:GetWidth(), 20)
+        self.SLFEntries["vendorHeader"] = vendorHeader
+    end
+    self.SLFEntries["vendorHeader"]:SetPoint("TOPLEFT", lastFrameBuy, "BOTTOMLEFT", 0, -10)
+
+    if not self.SLFEntries["vendorHeader"].text then
+        local vendorHeaderText = self.SLFEntries["vendorHeader"]:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        vendorHeaderText:SetPoint("LEFT", self.SLFEntries["vendorHeader"], "LEFT", 0, 0)
+        vendorHeaderText:SetText("Vendor Items")
+        self.SLFEntries["vendorHeader"].text = vendorHeaderText
+    end
+
+    for i, v in ipairs(GuildBankTools.SLFEntries["vendor"]) do
+        v:Hide()
+        table.insert(framePool, v)
+    end
+    GuildBankTools.SLFEntries["vendor"] = {}
+    index = 0
+    for itemID, count in pairs(vendorItems) do
+        local f = createShoppingListEntry(itemID, count)
+        f:SetPoint("TOPLEFT", self.SLFEntries["vendorHeader"], "BOTTOMLEFT", 0, -(index * 20))
+        table.insert(GuildBankTools.SLFEntries["vendor"], f)
+        f:Show()
+        index = index + 1
+    end
+
+    self.ShoppingListFrame:Show()
+end
+
+function GuildBankTools:setShoppingList()
+    if getTableLength(GBankItems) == 0 then
+        return
+    end
+    if not startShopping then
+        return
+    end
+    addedItems = {}
     vendorItems = {}
     shoppinglist = {}
     itemtobuy = {}
-    boughtVendorItems = {}
+
     for gbitem, gbcount in pairs(GBankItems) do
         local itemID = GetItemInfoInstant(gbitem)
         if GuildBankTools.db.profile.desiredItems[itemID] then
-            if (GuildBankTools.db.profile.desiredItems[itemID] - gbcount - GetItemCount(itemID, false)) > 0 then
+            if (GuildBankTools.db.profile.desiredItems[itemID].count - gbcount - GetItemCount(itemID, false)) > 0 then
                 local isCheaper, pricePerItem, recipe = isCraftingCheaper(itemID)
                 if isCheaper then
-                    print("Crafting " ..
-                              (GuildBankTools.db.profile.desiredItems[itemID] - gbcount - GetItemCount(itemID, false)) ..
-                              " of " .. gbitem .. " is cheaper!")
                     for index, reagent in ipairs(recipe) do
-                        local reagentCount = reagent[2] * (GuildBankTools.db.profile.desiredItems[itemID] - gbcount) -
-                                                 GetItemCount(reagent[1], false)
-                        if reagentCount < 0 then
-                            reagentCount = 0
+                        local reagentCountperItem = math.ceil(reagent[2] / (craftingCountperItem[itemID] or 1))
+                        local reagentCount = reagentCountperItem *
+                                                 (GuildBankTools.db.profile.desiredItems[itemID].count - gbcount +
+                                                     GetItemCount(itemID, false))
+                        for v, k in pairs(GBankItems) do
+                            local itemID = GetItemInfoFromHyperlink(v)
+                            if reagent[1] == itemID then
+                                reagentCount = reagentCount - k
+                                break
+                            end
                         end
+
                         local reagentID = reagent[1]
                         if reagentCount > 0 then
                             if not vendorReagents[reagentID] then
-                                shoppinglist[reagentID] = (shoppinglist[reagentID] or 0) + reagentCount
-                                local itemLink = select(2, GetItemInfo(reagentID))
-                                if itemLink then
-                                    print("Added " .. reagentCount .. " of " .. itemLink .. " to shopping list")
-                                else
-                                    local item = Item:CreateFromItemID(reagentID)
-                                    item:ContinueOnItemLoad(function()
-                                        local l = item:GetItemLink()
-                                        print("Added " .. reagentCount .. " of " .. l .. " to shopping list")
-                                    end)
+                                local count = 0
+                                if not shoppinglist[reagentID] then
+                                    shoppinglist[reagentID] = {
+                                        count = -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0)),
+                                        type = "reagent"
+                                    }
                                 end
+                                if shoppinglist[reagentID] then
+                                    count = shoppinglist[reagentID].count
+                                end
+                                shoppinglist[reagentID] = {
+                                    ["type"] = "reagent",
+                                    ["count"] = count + reagentCount
+                                }
                             else
+                                if not vendorItems[reagentID] then
+                                    vendorItems[reagentID] =
+                                        -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0))
+                                end
                                 vendorItems[reagentID] = (vendorItems[reagentID] or 0) + reagentCount
                             end
                         end
                     end
+                    addedItems[itemID] = {(GuildBankTools.db.profile.desiredItems[itemID].count - gbcount -
+                        GetItemCount(itemID, false)), "craft"}
                 else
-                    shoppinglist[itemID] =
-                        (shoppinglist[itemID] or 0) + GuildBankTools.db.profile.desiredItems[itemID] - gbcount -
+                    local count = 0
+                    if shoppinglist[itemID] then
+                        count = shoppinglist[itemID].count
+                    end
+                    shoppinglist[itemID] = {
+                        ["type"] = "item",
+                        ["count"] = count + GuildBankTools.db.profile.desiredItems[itemID].count - gbcount -
                             GetItemCount(itemID, false)
-                    addedItems[itemID] = true
-                    print("Added " .. GuildBankTools.db.profile.desiredItems[itemID] - gbcount .. " of " .. gbitem ..
-                              " to shopping list")
+                    }
+                    addedItems[itemID] = {(GuildBankTools.db.profile.desiredItems[itemID].count - gbcount -
+                        GetItemCount(itemID, false)), "buy"}
                 end
+
             end
         end
     end
-    for item, count in pairs(GuildBankTools.db.profile.desiredItems) do
+    for item, info in pairs(GuildBankTools.db.profile.desiredItems) do
         if not addedItems[item] and not isItemLinkinGB(item) then
-            local totalCount = count - GetItemCount(item, false)
+            local totalCount = info.count - GetItemCount(item, false)
             if totalCount > 0 then
-                shoppinglist[item] = (shoppinglist[item] or 0) + totalCount
-                local itemName = GetItemInfo(item)
-                if itemName then
-                    print("Added " .. count .. " of " .. itemName .. " to shopping list")
-                else
-                    local itemframe = Item:CreateFromItemID(item)
-                    itemframe:ContinueOnItemLoad(function()
-                        local link = itemframe:GetItemLink()
-                        print("Added " .. count .. " of " .. link .. " to shopping list")
-                    end)
+                local count = 0
+                if shoppinglist[item] then
+                    count = shoppinglist[item].count
                 end
+                shoppinglist[item] = {
+                    ["count"] = count + totalCount,
+                    ["type"] = "item"
+                }
             end
+        end
+    end
+    for i, v in pairs(shoppinglist) do
+        if v.count <= 0 then
+            shoppinglist[i] = nil
+        end
+    end
+    for i, v in pairs(vendorItems) do
+        if v <= 0 then
+            vendorItems[i] = nil
         end
     end
 
-    for item, count in pairs(vendorItems) do
-        local itemLink = select(2, GetItemInfo(item))
-        if itemLink then
-            print("Buy " .. count .. " of " .. itemLink .. " from vendor")
-        else
-            local item = Item:CreateFromItemID(item)
-            item:ContinueOnItemLoad(function()
-                local l = item:GetItemLink()
-                print("Buy " .. count .. " of " .. l .. " from vendor")
-            end)
-        end
-    end
-    GuildBankTools:TogglePinTrackerWindow()
+    GuildBankTools:updateShoppingListFrame()
 end
 
-local function CreateGBScannedText()
-    local frame = CreateFrame("Frame", "GuildBankTools_ScannedText", UIParent)
-    frame:SetSize(200, 50)
-    frame:SetPoint("BOTTOMLEFT", GuildBankFrame, "BOTTOMLEFT", 0, 15)
-    frame:SetFrameStrata("HIGH")
-    frame:Hide()
+local function CreateGBShopButton()
+    if GuildBankFrame then
+        local shopbutton = CreateFrame("Button", "GuildBankTools_ShopButton", GuildBankFrame)
+        shopbutton:SetPoint("TOPLEFT", GuildBankFrame, "TOPLEFT", 40, -15)
+        shopbutton:SetWidth(20)
+        shopbutton:SetHeight(20)
+        shopbutton:SetFrameStrata("HIGH")
+        shopbutton:SetText("|A:banker:19:19|a")
+        shopbutton:SetNormalFontObject("GameFontNormalSmall")
 
-    local text = frame:CreateFontString(nil, "OVERLAY")
-    text:SetFont("Fonts\\FRIZQT__.TTF", 14, "OUTLINE")
-    text:SetPoint("CENTER", frame, "CENTER")
-    text:SetText("Scanned |A:Capacitance-General-WorkOrderCheckmark:19:19|a")
-
-    local shopbutton = CreateFrame("Button", "GuildBankTools_ShopButton", UIParent)
-    shopbutton:SetPoint("TOPLEFT", GuildBankFrame, "TOPLEFT", 40, -15)
-    shopbutton:SetWidth(20)
-    shopbutton:SetHeight(20)
-    shopbutton:SetFrameStrata("HIGH")
-    shopbutton:SetText("|A:banker:19:19|a")
-    shopbutton:SetNormalFontObject("GameFontNormalSmall")
-
-    shopbutton:SetNormalTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\icon.tga")
-    shopbutton:SetPushedTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\pushed.tga")
-    shopbutton:SetHighlightTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\highlight.tga")
-    shopbutton:SetScript('OnClick', createShoppingList)
-    GuildBankTools.GBButtonShop = shopbutton
-    GuildBankTools.GBScannedTextFrame = frame
+        shopbutton:SetNormalTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\icon.tga")
+        shopbutton:SetPushedTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\pushed.tga")
+        shopbutton:SetHighlightTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\highlight.tga")
+        shopbutton:SetScript('OnClick', function()
+            boughtItems = {}
+            itemspurchased = {}
+            startShopping = true
+            GuildBankTools:setShoppingList()
+        end)
+        GuildBankTools.GBButtonShop = shopbutton
+    end
 end
 
 function GuildBankTools:UpdateItemsInGB()
@@ -888,33 +1273,14 @@ function GuildBankTools:UpdateItemsInGB()
             end
         end
         gbankScanned = true
-        if gbankScanned then
-            if not GuildBankTools.GBScannedTextFrame then
-                CreateGBScannedText()
+        if gbankScanned and GuildBankFrame then
+            if not GuildBankTools.GBButtonShop then
+                CreateGBShopButton()
             end
-            GuildBankTools.GBScannedTextFrame:Show()
             GuildBankTools.GBButtonShop:Show()
         end
     end)
 
-end
-
-local function getTableLength(t)
-    local count = 0
-    for _ in pairs(t) do
-        count = count + 1
-    end
-    return count
-end
-
-local function getItemFromShoppingList(list)
-    if getTableLength(list) == 0 then
-        return
-    end
-    for item, count in pairs(list) do
-        list[item] = nil
-        return item, count
-    end
 end
 
 local hooked = false
@@ -933,40 +1299,6 @@ local function UpdateAuctionHouseBuyButton()
                 end
             end)
         hooked = true
-    end
-    if not GuildBankTools.GBButtonBuy then
-        local buybutton = CreateFrame("Button", "GuildBankTools_BuyButton", UIParent)
-        buybutton:SetPoint("TOPLEFT", AuctionHouseFrame, "TOPLEFT", 40, -15)
-        buybutton:SetWidth(20)
-        buybutton:SetHeight(20)
-        buybutton:SetFrameStrata("HIGH")
-        buybutton:SetText("|A:auctioneer:19:19|a")
-        buybutton:SetNormalFontObject("GameFontNormalSmall")
-
-        buybutton:SetNormalTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\icon.tga")
-        buybutton:SetPushedTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\pushed.tga")
-        buybutton:SetHighlightTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\highlight.tga")
-        buybutton:SetScript('OnClick', function()
-            local item, count = getItemFromShoppingList(shoppinglist)
-            if item and count then
-                item = tonumber(item)
-                itemtobuy.itemID = item
-                itemtobuy.count = count
-                local itemframe = Item:CreateFromItemID(item)
-                itemframe:ContinueOnItemLoad(function()
-                    local name = itemframe:GetItemName()
-                    AuctionHouseFrame:SetSearchText(name)
-                    AuctionHouseFrame.SearchBar.SearchButton:Click()
-                end)
-            end
-
-        end)
-        GuildBankTools.GBButtonBuy = buybutton
-    end
-    if getTableLength(shoppinglist) == 0 then
-        GuildBankTools.GBButtonBuy:Hide()
-    else
-        GuildBankTools.GBButtonBuy:Show()
     end
 
     if not GuildBankTools.GBBuyCount then
@@ -991,7 +1323,6 @@ end)
 GuildBankTools:RegisterEvent('GUILDBANKFRAME_CLOSED', function()
     gbankScanned = false
     GuildBankTools.GBButtonShop:Hide()
-    GuildBankTools.GBScannedTextFrame:Hide()
 end)
 
 GuildBankTools:RegisterEvent('AUCTION_HOUSE_SHOW', function()
@@ -1020,43 +1351,6 @@ GuildBankTools:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE", function()
     end
 end)
 
-local lastupdate
-
-GuildBankTools:RegisterEvent('AUCTION_HOUSE_CLOSED', function()
-    GuildBankTools.GBButtonBuy:Hide()
-    if not lastupdate or lastupdate < GetTime() - 1 then
-        lastupdate = GetTime()
-        local count = 0
-        for i, j in pairs(itemspurchased) do
-            local itemName = GetItemInfo(i)
-            count = count + 1
-            if not itemName then
-                itemName = "UnknownName with id: " .. i
-            end
-            print("Bought " .. j.count .. " of " .. itemName .. " for " .. GetCoinTextureString(j.price))
-        end
-
-        local totalGoldSpent = 0
-        for i, j in pairs(itemspurchased) do
-            totalGoldSpent = totalGoldSpent + j.price
-        end
-        if count > 0 then
-            print("Total gold spent: " .. GetCoinTextureString(totalGoldSpent) .. " on " .. date())
-        end
-
-        local exportText = ""
-        for i, j in pairs(itemspurchased) do
-            local itemName = GetItemInfo(i)
-            local price = ("%d,%d,%d"):format(j.price / 100 / 100, (j.price / 100) % 100, j.price % 100)
-            exportText = exportText .. itemName .. "," .. j.count .. "," .. price .. "," .. date() .. "\n"
-        end
-        if exportText ~= "" then
-            TextEditBox_Show(exportText)
-        end
-    end
-    itemspurchased = {}
-end)
-
 GuildBankTools:RegisterEvent('AUCTION_HOUSE_THROTTLED_SYSTEM_READY', function()
     if AuctionHouseFrame.CommoditiesBuyFrame:GetItemID() == itemtobuy.itemID then
         GuildBankTools.GBBuyCount:SetText(itemtobuy.count)
@@ -1067,16 +1361,15 @@ GuildBankTools:RegisterEvent('AUCTION_HOUSE_THROTTLED_SYSTEM_READY', function()
 end)
 
 GuildBankTools:RegisterEvent('COMMODITY_PURCHASE_SUCCEEDED', function()
+
     itemspurchased[itemtobuy.itemID] = {
         count = itemtobuy.count,
         price = itemprice
     }
-    itemtobuy = {}
+    GuildBankTools:setShoppingList()
     if getTableLength(shoppinglist) == 0 then
-        GuildBankTools.GBButtonBuy:Hide()
         GuildBankTools.GBBuyCount:Hide()
     else
-        GuildBankTools.GBButtonBuy:Show()
         GuildBankTools.GBBuyCount:Show()
     end
 
@@ -1086,26 +1379,35 @@ GuildBankTools:RegisterEvent('COMMODITY_PRICE_UPDATED', function(event, peritem,
     itemprice = total
 end)
 
-GuildBankTools:RegisterEvent('MERCHANT_SHOW', function()
-    for i = 1, GetMerchantNumItems() do
-        local itemID = GetMerchantItemID(i)
-        if vendorItems[itemID] then
-            BuyMerchantItem(i, vendorItems[itemID])
-            boughtVendorItems[itemID] = {(select(3, GetMerchantItemInfo(i)) * vendorItems[itemID]), vendorItems[itemID]}
-            vendorItems[itemID] = nil
-        end
-    end
+GuildBankTools:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", function()
+    GuildBankTools:UpdateItemsInGB()
+    GuildBankTools:setShoppingList()
 end)
 
-GuildBankTools:RegisterEvent("MERCHANT_CLOSED", function()
-    local exportText = ""
-    for i, info in pairs(boughtVendorItems) do
-        local itemName = GetItemInfo(i)
-        local price = ("%d,%d,%d"):format(info[1] / 100 / 100, (info[1] / 100) % 100, info[1] % 100)
-        exportText = exportText .. itemName .. "," .. info[2] .. "," .. price .. "," .. date() .. "\n"
-    end
-    if exportText ~= "" then
-        TextEditBox_Show(exportText)
-    end
-    boughtVendorItems = {}
+GuildBankTools:RegisterEvent("BAG_UPDATE_DELAYED", function()
+    GuildBankTools:setShoppingList()
 end)
+
+function GuildBankTools:UpdateMinimapButton()
+    if (self.db.profile.minimap.hide) then
+        LDBIcon:Hide("GuildBankTools")
+    else
+        LDBIcon:Show("GuildBankTools")
+    end
+end
+
+function GuildBankTools:ToggleMinimapButton()
+    if (self.db.profile.minimap.hide) then
+        self.db.profile.minimap.hide = false
+    else
+        self.db.profile.minimap.hide = true
+    end
+    GuildBankTools:UpdateMinimapButton()
+end
+
+SLASH_GBT1 = "/gbt"
+SlashCmdList["GBT"] = function(msg)
+    if string.match(msg, "minimap") then
+        GuildBankTools:ToggleMinimapButton()
+    end
+end
