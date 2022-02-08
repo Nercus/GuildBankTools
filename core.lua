@@ -1587,12 +1587,13 @@ GuildBankTools:RegisterEvent('AUCTION_HOUSE_THROTTLED_SYSTEM_READY', function()
 end)
 
 GuildBankTools:RegisterEvent('COMMODITY_PURCHASE_SUCCEEDED', function()
-
-    itemspurchased[itemtobuy.itemID] = {
-        count = itemtobuy.count,
-        price = itemprice
-    }
-    GuildBankTools:setShoppingList()
+    if itemtobuy.itemID then
+        itemspurchased[itemtobuy.itemID] = {
+            count = itemtobuy.count,
+            price = itemprice
+        }
+        GuildBankTools:setShoppingList()
+    end
     if getTableLength(shoppinglist) == 0 then
         GuildBankTools.GBBuyCount:Hide()
     else
