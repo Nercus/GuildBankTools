@@ -1,4 +1,5 @@
-local GuildBankTools = LibStub("AceAddon-3.0"):NewAddon("GuildBankTools", "AceConsole-3.0", "AceEvent-3.0")
+local GuildBankTools = LibStub("AceAddon-3.0"):NewAddon("GuildBankTools", "AceConsole-3.0", "AceEvent-3.0",
+    "AceTimer-3.0")
 
 local ItemsPerTab = 98
 
@@ -20,6 +21,10 @@ local recipeReagents = {
     {172059, 5}, -- Rich Grazer Milk
     {178786, 5} -- Lusterwheat Flour
     }, -- Feast of Gluttonous Hedonism
+    [187648] = {{187812, 1}, -- Empty Kettle
+    {171841, 1}, -- Shaded Stone
+    {159, 5} -- Refreshing Spring Water
+    }, -- Empty Kettle of Stone Soup
     [172041] = {{173036, 3}, -- Spinefin Piranha
     {173033, 3}, -- Iridescent Amberjack
     {172058, 4}, -- Smuggled Azerothian Produce
@@ -96,6 +101,11 @@ local recipeReagents = {
     [109076] = {{109119, 8}, -- True Iron Ore
     {111557, 5} -- Sumptuous Fur
     }, -- Goblin Glider Kit
+    [184308] = {{172937, 1}, -- Wormfed Gear Assembly,
+    {172936, 1}, -- Mortal Coiled Spring
+    {172934, 4}, -- Handful of Laestrite Bolts
+    {183952, 1} -- Machinist's Oil
+    }, -- Disposable Spectrophasic Reanimator
 
     --  Inscription
     [173049] = {{173059, 3}, -- Luminous Ink
@@ -110,78 +120,78 @@ local recipeReagents = {
     [172233] = {{172096, 3}, -- Heavy Desolate Leather
     {172092, 3}, -- Pallid Bone
     {177062, 1} -- Penumbra Thread
-    }, -- Drums of Deathly Ferocity
+    } -- Drums of Deathly Ferocity
 
-    -- Enchanting
-    [172365] = {{172232, 2}, -- Eternal Crystal
-    {172231, 3} -- Sacred Shard
-    }, -- Enchant Weapon - Ascended Vigor
-    [172366] = {{172231, 2}, -- Sacred Shard
-    {172230, 4} -- Soul Dust
-    }, -- Enchant Weapon - Celestial Guidance
-    [172367] = {{172232, 2}, -- Eternal Crystal
-    {172231, 3} -- Sacred Shard
-    }, -- Enchant Weapon - Eternal Grace
-    [172370] = {{172232, 2}, -- Eternal Crystal
-    {172231, 3} -- Sacred Shard
-    }, -- Enchant Weapon - Lightless Force
-    [172368] = {{172232, 2}, -- Eternal Crystal
-    {172231, 3} -- Sacred Shard
-    }, -- Enchant Weapon - Sinful Revelation
-    [172411] = {{172231, 2}, -- Sacred Shard
-    {172230, 4} -- Soul Dust
-    }, -- Enchant Cloak - Fortified Avoidance
-    [172412] = {{172231, 2}, -- Sacred Shard
-    {172230, 4} -- Soul Dust
-    }, -- Enchant Cloak - Fortified Leech
-    [172410] = {{172231, 2}, -- Sacred Shard
-    {172230, 4} -- Soul Dust
-    }, -- Enchant Cloak - Fortified Speed
-    [172415] = {{172232, 2}, -- Eternal Crystal
-    {172231, 2} -- Sacred Shard
-    }, -- Enchant Bracers - Eternal Intellect
-    [172408] = {{172232, 2}, -- Eternal Crystal
-    {172231, 2} -- Sacred Shard
-    }, -- Enchant Gloves - Eternal Strength
-    [172419] = {{172232, 2}, -- Eternal Crystal
-    {172231, 2} -- Sacred Shard
-    }, -- Enchant Boots - Eternal Agility
-    [172418] = {{172232, 2}, -- Eternal Crystal
-    {172231, 2} -- Sacred Shard
-    }, -- Enchant Chest - Eternal Bulwark
-    [177659] = {{172232, 2}, -- Eternal Crystal
-    {172231, 2} -- Sacred Shard
-    }, -- Enchant Chest - Eternal Skirmish
-    [177962] = {{172232, 2}, -- Eternal Crystal
-    {172231, 2} -- Sacred Shard
-    }, -- Enchant Chest - Eternal Stats
-    [183738] = {{172232, 2}, -- Eternal Crystal
-    {172231, 2} -- Sacred Shard
-    }, -- Enchant Chest - Eternal Insight
-    [172361] = {{172231, 3} -- Sacred Shard
-    }, -- Enchant Ring - Tenet of Critical Strike
-    [172362] = {{172231, 3} -- Sacred Shard
-    }, -- Enchant Ring - Tenet of Haste
-    [172363] = {{172231, 3} -- Sacred Shard
-    }, -- Enchant Ring - Tenet of Mastery
-    [172364] = {{172231, 3} -- Sacred Shard
-    }, -- Enchant Ring - Tenet of Versatility
+    -- -- Enchanting
+    -- [172365] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 3} -- Sacred Shard
+    -- }, -- Enchant Weapon - Ascended Vigor
+    -- [172366] = {{172231, 2}, -- Sacred Shard
+    -- {172230, 4} -- Soul Dust
+    -- }, -- Enchant Weapon - Celestial Guidance
+    -- [172367] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 3} -- Sacred Shard
+    -- }, -- Enchant Weapon - Eternal Grace
+    -- [172370] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 3} -- Sacred Shard
+    -- }, -- Enchant Weapon - Lightless Force
+    -- [172368] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 3} -- Sacred Shard
+    -- }, -- Enchant Weapon - Sinful Revelation
+    -- [172411] = {{172231, 2}, -- Sacred Shard
+    -- {172230, 4} -- Soul Dust
+    -- }, -- Enchant Cloak - Fortified Avoidance
+    -- [172412] = {{172231, 2}, -- Sacred Shard
+    -- {172230, 4} -- Soul Dust
+    -- }, -- Enchant Cloak - Fortified Leech
+    -- [172410] = {{172231, 2}, -- Sacred Shard
+    -- {172230, 4} -- Soul Dust
+    -- }, -- Enchant Cloak - Fortified Speed
+    -- [172415] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 2} -- Sacred Shard
+    -- }, -- Enchant Bracers - Eternal Intellect
+    -- [172408] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 2} -- Sacred Shard
+    -- }, -- Enchant Gloves - Eternal Strength
+    -- [172419] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 2} -- Sacred Shard
+    -- }, -- Enchant Boots - Eternal Agility
+    -- [172418] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 2} -- Sacred Shard
+    -- }, -- Enchant Chest - Eternal Bulwark
+    -- [177659] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 2} -- Sacred Shard
+    -- }, -- Enchant Chest - Eternal Skirmish
+    -- [177962] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 2} -- Sacred Shard
+    -- }, -- Enchant Chest - Eternal Stats
+    -- [183738] = {{172232, 2}, -- Eternal Crystal
+    -- {172231, 2} -- Sacred Shard
+    -- }, -- Enchant Chest - Eternal Insight
+    -- [172361] = {{172231, 3} -- Sacred Shard
+    -- }, -- Enchant Ring - Tenet of Critical Strike
+    -- [172362] = {{172231, 3} -- Sacred Shard
+    -- }, -- Enchant Ring - Tenet of Haste
+    -- [172363] = {{172231, 3} -- Sacred Shard
+    -- }, -- Enchant Ring - Tenet of Mastery
+    -- [172364] = {{172231, 3} -- Sacred Shard
+    -- }, -- Enchant Ring - Tenet of Versatility
 
-    -- Jewelcrafting
-    [173127] = {{173109, 2}, -- Angerseye
-    {173108, 2}, -- Oriblase
-    {173168, 1} -- Laestrite Setting
-    }, -- Deadly Jewel Cluster
-    [173128] = {{173108, 4}, -- Oriblase
-    {173168, 1} -- Laestrite Setting
-    }, -- Quick Jewel Cluster
-    [173130] = {{173109, 2}, -- Angerseye
-    {173110, 2}, -- Umbryl
-    {173168, 1} -- Laestrite Setting
-    }, -- Masterful Jewel Cluster
-    [173129] = {{173110, 4}, -- Umbryl
-    {173168, 1} -- Laestrite Setting
-    } -- Versatile Jewel Cluster
+    -- -- Jewelcrafting
+    -- [173127] = {{173109, 2}, -- Angerseye
+    -- {173108, 2}, -- Oriblase
+    -- {173168, 1} -- Laestrite Setting
+    -- }, -- Deadly Jewel Cluster
+    -- [173128] = {{173108, 4}, -- Oriblase
+    -- {173168, 1} -- Laestrite Setting
+    -- }, -- Quick Jewel Cluster
+    -- [173130] = {{173109, 2}, -- Angerseye
+    -- {173110, 2}, -- Umbryl
+    -- {173168, 1} -- Laestrite Setting
+    -- }, -- Masterful Jewel Cluster
+    -- [173129] = {{173110, 4}, -- Umbryl
+    -- {173168, 1} -- Laestrite Setting
+    -- } -- Versatile Jewel Cluster
 
 }
 
@@ -196,7 +206,10 @@ local vendorReagents = {
     [178786] = 3500, -- Lusterwheat Flour
     [172058] = 4500, -- Smuggled Azerothian Produce
     [172057] = 3750, -- Inconceivably Aged Vinegar
-    [173168] = 1000 -- Laestrite Setting
+    [173168] = 1000, -- Laestrite Setting
+    [183952] = 9000, -- Machinist's Oil
+    [159] = 25, -- Refreshing Spring Water
+    [187812] = 2500000 -- Empty Kettle
 }
 
 local LDBIcon = LibStub("LibDBIcon-1.0")
@@ -218,220 +231,199 @@ local itemspurchased = {}
 local ignoredItems = {}
 
 local initialQuery
-local lastQuery
 local auctions = {}
 local addedItems = {}
 
 local startShopping = false
+
+local defaultDesiredItems = {
+    [171273] = { -- Potion of Spectral Intellect
+        ["itemName"] = "Potion of Spectral Intellect",
+        ["itemLink"] = "|cffffffff|Hitem:171273::::::::60:270:::::::::|h[Potion of Spectral Intellect]|h|r",
+        ["icon"] = 3566836,
+        ["itemId"] = 171273
+    },
+    [180457] = { -- Shadestone
+        ["itemName"] = "Shadestone",
+        ["itemLink"] = "|cff1eff00|Hitem:180457::::::::60:270:::::::::|h[Shadestone]|h|r",
+        ["icon"] = 1778229,
+        ["itemId"] = 180457
+    },
+    [171285] = { -- Shadowcore Oil
+        ["itemName"] = "Shadowcore Oil",
+        ["itemLink"] = "|cffffffff|Hitem:171285::::::::60:270:::::::::|h[Shadowcore Oil]|h|r",
+        ["icon"] = 463543,
+        ["itemId"] = 171285
+    },
+    [171351] = { -- Potion of Deathly Fixation
+        ["itemName"] = "Potion of Deathly Fixation",
+        ["itemLink"] = "|cffffffff|Hitem:171351::::::::60:270:::::::::|h[Potion of Deathly Fixation]|h|r",
+        ["icon"] = 3566833,
+        ["itemId"] = 171351
+    },
+    [176811] = { -- Potion of Sacrificial Anima
+        ["itemName"] = "Potion of Sacrificial Anima",
+        ["itemLink"] = "|cffffffff|Hitem:176811::::::::60:270:::::::::|h[Potion of Sacrificial Anima]|h|r",
+        ["icon"] = 3566832,
+        ["itemId"] = 176811
+    },
+    [172041] = { -- Spinefin Souffle and Fries
+        ["itemName"] = "Spinefin Souffle and Fries",
+        ["itemLink"] = "|cffffffff|Hitem:172041::::::::60:270:::::::::|h[Spinefin Souffle and Fries]|h|r",
+        ["icon"] = 3671897,
+        ["itemId"] = 172041
+    },
+    [172045] = { -- Tenebrous Crown Roast Aspic
+        ["itemName"] = "Tenebrous Crown Roast Aspic",
+        ["itemLink"] = "|cffffffff|Hitem:172045::::::::60:270:::::::::|h[Tenebrous Crown Roast Aspic]|h|r",
+        ["icon"] = 3671905,
+        ["itemId"] = 172045
+    },
+    [172049] = { -- Iridescent Ravioli with Apple Sauce
+        ["itemName"] = "Iridescent Ravioli with Apple Sauce",
+        ["itemLink"] = "|cffffffff|Hitem:172049::::::::60:270:::::::::|h[Iridescent Ravioli with Apple Sauce]|h|r",
+        ["icon"] = 3671891,
+        ["itemId"] = 172049
+    },
+    [171437] = { -- Shaded Sharpening Stone
+        ["itemName"] = "Shaded Sharpening Stone",
+        ["itemLink"] = "|cff1eff00|Hitem:171437::::::::60:270:::::::::|h[Shaded Sharpening Stone]|h|r",
+        ["icon"] = 3528422,
+        ["itemId"] = 171437
+    },
+    [171286] = { -- Embalmer's Oil
+        ["itemName"] = "Embalmer's Oil",
+        ["itemLink"] = "|cffffffff|Hitem:171286::::::::60:270:::::::::|h[Embalmer's Oil]|h|r",
+        ["icon"] = 463544,
+        ["itemId"] = 171286
+    },
+    [171267] = { -- Spiritual Healing Potion
+        ["itemName"] = "Spiritual Healing Potion",
+        ["itemLink"] = "|cffffffff|Hitem:171267::::::::60:270:::::::::|h[Spiritual Healing Potion]|h|r",
+        ["icon"] = 3566860,
+        ["itemId"] = 171267
+    },
+    [172043] = { -- Feast of Gluttonous Hedonism
+        ["itemName"] = "Feast of Gluttonous Hedonism",
+        ["itemLink"] = "|cffffffff|Hitem:172043::::::::60:270:::::::::|h[Feast of Gluttonous Hedonism]|h|r",
+        ["icon"] = 3760523,
+        ["itemId"] = 172043
+    },
+    [171275] = { -- Potion of Spectral Strength
+        ["itemName"] = "Potion of Spectral Strength",
+        ["itemLink"] = "|cffffffff|Hitem:171275::::::::60:270:::::::::|h[Potion of Spectral Strength]|h|r",
+        ["icon"] = 3566838,
+        ["itemId"] = 171275
+    },
+    [172051] = { -- Steak a la Mode
+        ["itemName"] = "Steak a la Mode",
+        ["itemLink"] = "|cffffffff|Hitem:172051::::::::60:270:::::::::|h[Steak a la Mode]|h|r",
+        ["icon"] = 3671904,
+        ["itemId"] = 172051
+    },
+    [172347] = { -- Heavy Desolate Armor Kit
+        ["itemName"] = "Heavy Desolate Armor Kit",
+        ["itemLink"] = "|cffffffff|Hitem:172347::::::::60:270:::::::::|h[Heavy Desolate Armor Kit]|h|r",
+        ["icon"] = 3528447,
+        ["itemId"] = 172347
+    },
+    [171349] = { -- Potion of Phantom Fire
+        ["itemName"] = "Potion of Phantom Fire",
+        ["itemLink"] = "|cffffffff|Hitem:171349::::::::60:270:::::::::|h[Potion of Phantom Fire]|h|r",
+        ["icon"] = 3566829,
+        ["itemId"] = 171349
+    },
+    [186662] = { -- Vantus Rune: Sanctum of Domination
+        ["itemName"] = "Vantus Rune: Sanctum of Domination",
+        ["itemLink"] = "|cffffffff|Hitem:186662::::::::60:270:::::::::|h[Vantus Rune: Sanctum of Domination]|h|r",
+        ["icon"] = 4074774,
+        ["itemId"] = 186662
+    },
+    [132514] = { -- Auto-Hammer
+        ["itemName"] = "Auto-Hammer",
+        ["itemLink"] = "|cff1eff00|Hitem:132514::::::::60:270:::::::::|h[Auto-Hammer]|h|r",
+        ["icon"] = 1405803,
+        ["itemId"] = 132514
+    },
+    [171268] = { -- Spiritual Mana Potion
+        ["itemName"] = "Spiritual Mana Potion",
+        ["itemLink"] = "|cffffffff|Hitem:171268::::::::60:270:::::::::|h[Spiritual Mana Potion]|h|r",
+        ["icon"] = 3566858,
+        ["itemId"] = 171268
+    },
+    [171272] = { -- Potion of Spiritual Clarity
+        ["itemName"] = "Potion of Spiritual Clarity",
+        ["itemLink"] = "|cffffffff|Hitem:171272::::::::60:270:::::::::|h[Potion of Spiritual Clarity]|h|r",
+        ["icon"] = 3566828,
+        ["itemId"] = 171272
+    },
+    [109076] = { -- Goblin Glider Kit
+        ["itemName"] = "Goblin Glider Kit",
+        ["itemLink"] = "|cffffffff|Hitem:109076::::::::60:270:::::::::|h[Goblin Glider Kit]|h|r",
+        ["icon"] = 133632,
+        ["itemId"] = 109076
+    },
+    [171270] = { -- Potion of Spectral Agility
+        ["itemName"] = "Potion of Spectral Agility",
+        ["itemLink"] = "|cffffffff|Hitem:171270::::::::60:270:::::::::|h[Potion of Spectral Agility]|h|r",
+        ["icon"] = 3566835,
+        ["itemId"] = 171270
+    },
+    [171439] = { -- Shaded Weightstone
+        ["itemName"] = "Shaded Weightstone",
+        ["itemLink"] = "|cff1eff00|Hitem:171439::::::::60:270:::::::::|h[Shaded Weightstone]|h|r",
+        ["icon"] = 3528423,
+        ["itemId"] = 171439
+    },
+    [171276] = { -- Spectral Flask of Power
+        ["itemName"] = "Spectral Flask of Power",
+        ["itemLink"] = "|cffffffff|Hitem:171276::::::::60:270:::::::::|h[Spectral Flask of Power]|h|r",
+        ["icon"] = 3566840,
+        ["itemId"] = 171276
+    },
+    [171266] = { -- Potion of the Hidden Spirit
+        ["itemName"] = "Potion of the Hidden Spirit",
+        ["itemLink"] = "|cffffffff|Hitem:171266::::::::60:270:::::::::|h[Potion of the Hidden Spirit]|h|r",
+        ["icon"] = 3566868,
+        ["itemId"] = 171266
+    },
+    [172233] = { -- Drums of Deathly Ferocity
+        ["itemName"] = "Drums of Deathly Ferocity",
+        ["itemLink"] = "|cff1eff00|Hitem:172233::::::::60:270:::::::::|h[Drums of Deathly Ferocity]|h|r",
+        ["icon"] = 3528453,
+        ["itemId"] = 172233
+    },
+    [181468] = { -- Veiled Augment Rune
+        ["itemName"] = "Veiled Augment Rune",
+        ["itemLink"] = "|cff0070dd|Hitem:181468::::::::60:270:::::::::|h[Veiled Augment Rune]|h|r",
+        ["icon"] = 134078,
+        ["itemId"] = 181468
+    },
+    [173049] = { -- Tome of the Still Mind
+        ["itemName"] = "Tome of the Still Mind",
+        ["itemLink"] = "|cff1eff00|Hitem:173049::::::::60:270:::::::::|h[Tome of the Still Mind]|h|r",
+        ["icon"] = 3717418,
+        ["itemId"] = 173049
+    }
+}
 
 local defaults = {
     profile = {
         minimap = {
             hide = false
         },
+        lastQuery = 0,
         slpositon = {
             x = 0,
             y = 0
         },
+        layoutEditor = {
+            gbankslots = {},
+            layout = {},
+            num = 0
+        },
         prices = {},
-        desiredItems = {
-            [171273] = { -- Potion of Spectral Intellect
-                ["itemName"] = "Potion of Spectral Intellect",
-                ["count"] = 210,
-                ["itemLink"] = "|cffffffff|Hitem:171273::::::::60:270:::::::::|h[Potion of Spectral Intellect]|h|r",
-                ["icon"] = 3566836,
-                ["itemId"] = 171273
-            },
-            [180457] = { -- Shadestone
-                ["itemName"] = "Shadestone",
-                ["count"] = 20,
-                ["itemLink"] = "|cff1eff00|Hitem:180457::::::::60:270:::::::::|h[Shadestone]|h|r",
-                ["icon"] = 1778229,
-                ["itemId"] = 180457
-            },
-            [171285] = { -- Shadowcore Oil
-                ["itemName"] = "Shadowcore Oil",
-                ["count"] = 70,
-                ["itemLink"] = "|cffffffff|Hitem:171285::::::::60:270:::::::::|h[Shadowcore Oil]|h|r",
-                ["icon"] = 463543,
-                ["itemId"] = 171285
-            },
-            [171351] = { -- Potion of Deathly Fixation
-                ["itemName"] = "Potion of Deathly Fixation",
-                ["count"] = 70,
-                ["itemLink"] = "|cffffffff|Hitem:171351::::::::60:270:::::::::|h[Potion of Deathly Fixation]|h|r",
-                ["icon"] = 3566833,
-                ["itemId"] = 171351
-            },
-            [176811] = { -- Potion of Sacrificial Anima
-                ["itemName"] = "Potion of Sacrificial Anima",
-                ["count"] = 40,
-                ["itemLink"] = "|cffffffff|Hitem:176811::::::::60:270:::::::::|h[Potion of Sacrificial Anima]|h|r",
-                ["icon"] = 3566832,
-                ["itemId"] = 176811
-            },
-            [172041] = { -- Spinefin Souffle and Fries
-                ["itemName"] = "Spinefin Souffle and Fries",
-                ["count"] = 140,
-                ["itemLink"] = "|cffffffff|Hitem:172041::::::::60:270:::::::::|h[Spinefin Souffle and Fries]|h|r",
-                ["icon"] = 3671897,
-                ["itemId"] = 172041
-            },
-            [172045] = { -- Tenebrous Crown Roast Aspic
-                ["itemName"] = "Tenebrous Crown Roast Aspic",
-                ["count"] = 140,
-                ["itemLink"] = "|cffffffff|Hitem:172045::::::::60:270:::::::::|h[Tenebrous Crown Roast Aspic]|h|r",
-                ["icon"] = 3671905,
-                ["itemId"] = 172045
-            },
-            [172049] = { -- Iridescent Ravioli with Apple Sauce
-                ["itemName"] = "Iridescent Ravioli with Apple Sauce",
-                ["count"] = 140,
-                ["itemLink"] = "|cffffffff|Hitem:172049::::::::60:270:::::::::|h[Iridescent Ravioli with Apple Sauce]|h|r",
-                ["icon"] = 3671891,
-                ["itemId"] = 172049
-            },
-            [171437] = { -- Shaded Sharpening Stone
-                ["itemName"] = "Shaded Sharpening Stone",
-                ["count"] = 70,
-                ["itemLink"] = "|cff1eff00|Hitem:171437::::::::60:270:::::::::|h[Shaded Sharpening Stone]|h|r",
-                ["icon"] = 3528422,
-                ["itemId"] = 171437
-            },
-            [171286] = { -- Embalmer's Oil
-                ["itemName"] = "Embalmer's Oil",
-                ["count"] = 70,
-                ["itemLink"] = "|cffffffff|Hitem:171286::::::::60:270:::::::::|h[Embalmer's Oil]|h|r",
-                ["icon"] = 463544,
-                ["itemId"] = 171286
-            },
-            [171267] = { -- Spiritual Healing Potion
-                ["itemName"] = "Spiritual Healing Potion",
-                ["count"] = 840,
-                ["itemLink"] = "|cffffffff|Hitem:171267::::::::60:270:::::::::|h[Spiritual Healing Potion]|h|r",
-                ["icon"] = 3566860,
-                ["itemId"] = 171267
-            },
-            [172043] = { -- Feast of Gluttonous Hedonism
-                ["itemName"] = "Feast of Gluttonous Hedonism",
-                ["count"] = 100,
-                ["itemLink"] = "|cffffffff|Hitem:172043::::::::60:270:::::::::|h[Feast of Gluttonous Hedonism]|h|r",
-                ["icon"] = 3760523,
-                ["itemId"] = 172043
-            },
-            [171275] = { -- Potion of Spectral Strength
-                ["itemName"] = "Potion of Spectral Strength",
-                ["count"] = 210,
-                ["itemLink"] = "|cffffffff|Hitem:171275::::::::60:270:::::::::|h[Potion of Spectral Strength]|h|r",
-                ["icon"] = 3566838,
-                ["itemId"] = 171275
-            },
-            [172051] = { -- Steak a la Mode
-                ["itemName"] = "Steak a la Mode",
-                ["count"] = 140,
-                ["itemLink"] = "|cffffffff|Hitem:172051::::::::60:270:::::::::|h[Steak a la Mode]|h|r",
-                ["icon"] = 3671904,
-                ["itemId"] = 172051
-            },
-            [172347] = { -- Heavy Desolate Armor Kit
-                ["itemName"] = "Heavy Desolate Armor Kit",
-                ["count"] = 84,
-                ["itemLink"] = "|cffffffff|Hitem:172347::::::::60:270:::::::::|h[Heavy Desolate Armor Kit]|h|r",
-                ["icon"] = 3528447,
-                ["itemId"] = 172347
-            },
-            [171349] = { -- Potion of Phantom Fire
-                ["itemName"] = "Potion of Phantom Fire",
-                ["count"] = 140,
-                ["itemLink"] = "|cffffffff|Hitem:171349::::::::60:270:::::::::|h[Potion of Phantom Fire]|h|r",
-                ["icon"] = 3566829,
-                ["itemId"] = 171349
-            },
-            [186662] = { -- Vantus Rune: Sanctum of Domination
-                ["itemName"] = "Vantus Rune: Sanctum of Domination",
-                ["count"] = 49,
-                ["itemLink"] = "|cffffffff|Hitem:186662::::::::60:270:::::::::|h[Vantus Rune: Sanctum of Domination]|h|r",
-                ["icon"] = 4074774,
-                ["itemId"] = 186662
-            },
-            [132514] = { -- Auto-Hammer
-                ["itemName"] = "Auto-Hammer",
-                ["count"] = 14,
-                ["itemLink"] = "|cff1eff00|Hitem:132514::::::::60:270:::::::::|h[Auto-Hammer]|h|r",
-                ["icon"] = 1405803,
-                ["itemId"] = 132514
-            },
-            [171268] = { -- Spiritual Mana Potion
-                ["itemName"] = "Spiritual Mana Potion",
-                ["count"] = 120,
-                ["itemLink"] = "|cffffffff|Hitem:171268::::::::60:270:::::::::|h[Spiritual Mana Potion]|h|r",
-                ["icon"] = 3566858,
-                ["itemId"] = 171268
-            },
-            [171272] = { -- Potion of Spiritual Clarity
-                ["itemName"] = "Potion of Spiritual Clarity",
-                ["count"] = 40,
-                ["itemLink"] = "|cffffffff|Hitem:171272::::::::60:270:::::::::|h[Potion of Spiritual Clarity]|h|r",
-                ["icon"] = 3566828,
-                ["itemId"] = 171272
-            },
-            [109076] = { -- Goblin Glider Kit
-                ["itemName"] = "Goblin Glider Kit",
-                ["count"] = 140,
-                ["itemLink"] = "|cffffffff|Hitem:109076::::::::60:270:::::::::|h[Goblin Glider Kit]|h|r",
-                ["icon"] = 133632,
-                ["itemId"] = 109076
-            },
-            [171270] = { -- Potion of Spectral Agility
-                ["itemName"] = "Potion of Spectral Agility",
-                ["count"] = 210,
-                ["itemLink"] = "|cffffffff|Hitem:171270::::::::60:270:::::::::|h[Potion of Spectral Agility]|h|r",
-                ["icon"] = 3566835,
-                ["itemId"] = 171270
-            },
-            [171439] = { -- Shaded Weightstone
-                ["itemName"] = "Shaded Weightstone",
-                ["count"] = 70,
-                ["itemLink"] = "|cff1eff00|Hitem:171439::::::::60:270:::::::::|h[Shaded Weightstone]|h|r",
-                ["icon"] = 3528423,
-                ["itemId"] = 171439
-            },
-            [171276] = { -- Spectral Flask of Power
-                ["itemName"] = "Spectral Flask of Power",
-                ["count"] = 108,
-                ["itemLink"] = "|cffffffff|Hitem:171276::::::::60:270:::::::::|h[Spectral Flask of Power]|h|r",
-                ["icon"] = 3566840,
-                ["itemId"] = 171276
-            },
-            [171266] = { -- Potion of the Hidden Spirit
-                ["itemName"] = "Potion of the Hidden Spirit",
-                ["count"] = 21,
-                ["itemLink"] = "|cffffffff|Hitem:171266::::::::60:270:::::::::|h[Potion of the Hidden Spirit]|h|r",
-                ["icon"] = 3566868,
-                ["itemId"] = 171266
-            },
-            [172233] = { -- Drums of Deathly Ferocity
-                ["itemName"] = "Drums of Deathly Ferocity",
-                ["count"] = 28,
-                ["itemLink"] = "|cff1eff00|Hitem:172233::::::::60:270:::::::::|h[Drums of Deathly Ferocity]|h|r",
-                ["icon"] = 3528453,
-                ["itemId"] = 172233
-            },
-            [181468] = { -- Veiled Augment Rune
-                ["itemName"] = "Veiled Augment Rune",
-                ["count"] = 420,
-                ["itemLink"] = "|cff0070dd|Hitem:181468::::::::60:270:::::::::|h[Veiled Augment Rune]|h|r",
-                ["icon"] = 134078,
-                ["itemId"] = 181468
-            },
-            [173049] = { -- Tome of the Still Mind
-                ["itemName"] = "Tome of the Still Mind",
-                ["count"] = 56,
-                ["itemLink"] = "|cff1eff00|Hitem:173049::::::::60:270:::::::::|h[Tome of the Still Mind]|h|r",
-                ["icon"] = 3717418,
-                ["itemId"] = 173049
-            }
-        }
+        desiredItems = false
     }
 }
 
@@ -444,7 +436,7 @@ GuildBankToolsBroker = LibStub("LibDataBroker-1.1"):NewDataObject("GuildBankTool
         if button == "LeftButton" then
             GuildBankTools:ToggleShoppingListFrame()
         elseif button == "RightButton" then
-            GuildBankTools:ToggleItemEditor()
+            GuildBankTools:ToggleOptions()
         end
     end,
     OnTooltipShow = function(tt)
@@ -542,7 +534,9 @@ end
 
 function GuildBankTools:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("GuildBankToolsDB", defaults, true)
-
+    if not self.db.profile.desiredItems then
+        self.db.profile.desiredItems = defaultDesiredItems
+    end
     LDBIcon:Register("GuildBankTools", GuildBankToolsBroker, self.db.profile.minimap)
     GuildBankTools:UpdateMinimapButton()
 
@@ -682,111 +676,6 @@ function GuildBankTools:OnInitialize()
     end
 end
 
-function GuildBankTools:ToggleItemEditor()
-    if not GuildBankTools.ItemEditor then
-        local AceGUI = LibStub("AceGUI-3.0")
-
-        local ItemEditor = AceGUI:Create("Frame")
-        ItemEditor:SetLayout("Fill")
-        ItemEditor:SetTitle("Item Editor")
-        ItemEditor:SetStatusText("")
-        ItemEditor:EnableResize(false)
-        ItemEditor:SetWidth(400)
-        ItemEditor:SetHeight(600)
-        ItemEditor:SetCallback("OnClose", function(widget)
-            AceGUI:Release(widget)
-            GuildBankTools.ItemEditor = nil
-        end)
-
-        self.ItemEditor = ItemEditor
-
-        local ItemEditor_ScrollContainer = AceGUI:Create("ScrollFrame")
-        ItemEditor_ScrollContainer:SetLayout("List")
-        ItemEditor:AddChild(ItemEditor_ScrollContainer)
-
-        local function refreshItemList()
-            local sortedList = {}
-            for i, v in pairs(GuildBankTools.db.profile.desiredItems) do
-                table.insert(sortedList, v)
-            end
-            table.sort(sortedList, function(a, b)
-                return a.itemName < b.itemName
-            end)
-            ItemEditor_ScrollContainer:ReleaseChildren()
-
-            local newItemFrame = AceGUI:Create("SimpleGroup")
-            newItemFrame:SetLayout("Flow")
-            newItemFrame:SetFullWidth(true)
-            newItemFrame:SetHeight(50)
-            ItemEditor_ScrollContainer:AddChild(newItemFrame)
-            local itemName = AceGUI:Create("EditBox")
-            itemName:SetFullWidth(true)
-            itemName:SetCallback("OnEnterPressed", function(widget, event, text)
-                LibAddonUtils.CacheItem(text, function(itemID)
-                    local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemID)
-                    local itemID = GetItemInfoFromHyperlink(itemLink)
-                    if not GuildBankTools.db.profile.desiredItems[itemID] then
-                        GuildBankTools.db.profile.desiredItems[itemID] = {
-                            itemId = itemID,
-                            icon = itemTexture,
-                            count = 1,
-                            itemLink = itemLink,
-                            itemName = itemName
-                        }
-                        refreshItemList()
-                    end
-                end, text)
-            end)
-            newItemFrame:AddChild(itemName)
-            for i, v in pairs(sortedList) do
-                local itemframe = AceGUI:Create("SimpleGroup")
-                itemframe:SetLayout("Flow")
-                itemframe:SetFullWidth(true)
-                ItemEditor_ScrollContainer:AddChild(itemframe)
-
-                local itemicon = AceGUI:Create("Label")
-                itemicon:SetText("|T" .. v.icon .. ":16:16:0:0:64:64:4:60:4:60|t")
-                itemicon:SetWidth(20)
-                itemframe:AddChild(itemicon)
-
-                local itemname = AceGUI:Create("Label")
-                itemname:SetWidth(160)
-                itemname:SetText(v.itemLink)
-                itemframe:AddChild(itemname)
-
-                local itemId = AceGUI:Create("Label")
-                itemId:SetText(v.itemId)
-                itemId:SetWidth(50)
-                itemframe:AddChild(itemId)
-
-                local itemCount = AceGUI:Create("EditBox")
-                itemCount:SetLabel("Count")
-                itemCount:SetText(v.count)
-                itemCount:DisableButton(true)
-                itemCount:SetWidth(45)
-                itemCount:SetCallback("OnTextChanged", function(widget, event, text)
-                    v.count = text
-                end)
-                itemframe:AddChild(itemCount)
-
-                local deleteItem = AceGUI:Create("Button")
-                deleteItem:SetText("|A:islands-markedarea:19:19|a")
-                deleteItem:SetWidth(55)
-                deleteItem:SetCallback("OnClick", function()
-                    GuildBankTools.db.profile.desiredItems[v.itemId] = nil
-                    refreshItemList()
-                end)
-                itemframe:AddChild(deleteItem)
-            end
-
-            ItemEditor_ScrollContainer:DoLayout()
-        end
-        refreshItemList()
-
-    end
-
-end
-
 local function isCraftingCheaper(itemID)
     if not itemID then
         return
@@ -839,7 +728,6 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 end)
 
 local function ScanAuctions()
-    print("Scanning auctions...")
     wipe(auctions)
 
     local numReplicates = C_AuctionHouse.GetNumReplicateItems() - 1
@@ -866,7 +754,7 @@ local function ScanAuctions()
         if lastStart == numReplicates then
             GuildBankTools.db.profile.prices = auctions
             print("Auctionhouse Scan complete")
-            lastQuery = GetTime()
+            GuildBankTools.db.profile.lastQuery = GetTime()
         end
     end, chunks)
 
@@ -899,19 +787,19 @@ local function createShoppingListEntry(itemID, countnum)
         f.maxStack = select(8, GetItemInfo(itemID))
 
         f:SetScript("OnClick", function(self, click)
-            if click == "RightButton" then
+            if click == "RightButton" and IsShiftKeyDown() then
                 ignoredItems[f.itemID] = true
-
             elseif click == "LeftButton" then
                 if vendorItems[f.itemID] and MerchantFrame then
                     for i = 1, GetMerchantNumItems() do
                         local itemID = GetMerchantItemID(i)
                         if itemID == f.itemID then
                             local _, _, price, quantity, _, _ = GetMerchantItemInfo(i)
-                            local buyRounds = math.floor(f.countnum / f.maxStack)
-                            local rest = f.countnum % f.maxStack
+                            local maxStack = select(8, GetItemInfo(itemID))
+                            local buyRounds = math.floor(f.countnum / maxStack)
+                            local rest = f.countnum % maxStack
                             for k = 1, buyRounds do
-                                BuyMerchantItem(i, f.maxStack)
+                                BuyMerchantItem(i, maxStack)
                             end
                             BuyMerchantItem(i, rest)
 
@@ -955,10 +843,16 @@ local function createShoppingListEntry(itemID, countnum)
         count:SetPoint("RIGHT", f, "RIGHT", -3, 0)
         f.count = count
 
+        local indexNumber = f:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+        indexNumber:SetPoint("RIGHT", icon, "LEFT", -3, 0)
+        indexNumber:SetText("")
+        f.indexNumber = indexNumber
+
         f:Hide()
         LibAddonUtils.CacheItem(itemID, function(itemID)
             local itemName, itemLink, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemID)
             icon:SetTexture(itemTexture)
+
             link:SetText(itemLink)
             count:SetText(countnum)
             f:SetScript("OnEnter", function(self)
@@ -975,6 +869,7 @@ local function createShoppingListEntry(itemID, countnum)
             f.icon:SetTexture(itemTexture)
             f.link:SetText(itemLink)
             f.count:SetText(countnum)
+            f.indexNumber:SetText("")
             f:SetScript("OnEnter", function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                 GameTooltip:SetHyperlink(itemLink)
@@ -994,10 +889,11 @@ local function createShoppingListEntry(itemID, countnum)
                         local itemID = GetMerchantItemID(i)
                         if itemID == f.itemID then
                             local _, _, price, quantity, _, _ = GetMerchantItemInfo(i)
-                            local buyRounds = math.floor(f.countnum / f.maxStack)
-                            local rest = f.countnum % f.maxStack
+                            local maxStack = select(8, GetItemInfo(itemID))
+                            local buyRounds = math.floor(f.countnum / maxStack)
+                            local rest = f.countnum % maxStack
                             for k = 1, buyRounds do
-                                BuyMerchantItem(i, f.maxStack)
+                                BuyMerchantItem(i, maxStack)
                             end
                             BuyMerchantItem(i, rest)
 
@@ -1029,8 +925,6 @@ local function createShoppingListEntry(itemID, countnum)
     end
 
 end
-
--- TODO: Add numbers fontstring to crafted items and assign these numbers to the buy items and vendor items
 
 GuildBankTools.SLFEntries = {
     ["crafted"] = {},
@@ -1318,6 +1212,37 @@ function GuildBankTools:updateShoppingListFrame()
         index = index + 1
     end
 
+    local assignedReagents = {}
+    for i, entry in ipairs(GuildBankTools.SLFEntries["crafted"]) do
+        if recipeReagents[entry.itemID] then
+            for _, v in ipairs(recipeReagents[entry.itemID]) do
+                if not assignedReagents[v[1]] then
+                    assignedReagents[v[1]] = {}
+                end
+                table.insert(assignedReagents[v[1]], i)
+            end
+            entry.indexNumber:SetText(i .. " ")
+        end
+    end
+    for i, entry in ipairs(GuildBankTools.SLFEntries["vendor"]) do
+        if assignedReagents[entry.itemID] then
+            local text = ""
+            for _, indexNum in ipairs(assignedReagents[entry.itemID]) do
+                text = text .. indexNum .. " "
+            end
+            entry.indexNumber:SetText(text)
+        end
+    end
+
+    for i, entry in ipairs(GuildBankTools.SLFEntries["buy"]) do
+        if assignedReagents[entry.itemID] then
+            local text = ""
+            for _, indexNum in ipairs(assignedReagents[entry.itemID]) do
+                text = text .. indexNum .. " "
+            end
+            entry.indexNumber:SetText(text)
+        end
+    end
     self.ShoppingListFrame:Show()
 end
 
@@ -1329,10 +1254,18 @@ function GuildBankTools:setShoppingList()
         print("You need to scan your guild bank before you can start shopping.")
         return
     end
+
+    local desiredItems = {}
+    for tab, tabInfo in pairs(GuildBankTools.db.profile.layoutEditor.layout) do
+        for slot, slotInfo in pairs(tabInfo) do
+            if type(slotInfo) == "table" then
+                desiredItems[slotInfo[1]] = (desiredItems[slotInfo[1]] or 0) + slotInfo[2]
+            end
+        end
+    end
     addedItems = {}
     vendorItems = {}
     shoppinglist = {}
-    itemtobuy = {}
 
     for gbitem, gbcount in pairs(GBankItems) do
         local itemID = GetItemInfoInstant(gbitem)
@@ -1340,19 +1273,23 @@ function GuildBankTools:setShoppingList()
         if itemspurchased[itemID] then
             purchasedCount = itemspurchased[itemID].count
         end
-        if GuildBankTools.db.profile.desiredItems[itemID] and not ignoredItems[itemID] then
-            if (GuildBankTools.db.profile.desiredItems[itemID].count - gbcount - GetItemCount(itemID, false) -
-                purchasedCount) > 0 then
+        if desiredItems[itemID] and not ignoredItems[itemID] then
+            if (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) - purchasedCount) > 0 then
                 local isCheaper, pricePerItem, recipe = isCraftingCheaper(itemID)
                 if isCheaper then
                     for index, reagent in ipairs(recipe) do
-                        local reagentCountperItem = math.ceil(reagent[2] / (craftingCountperItem[itemID] or 1))
-                        local reagentCount = reagentCountperItem *
-                                                 (GuildBankTools.db.profile.desiredItems[itemID].count - gbcount -
-                                                     GetItemCount(itemID, false) - purchasedCount)
-
+                        local reagentCountPerItem = math.ceil(reagent[2] / (craftingCountperItem[itemID] or 1))
+                        local reagentCount = reagentCountPerItem *
+                                                 (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
+                                                     purchasedCount)
                         if craftingCountperItem[itemID] then
-                            reagentCount = reagentCount * (1 - craftingCountperItem[itemID] / 10)
+                            local countToCraft = (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
+                                                     purchasedCount)
+                            if countToCraft % craftingCountperItem[itemID] == 0 then
+                                reagentCount = reagentCountPerItem * countToCraft
+                            else
+                                reagentCount = reagentCountPerItem * (countToCraft + craftingCountperItem[itemID])
+                            end
                         end
                         for v, k in pairs(GBankItems) do
                             local itemID = GetItemInfoFromHyperlink(v)
@@ -1395,8 +1332,8 @@ function GuildBankTools:setShoppingList()
                         end
                     end
 
-                    addedItems[itemID] = {(GuildBankTools.db.profile.desiredItems[itemID].count - gbcount -
-                        GetItemCount(itemID, false)) - purchasedCount, "craft"}
+                    addedItems[itemID] = {(desiredItems[itemID] - gbcount - GetItemCount(itemID, false)) -
+                        purchasedCount, "craft"}
                 else
                     local count = 0
                     if shoppinglist[itemID] then
@@ -1405,32 +1342,97 @@ function GuildBankTools:setShoppingList()
 
                     shoppinglist[itemID] = {
                         ["type"] = "item",
-                        ["count"] = count + GuildBankTools.db.profile.desiredItems[itemID].count - gbcount -
-                            GetItemCount(itemID, false) - purchasedCount
+                        ["count"] = count + desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
+                            purchasedCount
                     }
-                    addedItems[itemID] = {(GuildBankTools.db.profile.desiredItems[itemID].count - gbcount -
-                        GetItemCount(itemID, false)) - purchasedCount, "buy"}
+                    addedItems[itemID] = {(desiredItems[itemID] - gbcount - GetItemCount(itemID, false)) -
+                        purchasedCount, "buy"}
                 end
 
             end
         end
     end
-    for item, info in pairs(GuildBankTools.db.profile.desiredItems) do
+    for item, desiredCount in pairs(desiredItems) do
         if not addedItems[item] and not isItemLinkinGB(item) then
             local purchasedCount = 0
             if itemspurchased[item] then
                 purchasedCount = itemspurchased[item].count
             end
-            local totalCount = info.count - GetItemCount(item, false) - purchasedCount
+            local totalCount = desiredCount - GetItemCount(item, false) - purchasedCount
             if totalCount > 0 then
                 local count = 0
                 if shoppinglist[item] then
                     count = shoppinglist[item].count
                 end
-                shoppinglist[item] = {
-                    ["count"] = count + totalCount,
-                    ["type"] = "item"
-                }
+                local isCheaper, pricePerItem, recipe = isCraftingCheaper(item)
+                if isCheaper then
+                    for index, reagent in ipairs(recipe) do
+                        local reagentCountPerItem = math.ceil(reagent[2] / (craftingCountperItem[item] or 1))
+                        local reagentCount = reagentCountPerItem *
+                                                 (desiredItems[item] - GetItemCount(item, false) - purchasedCount)
+                        if craftingCountperItem[item] then
+                            local countToCraft = (desiredItems[item] - GetItemCount(item, false) - purchasedCount)
+                            if countToCraft % craftingCountperItem[item] == 0 then
+                                reagentCount = reagentCountPerItem * countToCraft
+                            else
+                                reagentCount = reagentCountPerItem * (countToCraft + craftingCountperItem[item])
+                            end
+                        end
+                        for v, k in pairs(GBankItems) do
+                            local itemID = GetItemInfoFromHyperlink(v)
+                            if reagent[1] == itemID then
+                                reagentCount = reagentCount - k
+                                break
+                            end
+                        end
+
+                        local reagentID = reagent[1]
+                        if reagentCount > 0 then
+                            local purchasedReagentCount = 0
+                            if itemspurchased[reagentID] then
+                                purchasedReagentCount = itemspurchased[reagentID].count
+                            end
+                            if not vendorReagents[reagentID] then
+                                local count = 0
+                                if not shoppinglist[reagentID] then
+                                    shoppinglist[reagentID] = {
+                                        count = -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0) +
+                                            purchasedReagentCount),
+                                        type = "reagent"
+                                    }
+                                end
+                                if shoppinglist[reagentID] then
+                                    count = shoppinglist[reagentID].count
+                                end
+                                shoppinglist[reagentID] = {
+                                    ["type"] = "reagent",
+                                    ["count"] = count + reagentCount
+                                }
+                            else
+                                if not vendorItems[reagentID] then
+                                    vendorItems[reagentID] =
+                                        -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0) +
+                                            purchasedReagentCount)
+                                end
+                                vendorItems[reagentID] = (vendorItems[reagentID] or 0) + reagentCount
+                            end
+                        end
+                    end
+
+                    addedItems[item] = {(desiredItems[item] - GetItemCount(item, false)) - purchasedCount, "craft"}
+                else
+                    local count = 0
+                    if shoppinglist[item] then
+                        count = shoppinglist[item].count
+                    end
+
+                    shoppinglist[item] = {
+                        ["type"] = "item",
+                        ["count"] = count + desiredItems[item] - GetItemCount(item, false) - purchasedCount
+                    }
+                    addedItems[item] = {(desiredItems[item] - GetItemCount(item, false)) - purchasedCount, "buy"}
+                end
+
             end
         end
     end
@@ -1448,33 +1450,465 @@ function GuildBankTools:setShoppingList()
     GuildBankTools:updateShoppingListFrame()
 end
 
+function GuildBankTools:generateMoves()
+    local layout = GuildBankTools.db.profile.layoutEditor.layout
+    local moves = {}
+    local usedBagSlots = {}
+    local usedBankSlots = {}
+    local freeSpace = {}
+    local itemsInFreeSpace = {}
+    for tabIndex, tabData in ipairs(layout) do
+        for slotIndex = 1, 98 do
+            local slotData = tabData[slotIndex]
+            if not slotData then
+                table.insert(freeSpace, {tabIndex, slotIndex})
+            elseif slotData == -1 and not GetGuildBankItemLink(tabIndex, slotIndex) then
+                table.insert(freeSpace, {tabIndex, slotIndex})
+            elseif slotData == -1 and GetGuildBankItemLink(tabIndex, slotIndex) then
+                local itemID = GetItemInfoFromHyperlink(GetGuildBankItemLink(tabIndex, slotIndex))
+                if not itemsInFreeSpace[itemID] then
+                    itemsInFreeSpace[itemID] = {}
+                end
+                table.insert(itemsInFreeSpace[itemID], {tabIndex, slotIndex})
+            end
+        end
+    end
+    local freeSpaceIndex = 0
+    for tabIndex, tabData in ipairs(layout) do
+        for slotIndex, slotData in ipairs(tabData) do
+            local slotItemLink = GetGuildBankItemLink(tabIndex, slotIndex)
+            local slotItemId
+            if slotItemLink then
+                slotItemId = GetItemInfoFromHyperlink(slotItemLink)
+            end
+            local _, slotItemCount = GetGuildBankItemInfo(tabIndex, slotIndex)
+
+            local desiredSlotItemId
+            local desiredSlotItemCount
+            if type(slotData) == "table" then
+                desiredSlotItemId = slotData[1]
+                desiredSlotItemCount = slotData[2]
+            end
+
+            if slotItemId and slotItemId == desiredSlotItemId and desiredSlotItemCount then -- Slot is occupied by the correct item
+                if slotItemCount > desiredSlotItemCount then -- to many
+                    -- pickup difference and put into free space
+                    freeSpaceIndex = freeSpaceIndex + 1
+                    local freeSpaceSlot
+                    if freeSpaceIndex <= #freeSpace then
+                        freeSpaceSlot = freeSpace[freeSpaceIndex]
+                    end
+                    if freeSpaceSlot then
+                        table.insert(moves, {
+                            ["source"] = {tabIndex, slotIndex},
+                            ["target"] = {freeSpaceSlot[1], freeSpaceSlot[2]},
+                            ["count"] = slotItemCount - desiredSlotItemCount,
+                            ["from"] = "bank",
+                            ["to"] = "bank"
+                        })
+                    else
+                        -- moving to bags doesnt need a target
+                        table.insert(moves, {
+                            ["source"] = {tabIndex, slotIndex},
+                            ["target"] = {},
+                            ["count"] = slotItemCount - desiredSlotItemCount,
+                            ["from"] = "bank",
+                            ["to"] = "bags"
+                        })
+                    end
+                elseif slotItemCount < desiredSlotItemCount then -- to few
+                    local moveSet = false
+                    -- iterate over free space and pickup item if possible
+                    if itemsInFreeSpace[desiredSlotItemId] and #itemsInFreeSpace[desiredSlotItemId] > 0 then
+                        local freeSpaceItemSlotSource = table.remove(itemsInFreeSpace[desiredSlotItemId], 1)
+                        if freeSpaceItemSlotSource then
+                            table.insert(moves, {
+                                ["source"] = {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]},
+                                ["target"] = {tabIndex, slotIndex},
+                                ["count"] = desiredSlotItemCount,
+                                ["from"] = "bank",
+                                ["to"] = "bank"
+                            })
+                            moveSet = true
+
+                        end
+                    end
+
+                    -- iterate over bag and pickup item if possible
+                    if not moveSet then
+                        local movedCount = 0
+                        for bag = 0, NUM_BAG_SLOTS do
+                            for slot = 1, GetContainerNumSlots(bag) do
+                                if desiredSlotItemId == GetContainerItemID(bag, slot) and
+                                    not usedBagSlots[bag .. "-" .. slot] then
+                                    local _, bagSlotItemCount = GetContainerItemInfo(bag, slot)
+                                    if bagSlotItemCount >= desiredSlotItemCount then
+                                        usedBagSlots[bag .. "-" .. slot] = true
+                                        table.insert(moves, {
+                                            ["source"] = {bag, slot},
+                                            ["target"] = {tabIndex, slotIndex},
+                                            ["count"] = desiredSlotItemCount,
+                                            ["from"] = "bags",
+                                            ["to"] = "bank"
+                                        })
+                                        movedCount = desiredSlotItemCount
+                                    else -- to few items in that bag slot
+                                        -- diff to match exact desiredSlotItemCount
+                                        if (movedCount + bagSlotItemCount) > desiredSlotItemCount then
+                                            bagSlotItemCount = desiredSlotItemCount - movedCount
+                                        end
+                                        usedBagSlots[bag .. "-" .. slot] = true
+                                        table.insert(moves, {
+                                            ["source"] = {bag, slot},
+                                            ["target"] = {tabIndex, slotIndex},
+                                            ["count"] = bagSlotItemCount,
+                                            ["from"] = "bags",
+                                            ["to"] = "bank"
+                                        })
+
+                                        movedCount = movedCount + bagSlotItemCount
+                                    end
+
+                                    if movedCount == desiredSlotItemCount then
+                                        moveSet = true
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            elseif slotItemId and slotItemId ~= desiredSlotItemId then -- Slot is occupied by the wrong item
+                if slotData == "b" then -- slot is blocked
+                    freeSpaceIndex = freeSpaceIndex + 1
+                    local freeSpaceSlot
+                    if freeSpaceIndex <= #freeSpace then
+                        freeSpaceSlot = freeSpace[freeSpaceIndex]
+                    end
+                    if freeSpaceSlot then
+                        table.insert(moves, {
+                            ["source"] = {tabIndex, slotIndex},
+                            ["target"] = {freeSpaceSlot[1], freeSpaceSlot[2]},
+                            ["count"] = slotItemCount,
+                            ["from"] = "bank",
+                            ["to"] = "bank"
+                        })
+                    else
+                        -- moving to bags doesnt need a target
+                        table.insert(moves, {
+                            ["source"] = {tabIndex, slotIndex},
+                            ["target"] = {},
+                            ["count"] = slotItemCount,
+                            ["from"] = "bank",
+                            ["to"] = "bags"
+                        })
+                    end
+                elseif desiredSlotItemId and desiredSlotItemCount then -- slot has wrong item
+                    -- move item to free space
+                    freeSpaceIndex = freeSpaceIndex + 1
+                    local freeSpaceSlot
+                    if freeSpaceIndex <= #freeSpace then
+                        freeSpaceSlot = freeSpace[freeSpaceIndex]
+                    end
+                    if freeSpaceSlot then
+                        table.insert(moves, {
+                            ["source"] = {tabIndex, slotIndex},
+                            ["target"] = {freeSpaceSlot[1], freeSpaceSlot[2]},
+                            ["count"] = slotItemCount,
+                            ["from"] = "bank",
+                            ["to"] = "bank"
+                        })
+                    else
+                        -- moving to bags doesnt need a target
+                        table.insert(moves, {
+                            ["source"] = {tabIndex, slotIndex},
+                            ["target"] = {},
+                            ["count"] = slotItemCount,
+                            ["from"] = "bank",
+                            ["to"] = "bags"
+                        })
+                    end
+
+                    local moveSet = false
+                    -- iterate over free space and pickup item if possible
+                    if itemsInFreeSpace[desiredSlotItemId] and #itemsInFreeSpace[desiredSlotItemId] > 0 then
+                        local freeSpaceItemSlotSource = table.remove(itemsInFreeSpace[desiredSlotItemId], 1)
+                        if freeSpaceItemSlotSource then
+                            table.insert(moves, {
+                                ["source"] = {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]},
+                                ["target"] = {tabIndex, slotIndex},
+                                ["count"] = desiredSlotItemCount,
+                                ["from"] = "bank",
+                                ["to"] = "bank"
+                            })
+                            moveSet = true
+
+                        end
+                    end
+
+                    -- iterate over bag and pickup item if possible
+                    if not moveSet then
+                        local movedCount = 0
+                        for bag = 0, NUM_BAG_SLOTS do
+                            for slot = 1, GetContainerNumSlots(bag) do
+                                if desiredSlotItemId == GetContainerItemID(bag, slot) and
+                                    not usedBagSlots[bag .. "-" .. slot] then
+                                    local _, bagSlotItemCount = GetContainerItemInfo(bag, slot)
+                                    if bagSlotItemCount >= desiredSlotItemCount then
+                                        usedBagSlots[bag .. "-" .. slot] = true
+                                        table.insert(moves, {
+                                            ["source"] = {bag, slot},
+                                            ["target"] = {tabIndex, slotIndex},
+                                            ["count"] = desiredSlotItemCount,
+                                            ["from"] = "bags",
+                                            ["to"] = "bank"
+                                        })
+                                        movedCount = desiredSlotItemCount
+                                    else -- to few items in that bag slot
+                                        -- diff to match exact desiredSlotItemCount
+                                        if (movedCount + bagSlotItemCount) > desiredSlotItemCount then
+                                            bagSlotItemCount = desiredSlotItemCount - movedCount
+                                        end
+                                        usedBagSlots[bag .. "-" .. slot] = true
+                                        table.insert(moves, {
+                                            ["source"] = {bag, slot},
+                                            ["target"] = {tabIndex, slotIndex},
+                                            ["count"] = bagSlotItemCount,
+                                            ["from"] = "bags",
+                                            ["to"] = "bank"
+                                        })
+
+                                        movedCount = movedCount + bagSlotItemCount
+                                    end
+
+                                    if movedCount == desiredSlotItemCount then
+                                        moveSet = true
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+
+            -- Slot is empty
+            if not slotItemId then
+                if desiredSlotItemId and desiredSlotItemCount then -- slot should not be empty
+                    local moveSet = false
+                    -- iterate over free space and pickup item if possible
+                    if itemsInFreeSpace[desiredSlotItemId] and #itemsInFreeSpace[desiredSlotItemId] > 0 then
+                        local freeSpaceItemSlotSource = table.remove(itemsInFreeSpace[desiredSlotItemId], 1)
+                        if freeSpaceItemSlotSource then
+                            table.insert(moves, {
+                                ["source"] = {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]},
+                                ["target"] = {tabIndex, slotIndex},
+                                ["count"] = desiredSlotItemCount,
+                                ["from"] = "bank",
+                                ["to"] = "bank"
+                            })
+                            moveSet = true
+
+                        end
+                    end
+
+                    -- iterate over bag and pickup item if possible
+                    if not moveSet then
+                        local movedCount = 0
+                        for bag = 0, NUM_BAG_SLOTS do
+                            for slot = 1, GetContainerNumSlots(bag) do
+                                if desiredSlotItemId == GetContainerItemID(bag, slot) and
+                                    not usedBagSlots[bag .. "-" .. slot] then
+                                    local _, bagSlotItemCount = GetContainerItemInfo(bag, slot)
+                                    if bagSlotItemCount >= desiredSlotItemCount then
+                                        usedBagSlots[bag .. "-" .. slot] = true
+                                        table.insert(moves, {
+                                            ["source"] = {bag, slot},
+                                            ["target"] = {tabIndex, slotIndex},
+                                            ["count"] = desiredSlotItemCount,
+                                            ["from"] = "bags",
+                                            ["to"] = "bank"
+                                        })
+                                        movedCount = desiredSlotItemCount
+                                    else -- to few items in that bag slot
+                                        -- diff to match exact desiredSlotItemCount
+                                        if (movedCount + bagSlotItemCount) > desiredSlotItemCount then
+                                            bagSlotItemCount = desiredSlotItemCount - movedCount
+                                        end
+                                        usedBagSlots[bag .. "-" .. slot] = true
+                                        table.insert(moves, {
+                                            ["source"] = {bag, slot},
+                                            ["target"] = {tabIndex, slotIndex},
+                                            ["count"] = bagSlotItemCount,
+                                            ["from"] = "bags",
+                                            ["to"] = "bank"
+                                        })
+
+                                        movedCount = movedCount + bagSlotItemCount
+                                    end
+
+                                    if movedCount == desiredSlotItemCount then
+                                        moveSet = true
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return moves
+end
+
+local isMoving = false
+
+-- FIXME: Sort sometimes picks up correct items
+-- FIXME: Count for food isnt correct
+
+function GuildBankTools:DoMove(moves)
+    local move = moves[GuildBankTools.moveCounter]
+    if move then
+        local source = move["source"]
+        local target = move["target"]
+        local count = move["count"]
+        local from = move["from"]
+        local to = move["to"]
+
+        if not source[1] or not source[2] or not target[1] or not target[2] or not count or not from or not to or
+            not GuildBankTools.moveCounter then
+            GuildBankTools:Print("Error: Missing move data", source[1], source[2], target[1], target[2], count, from,
+                to, GuildBankTools.moveCounter)
+            return
+        end
+        print(count, from, source[1], source[2], to, target[1], target[2], GuildBankTools.moveCounter, #moves)
+        print(string.format("Moving %d from %s (%s, %s) to %s (%s, %s) - Move %s from %s", count, from, source[1],
+            source[2], to, target[1], target[2], GuildBankTools.moveCounter, #moves))
+
+        ClearCursor() -- Clear Cursor before moving item
+        if from == "bank" then
+            SplitGuildBankItem(source[1], source[2], count)
+            if to == "bags" then
+                PutItemInBackpack()
+            elseif to == "bank" then
+                PickupGuildBankItem(target[1], target[2])
+            else
+                print("ERROR: Could not move item from bank")
+            end
+        elseif from == "bags" then
+            SplitContainerItem(source[1], source[2], count)
+            if to == "bank" then
+                PickupGuildBankItem(target[1], target[2])
+            else
+                print("ERROR: Could not move item from bag")
+            end
+        end
+
+        GuildBankTools.moveCounter = GuildBankTools.moveCounter + 1
+        print(GuildBankTools.moveCounter == #moves and "Done" or "")
+        if GuildBankTools.moveCounter == #moves then
+            print("cancelTimer")
+            isMoving = false
+            GuildBankTools:SortGuildBank()
+            return
+        end
+    end
+end
+
+local maxIterations = 10
+local numIterations = 0
+
+function GuildBankTools:SortGuildBank()
+    if InCombatLockdown() then
+        return
+    end
+    GuildBankTools:CancelTimer(GuildBankTools.moveTimer)
+    -- Set Items Based on layout
+    local moves = self:generateMoves()
+    numIterations = numIterations + 1
+    print("Redo Moving")
+    isMoving = true
+    GuildBankTools.moveCounter = 1
+    GuildBankTools.moveTimer = GuildBankTools:ScheduleRepeatingTimer("DoMove", 0.5, moves)
+    -- Move Items and reduce moves table
+    if #moves == 0 and numIterations > maxIterations then
+        GuildBankTools:CancelTimer(GuildBankTools.moveTimer)
+        isMoving = false
+        numIterations = 0
+        print("Done")
+        return
+    end
+end
+
+StaticPopupDialogs["GBT_CONFIRM_SORT_GBANK"] = {
+    text = "Sorting the guild bank will take some time! Are you sure to continue?",
+    button1 = "Accept",
+    button2 = "Cancel",
+    OnAccept = function()
+        numIterations = 0
+        GuildBankTools:SortGuildBank()
+
+    end,
+    timeout = 0,
+    hideOnEscape = true,
+    preferredIndex = 3
+}
+
 local function CreateGBShopButton()
     if GuildBankFrame then
-        local shopbutton = CreateFrame("Button", "GuildBankTools_ShopButton", GuildBankFrame)
-        shopbutton:SetPoint("TOPLEFT", GuildBankFrame, "TOPLEFT", 40, -15)
-        shopbutton:SetWidth(20)
-        shopbutton:SetHeight(20)
-        shopbutton:SetFrameStrata("HIGH")
-        shopbutton:SetText("|A:banker:19:19|a")
-        shopbutton:SetNormalFontObject("GameFontNormalSmall")
+        local shopButton = CreateFrame("Button", "GuildBankTools_ShopButton", GuildBankFrame)
+        shopButton:SetPoint("TOPLEFT", GuildBankFrame, "TOPLEFT", 40, -15)
+        shopButton:SetWidth(60)
+        shopButton:SetHeight(27)
+        shopButton:SetFrameStrata("HIGH")
+        shopButton:SetText("Shop")
+        shopButton:SetNormalFontObject("GameFontNormalSmall")
 
-        shopbutton:SetNormalTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\icon.tga")
-        shopbutton:SetPushedTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\pushed.tga")
-        shopbutton:SetHighlightTexture("Interface\\AddOns\\ElvUI_PowerToys\\media\\highlight.tga")
-        shopbutton:SetScript('OnClick', function()
+        shopButton:SetNormalTexture([[Interface\Buttons\UI-SquareButton-Up]])
+        shopButton:SetPushedTexture([[Interface\Buttons\UI-SquareButton-Down]])
+        shopButton:SetHighlightTexture([[Interface\Buttons\UI-Common-MouseHilight]])
+
+        shopButton:SetScript('OnClick', function()
             boughtItems = {}
             itemspurchased = {}
             ignoredItems = {}
+            itemtobuy = {}
             startShopping = true
             GuildBankTools:setShoppingList()
         end)
-        GuildBankTools.GBButtonShop = shopbutton
+        GuildBankTools.GBButtonShop = shopButton
+
+        local sortButton = CreateFrame("Button", "GuildBankTools_SortButton", GuildBankFrame)
+        sortButton:SetPoint("LEFT", shopButton, "RIGHT", 10, 0)
+        sortButton:SetWidth(60)
+        sortButton:SetHeight(27)
+        sortButton:SetFrameStrata("HIGH")
+        sortButton:SetText("Sort")
+        sortButton:SetNormalFontObject("GameFontNormalSmall")
+
+        sortButton:SetNormalTexture([[Interface\Buttons\UI-SquareButton-Up]])
+        sortButton:SetPushedTexture([[Interface\Buttons\UI-SquareButton-Down]])
+        sortButton:SetHighlightTexture([[Interface\Buttons\UI-Common-MouseHilight]])
+
+        sortButton:SetScript('OnClick', function()
+            StaticPopup_Show("GBT_CONFIRM_SORT_GBANK")
+        end)
+
     end
 end
 
 function GuildBankTools:UpdateItemsInGB()
     local numTabs = GetNumGuildBankTabs()
+    self.db.profile.gbankslots = {}
+    self.db.profile.layoutEditor.num = numTabs
     for index = 1, numTabs do
+        local name, icon = GetGuildBankTabInfo(index)
+        self.db.profile.layoutEditor.gbankslots[index] = {
+            name = name,
+            icon = icon,
+            index = index
+        }
         if not queriedTabs[index] then
             QueryGuildBankTab(index)
             queriedTabs[index] = true
@@ -1506,67 +1940,47 @@ function GuildBankTools:UpdateItemsInGB()
 
 end
 
-local hooked = false
-
-local function UpdateAuctionHouseBuyButton()
-    if not hooked then
-        hooksecurefunc(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.QuantityInput.InputBox, "inputChangedCallback",
-            function(a, b, c)
-                local text = AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.QuantityInput.InputBox:GetText()
-                text = tonumber(text)
-                if text == itemtobuy.count then
-                    GuildBankTools.GBBuyCount:SetText(itemtobuy.count ..
-                                                          " |A:Capacitance-General-WorkOrderCheckmark:19:19|a")
-                else
-                    GuildBankTools.GBBuyCount:SetText(itemtobuy.count)
-                end
-            end)
-        hooked = true
-    end
-
-    if not GuildBankTools.GBBuyCount then
-        local frame = CreateFrame("Frame", "GuildBankTools_ScannedText",
-            AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.QuantityInput)
-        frame:SetSize(200, 50)
-        frame:SetPoint("LEFT", AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.QuantityInput, "RIGHT", 10, 0)
-        frame:SetFrameStrata("HIGH")
-
-        local text = frame:CreateFontString(nil, "OVERLAY")
-        text:SetFont("Fonts\\FRIZQT__.TTF", 14, "OUTLINE")
-        text:SetPoint("CENTER", frame, "CENTER")
-        text:Hide()
-        GuildBankTools.GBBuyCount = text
-    end
-end
-
 GuildBankTools:RegisterEvent('GUILDBANKFRAME_OPENED', function()
     GuildBankTools:UpdateItemsInGB()
 end)
 
 GuildBankTools:RegisterEvent('GUILDBANKFRAME_CLOSED', function()
+    GuildBankTools.moveCounter = 1
+    GuildBankTools:CancelTimer(GuildBankTools.moveTimer)
+    isMoving = false
     gbankScanned = false
     GuildBankTools.GBButtonShop:Hide()
 end)
+
+StaticPopupDialogs["GBT_ASK_AH_SCAN"] = {
+    text = "Do you want to scan the auction house prices?",
+    button1 = "Yes",
+    button2 = "No",
+    OnAccept = function()
+        C_AuctionHouse.ReplicateItems()
+        initialQuery = true
+        print("Scanning auctions...")
+    end,
+    timeout = 5,
+    hideOnEscape = true,
+    preferredIndex = 3
+}
 
 GuildBankTools:RegisterEvent('AUCTION_HOUSE_SHOW', function()
     if select(2, GetInstanceInfo()) ~= "none" then
         return
     end
-    UpdateAuctionHouseBuyButton()
-    if lastQuery then
-        local diff = GetTime() - lastQuery
+    if GuildBankTools.db.profile.lastQuery then
+        local diff = GetTime() - GuildBankTools.db.profile.lastQuery
         if diff > 900 then
-            C_AuctionHouse.ReplicateItems()
-            initialQuery = true
+            StaticPopup_Show("GBT_ASK_AH_SCAN")
         else
             diff = 900 - diff
             local minutes = math.floor(diff / 60)
             local seconds = Round(diff % 60)
             print("Next Auction Scan can be done in " .. minutes .. " minutes and " .. seconds .. " seconds")
         end
-    else
-        C_AuctionHouse.ReplicateItems()
-        initialQuery = true
+
     end
 end)
 
@@ -1578,11 +1992,9 @@ GuildBankTools:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE", function()
 end)
 
 GuildBankTools:RegisterEvent('AUCTION_HOUSE_THROTTLED_SYSTEM_READY', function()
-    if AuctionHouseFrame.CommoditiesBuyFrame:GetItemID() == itemtobuy.itemID and GuildBankTools.GBBuyCount then
-        GuildBankTools.GBBuyCount:SetText(itemtobuy.count)
-        GuildBankTools.GBBuyCount:Show()
-    else
-        GuildBankTools.GBBuyCount:Hide()
+    if AuctionHouseFrame.CommoditiesBuyFrame:GetItemID() and AuctionHouseFrame.CommoditiesBuyFrame:GetItemID() ==
+        itemtobuy.itemID then
+        AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay:SetQuantitySelected(itemtobuy.count)
     end
 end)
 
@@ -1594,12 +2006,6 @@ GuildBankTools:RegisterEvent('COMMODITY_PURCHASE_SUCCEEDED', function()
         }
         GuildBankTools:setShoppingList()
     end
-    if getTableLength(shoppinglist) == 0 then
-        GuildBankTools.GBBuyCount:Hide()
-    else
-        GuildBankTools.GBBuyCount:Show()
-    end
-
 end)
 
 GuildBankTools:RegisterEvent('COMMODITY_PRICE_UPDATED', function(event, peritem, total)
@@ -1607,8 +2013,12 @@ GuildBankTools:RegisterEvent('COMMODITY_PRICE_UPDATED', function(event, peritem,
 end)
 
 GuildBankTools:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", function()
-    GuildBankTools:UpdateItemsInGB()
-    GuildBankTools:setShoppingList()
+    if not isMoving then
+        GuildBankTools:UpdateItemsInGB()
+        GuildBankTools:setShoppingList()
+    else
+
+    end
 end)
 
 GuildBankTools:RegisterEvent("BAG_UPDATE_DELAYED", function()
@@ -1636,5 +2046,9 @@ SLASH_GBT1 = "/gbt"
 SlashCmdList["GBT"] = function(msg)
     if string.match(msg, "minimap") then
         GuildBankTools:ToggleMinimapButton()
+    elseif string.match(msg, "scanah") then
+        GuildBankTools.db.profile.lastQuery = GetTime() - 901
+    else
+        GuildBankTools:ToggleOptions()
     end
 end
