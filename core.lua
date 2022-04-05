@@ -760,13 +760,13 @@ local function ScanAuctions()
 
 end
 
-local function isItemLinkinGB(itemID)
+local function GetGBankItemCount(itemID)
     if not GBankItems then
-        return
+        return 0
     end
-    for link, _ in pairs(GBankItems) do
+    for link, count in pairs(GBankItems) do
         if link:match(itemID) then
-            return true
+            return count
         end
     end
 end
@@ -811,7 +811,6 @@ local function createShoppingListEntry(itemID, countnum)
                     end
                 elseif shoppinglist[f.itemID] and AuctionHouseFrame then
                     if AuctionHouseFrame then
-
                         local slinfo = shoppinglist[f.itemID]
                         if slinfo then
                             itemtobuy.itemID = f.itemID
@@ -1267,111 +1266,108 @@ function GuildBankTools:setShoppingList()
     vendorItems = {}
     shoppinglist = {}
 
-    for gbitem, gbcount in pairs(GBankItems) do
-        local itemID = GetItemInfoInstant(gbitem)
-        local purchasedCount = 0
-        if itemspurchased[itemID] then
-            purchasedCount = itemspurchased[itemID].count
-        end
-        if desiredItems[itemID] and not ignoredItems[itemID] then
-            if (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) - purchasedCount) > 0 then
-                local isCheaper, pricePerItem, recipe = isCraftingCheaper(itemID)
-                if isCheaper then
-                    for index, reagent in ipairs(recipe) do
-                        local reagentCountPerItem = math.ceil(reagent[2] / (craftingCountperItem[itemID] or 1))
-                        local reagentCount = reagentCountPerItem *
-                                                 (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
-                                                     purchasedCount)
-                        if craftingCountperItem[itemID] then
-                            local countToCraft = (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
-                                                     purchasedCount)
-                            if countToCraft % craftingCountperItem[itemID] == 0 then
-                                reagentCount = reagentCountPerItem * countToCraft
-                            else
-                                reagentCount = reagentCountPerItem * (countToCraft + craftingCountperItem[itemID])
-                            end
-                        end
-                        for v, k in pairs(GBankItems) do
-                            local itemID = GetItemInfoFromHyperlink(v)
-                            if reagent[1] == itemID then
-                                reagentCount = reagentCount - k
-                                break
-                            end
-                        end
+    -- for gbitem, gbcount in pairs(GBankItems) do
+    --     local itemID = GetItemInfoInstant(gbitem)
+    --     local purchasedCount = 0
+    --     if itemspurchased[itemID] then
+    --         purchasedCount = itemspurchased[itemID].count
+    --     end
+    --     if desiredItems[itemID] and not ignoredItems[itemID] then
+    --         if (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) - purchasedCount) > 0 then
+    --             local isCheaper, pricePerItem, recipe = isCraftingCheaper(itemID)
+    --             if isCheaper then
+    --                 for index, reagent in ipairs(recipe) do
+    --                     local reagentCountPerItem = math.ceil(reagent[2] / (craftingCountperItem[itemID] or 1))
+    --                     local reagentCount = reagentCountPerItem *
+    --                                              (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
+    --                                                  purchasedCount)
+    --                     if craftingCountperItem[itemID] then
+    --                         local countToCraft = (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
+    --                                                  purchasedCount)
+    --                         if countToCraft % craftingCountperItem[itemID] == 0 then
+    --                             reagentCount = reagentCountPerItem * countToCraft
+    --                         else
+    --                             reagentCount = reagentCountPerItem * (countToCraft + craftingCountperItem[itemID])
+    --                         end
+    --                     end
+    --                     for v, k in pairs(GBankItems) do
+    --                         local itemID = GetItemInfoFromHyperlink(v)
+    --                         if reagent[1] == itemID then
+    --                             reagentCount = reagentCount - k
+    --                             break
+    --                         end
+    --                     end
 
-                        local reagentID = reagent[1]
-                        if reagentCount > 0 then
-                            local purchasedReagentCount = 0
-                            if itemspurchased[reagentID] then
-                                purchasedReagentCount = itemspurchased[reagentID].count
-                            end
-                            if not vendorReagents[reagentID] then
-                                local count = 0
-                                if not shoppinglist[reagentID] then
-                                    shoppinglist[reagentID] = {
-                                        count = -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0) +
-                                            purchasedReagentCount),
-                                        type = "reagent"
-                                    }
-                                end
-                                if shoppinglist[reagentID] then
-                                    count = shoppinglist[reagentID].count
-                                end
-                                shoppinglist[reagentID] = {
-                                    ["type"] = "reagent",
-                                    ["count"] = count + reagentCount
-                                }
-                            else
-                                if not vendorItems[reagentID] then
-                                    vendorItems[reagentID] =
-                                        -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0) +
-                                            purchasedReagentCount)
-                                end
-                                vendorItems[reagentID] = (vendorItems[reagentID] or 0) + reagentCount
-                            end
-                        end
-                    end
+    --                     local reagentID = reagent[1]
+    --                     if reagentCount > 0 then
+    --                         local purchasedReagentCount = 0
+    --                         if itemspurchased[reagentID] then
+    --                             purchasedReagentCount = itemspurchased[reagentID].count
+    --                         end
+    --                         if not vendorReagents[reagentID] then
+    --                             local count = 0
+    --                             if not shoppinglist[reagentID] then
+    --                                 shoppinglist[reagentID] = {
+    --                                     count = -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0) +
+    --                                         purchasedReagentCount),
+    --                                     type = "reagent"
+    --                                 }
+    --                             end
+    --                             if shoppinglist[reagentID] then
+    --                                 count = shoppinglist[reagentID].count
+    --                             end
+    --                             shoppinglist[reagentID] = {
+    --                                 ["type"] = "reagent",
+    --                                 ["count"] = count + reagentCount
+    --                             }
+    --                         else
+    --                             if not vendorItems[reagentID] then
+    --                                 vendorItems[reagentID] =
+    --                                     -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0) +
+    --                                         purchasedReagentCount)
+    --                             end
+    --                             vendorItems[reagentID] = (vendorItems[reagentID] or 0) + reagentCount
+    --                         end
+    --                     end
+    --                 end
 
-                    addedItems[itemID] = {(desiredItems[itemID] - gbcount - GetItemCount(itemID, false)) -
-                        purchasedCount, "craft"}
-                else
-                    local count = 0
-                    if shoppinglist[itemID] then
-                        count = shoppinglist[itemID].count
-                    end
+    --                 addedItems[itemID] = {(desiredItems[itemID] - gbcount - GetItemCount(itemID, false)) -
+    --                     purchasedCount, "craft"}
+    --             else
+    --                 local count = 0
+    --                 if shoppinglist[itemID] then
+    --                     count = shoppinglist[itemID].count
+    --                 end
 
-                    shoppinglist[itemID] = {
-                        ["type"] = "item",
-                        ["count"] = count + desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
-                            purchasedCount
-                    }
-                    addedItems[itemID] = {(desiredItems[itemID] - gbcount - GetItemCount(itemID, false)) -
-                        purchasedCount, "buy"}
-                end
+    --                 shoppinglist[itemID] = {
+    --                     ["type"] = "item",
+    --                     ["count"] = count + desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
+    --                         purchasedCount
+    --                 }
+    --                 addedItems[itemID] = {(desiredItems[itemID] - gbcount - GetItemCount(itemID, false)) -
+    --                     purchasedCount, "buy"}
+    --             end
 
-            end
-        end
-    end
+    --         end
+    --     end
+    -- end
+
     for item, desiredCount in pairs(desiredItems) do
-        if not addedItems[item] and not isItemLinkinGB(item) then
+        if not addedItems[item] then
+            local gbankItemCount = GetGBankItemCount(item) or 0
             local purchasedCount = 0
             if itemspurchased[item] then
                 purchasedCount = itemspurchased[item].count
             end
-            local totalCount = desiredCount - GetItemCount(item, false) - purchasedCount
+            local totalCount = desiredCount - GetItemCount(item, false) - purchasedCount - gbankItemCount
             if totalCount > 0 then
-                local count = 0
-                if shoppinglist[item] then
-                    count = shoppinglist[item].count
-                end
                 local isCheaper, pricePerItem, recipe = isCraftingCheaper(item)
                 if isCheaper then
                     for index, reagent in ipairs(recipe) do
                         local reagentCountPerItem = math.ceil(reagent[2] / (craftingCountperItem[item] or 1))
-                        local reagentCount = reagentCountPerItem *
-                                                 (desiredItems[item] - GetItemCount(item, false) - purchasedCount)
+                        local reagentCount = reagentCountPerItem * totalCount
                         if craftingCountperItem[item] then
-                            local countToCraft = (desiredItems[item] - GetItemCount(item, false) - purchasedCount)
+                            local countToCraft = totalCount
                             if countToCraft % craftingCountperItem[item] == 0 then
                                 reagentCount = reagentCountPerItem * countToCraft
                             else
@@ -1419,7 +1415,7 @@ function GuildBankTools:setShoppingList()
                         end
                     end
 
-                    addedItems[item] = {(desiredItems[item] - GetItemCount(item, false)) - purchasedCount, "craft"}
+                    addedItems[item] = {totalCount, "craft"}
                 else
                     local count = 0
                     if shoppinglist[item] then
@@ -1428,9 +1424,9 @@ function GuildBankTools:setShoppingList()
 
                     shoppinglist[item] = {
                         ["type"] = "item",
-                        ["count"] = count + desiredItems[item] - GetItemCount(item, false) - purchasedCount
+                        ["count"] = count + totalCount
                     }
-                    addedItems[item] = {(desiredItems[item] - GetItemCount(item, false)) - purchasedCount, "buy"}
+                    addedItems[item] = {totalCount, "buy"}
                 end
 
             end
@@ -1454,25 +1450,33 @@ function GuildBankTools:generateMoves()
     local layout = GuildBankTools.db.profile.layoutEditor.layout
     local moves = {}
     local usedBagSlots = {}
-    local usedBankSlots = {}
+    local freeBagSpace = {}
     local freeSpace = {}
     local itemsInFreeSpace = {}
     for tabIndex, tabData in ipairs(layout) do
         for slotIndex = 1, 98 do
             local slotData = tabData[slotIndex]
-            if not slotData then
-                table.insert(freeSpace, {tabIndex, slotIndex})
-            elseif slotData == -1 and not GetGuildBankItemLink(tabIndex, slotIndex) then
+            if slotData == -1 and not GetGuildBankItemLink(tabIndex, slotIndex) then
                 table.insert(freeSpace, {tabIndex, slotIndex})
             elseif slotData == -1 and GetGuildBankItemLink(tabIndex, slotIndex) then
                 local itemID = GetItemInfoFromHyperlink(GetGuildBankItemLink(tabIndex, slotIndex))
                 if not itemsInFreeSpace[itemID] then
                     itemsInFreeSpace[itemID] = {}
                 end
-                table.insert(itemsInFreeSpace[itemID], {tabIndex, slotIndex})
+                local _, freeSpaceItemCount = GetGuildBankItemInfo(tabIndex, slotIndex)
+                table.insert(itemsInFreeSpace[itemID], {tabIndex, slotIndex, freeSpaceItemCount})
             end
         end
     end
+
+    for bag = 0, NUM_BAG_SLOTS do
+        for bagSlot = 1, GetContainerNumSlots(bag) do
+            if not GetContainerItemID(bag, bagSlot) then
+                table.insert(freeBagSpace, {bag, bagSlot})
+            end
+        end
+    end
+
     local freeSpaceIndex = 0
     for tabIndex, tabData in ipairs(layout) do
         for slotIndex, slotData in ipairs(tabData) do
@@ -1507,10 +1511,12 @@ function GuildBankTools:generateMoves()
                             ["to"] = "bank"
                         })
                     else
+                        -- no freeSpaceSlot available
                         -- moving to bags doesnt need a target
+                        local freeBagSpaceSlot = table.remove(freeBagSpace)
                         table.insert(moves, {
                             ["source"] = {tabIndex, slotIndex},
-                            ["target"] = {},
+                            ["target"] = {freeBagSpaceSlot[1], freeBagSpaceSlot[2]},
                             ["count"] = slotItemCount - desiredSlotItemCount,
                             ["from"] = "bank",
                             ["to"] = "bags"
@@ -1521,6 +1527,14 @@ function GuildBankTools:generateMoves()
                     -- iterate over free space and pickup item if possible
                     if itemsInFreeSpace[desiredSlotItemId] and #itemsInFreeSpace[desiredSlotItemId] > 0 then
                         local freeSpaceItemSlotSource = table.remove(itemsInFreeSpace[desiredSlotItemId], 1)
+                        if (freeSpaceItemSlotSource[3] - desiredSlotItemCount) > 0 then
+                            table.insert(itemsInFreeSpace[desiredSlotItemId], {freeSpaceItemSlotSource[1],
+                                                                               freeSpaceItemSlotSource[2],
+                                                                               freeSpaceItemSlotSource[3] -
+                                desiredSlotItemCount})
+                        elseif (freeSpaceItemSlotSource[3] - desiredSlotItemCount) == 0 then
+                            table.insert(freeSpace, {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]})
+                        end
                         if freeSpaceItemSlotSource then
                             table.insert(moves, {
                                 ["source"] = {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]},
@@ -1530,7 +1544,6 @@ function GuildBankTools:generateMoves()
                                 ["to"] = "bank"
                             })
                             moveSet = true
-
                         end
                     end
 
@@ -1595,9 +1608,10 @@ function GuildBankTools:generateMoves()
                         })
                     else
                         -- moving to bags doesnt need a target
+                        local freeBagSpaceSlot = table.remove(freeBagSpace)
                         table.insert(moves, {
                             ["source"] = {tabIndex, slotIndex},
-                            ["target"] = {},
+                            ["target"] = {freeBagSpaceSlot[1], freeBagSpaceSlot[2]},
                             ["count"] = slotItemCount,
                             ["from"] = "bank",
                             ["to"] = "bags"
@@ -1620,9 +1634,10 @@ function GuildBankTools:generateMoves()
                         })
                     else
                         -- moving to bags doesnt need a target
+                        local freeBagSpaceSlot = table.remove(freeBagSpace)
                         table.insert(moves, {
                             ["source"] = {tabIndex, slotIndex},
-                            ["target"] = {},
+                            ["target"] = {freeBagSpaceSlot[1], freeBagSpaceSlot[2]},
                             ["count"] = slotItemCount,
                             ["from"] = "bank",
                             ["to"] = "bags"
@@ -1633,6 +1648,14 @@ function GuildBankTools:generateMoves()
                     -- iterate over free space and pickup item if possible
                     if itemsInFreeSpace[desiredSlotItemId] and #itemsInFreeSpace[desiredSlotItemId] > 0 then
                         local freeSpaceItemSlotSource = table.remove(itemsInFreeSpace[desiredSlotItemId], 1)
+                        if (freeSpaceItemSlotSource[3] - desiredSlotItemCount) > 0 then
+                            table.insert(itemsInFreeSpace[desiredSlotItemId], {freeSpaceItemSlotSource[1],
+                                                                               freeSpaceItemSlotSource[2],
+                                                                               freeSpaceItemSlotSource[3] -
+                                desiredSlotItemCount})
+                        elseif (freeSpaceItemSlotSource[3] - desiredSlotItemCount) == 0 then
+                            table.insert(freeSpace, {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]})
+                        end
                         if freeSpaceItemSlotSource then
                             table.insert(moves, {
                                 ["source"] = {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]},
@@ -1642,7 +1665,6 @@ function GuildBankTools:generateMoves()
                                 ["to"] = "bank"
                             })
                             moveSet = true
-
                         end
                     end
 
@@ -1699,6 +1721,14 @@ function GuildBankTools:generateMoves()
                     -- iterate over free space and pickup item if possible
                     if itemsInFreeSpace[desiredSlotItemId] and #itemsInFreeSpace[desiredSlotItemId] > 0 then
                         local freeSpaceItemSlotSource = table.remove(itemsInFreeSpace[desiredSlotItemId], 1)
+                        if (freeSpaceItemSlotSource[3] - desiredSlotItemCount) > 0 then
+                            table.insert(itemsInFreeSpace[desiredSlotItemId], {freeSpaceItemSlotSource[1],
+                                                                               freeSpaceItemSlotSource[2],
+                                                                               freeSpaceItemSlotSource[3] -
+                                desiredSlotItemCount})
+                        elseif (freeSpaceItemSlotSource[3] - desiredSlotItemCount) == 0 then
+                            table.insert(freeSpace, {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]})
+                        end
                         if freeSpaceItemSlotSource then
                             table.insert(moves, {
                                 ["source"] = {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]},
@@ -1708,7 +1738,6 @@ function GuildBankTools:generateMoves()
                                 ["to"] = "bank"
                             })
                             moveSet = true
-
                         end
                     end
 
@@ -1764,9 +1793,6 @@ end
 
 local isMoving = false
 
--- FIXME: Sort sometimes picks up correct items
--- FIXME: Count for food isnt correct
-
 function GuildBankTools:DoMove(moves)
     local move = moves[GuildBankTools.moveCounter]
     if move then
@@ -1790,7 +1816,7 @@ function GuildBankTools:DoMove(moves)
         if from == "bank" then
             SplitGuildBankItem(source[1], source[2], count)
             if to == "bags" then
-                PutItemInBackpack()
+                PickupContainerItem(target[1], target[2])
             elseif to == "bank" then
                 PickupGuildBankItem(target[1], target[2])
             else
@@ -1994,7 +2020,9 @@ end)
 GuildBankTools:RegisterEvent('AUCTION_HOUSE_THROTTLED_SYSTEM_READY', function()
     if AuctionHouseFrame.CommoditiesBuyFrame:GetItemID() and AuctionHouseFrame.CommoditiesBuyFrame:GetItemID() ==
         itemtobuy.itemID then
-        AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay:SetQuantitySelected(itemtobuy.count)
+        C_Timer.After(0.2, function()
+            AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay:SetQuantitySelected(itemtobuy.count)
+        end)
     end
 end)
 

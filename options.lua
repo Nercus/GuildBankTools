@@ -441,6 +441,7 @@ function GuildBankTools:CreateOptions()
                 itemSlot:SetItemId(nil)
                 itemSlot:IsBlocked(true)
             else
+                GuildBankTools.db.profile.layoutEditor.layout[tabIndex][i] = -1
                 itemSlot:SetCount(nil)
                 itemSlot:SetItemId(nil)
             end
