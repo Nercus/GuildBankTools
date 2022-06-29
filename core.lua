@@ -228,7 +228,6 @@ local itemtobuy = {}
 local itemprice = 0
 
 local itemspurchased = {}
-local ignoredItems = {}
 
 local initialQuery
 local auctions = {}
@@ -633,6 +632,7 @@ function GuildBankTools:OnInitialize()
     ExportButton:SetScript("OnClick", function()
         local exportText = ""
         local totalGoldSpent = 0
+
         -- Vendor
         for i, info in pairs(boughtItems) do
             local itemName = GetItemInfo(i)
@@ -648,6 +648,7 @@ function GuildBankTools:OnInitialize()
             local price = ("%d,%d,%d"):format(j.price / 100 / 100, (j.price / 100) % 100, j.price % 100)
             exportText = exportText .. itemName .. "," .. j.count .. "," .. price .. "," .. date() .. "\n"
         end
+
         exportText = exportText .. "Total spent: " .. GetCoinTextureString(totalGoldSpent)
         if exportText ~= "" then
             TextEditBox_Show(exportText)
@@ -697,7 +698,8 @@ local function isCraftingCheaper(itemID)
     if craftingCountperItem[itemID] then
         craftingPrice = craftingPrice / craftingCountperItem[itemID]
     end
-    return craftingPrice < itemBuyPrice, craftingPrice, recipe
+    return (craftingPrice * (1 + GuildBankTools.db.profile.craftingDiff)) < itemBuyPrice,
+        (craftingPrice * (1 + GuildBankTools.db.profile.craftingDiff)), recipe
 end
 
 function ShowTooltipLine(tooltip)
@@ -787,9 +789,7 @@ local function createShoppingListEntry(itemID, countnum)
         f.maxStack = select(8, GetItemInfo(itemID))
 
         f:SetScript("OnClick", function(self, click)
-            if click == "RightButton" and IsShiftKeyDown() then
-                ignoredItems[f.itemID] = true
-            elseif click == "LeftButton" then
+            if click == "LeftButton" then
                 if vendorItems[f.itemID] and MerchantFrame then
                     for i = 1, GetMerchantNumItems() do
                         local itemID = GetMerchantItemID(i)
@@ -880,9 +880,7 @@ local function createShoppingListEntry(itemID, countnum)
         f.maxStack = select(8, GetItemInfo(itemID))
 
         f:SetScript("OnClick", function(self, click)
-            if click == "RightButton" then
-                ignoredItems[f.itemID] = true
-            elseif click == "LeftButton" then
+            if click == "LeftButton" then
                 if vendorItems[f.itemID] and MerchantFrame then
                     for i = 1, GetMerchantNumItems() do
                         local itemID = GetMerchantItemID(i)
@@ -899,7 +897,9 @@ local function createShoppingListEntry(itemID, countnum)
                             print("Buying " .. f.countnum .. " of " .. itemID .. " for " ..
                                       GetCoinTextureString(price / quantity * f.countnum))
                             boughtItems[f.itemID] = {price / quantity * f.countnum, f.countnum}
-                            vendorItems[itemID] = nil
+                            if itemID then
+                                vendorItems[itemID] = nil
+                            end
                         end
                     end
                 elseif shoppinglist[f.itemID] and AuctionHouseFrame then
@@ -1265,92 +1265,6 @@ function GuildBankTools:setShoppingList()
     addedItems = {}
     vendorItems = {}
     shoppinglist = {}
-
-    -- for gbitem, gbcount in pairs(GBankItems) do
-    --     local itemID = GetItemInfoInstant(gbitem)
-    --     local purchasedCount = 0
-    --     if itemspurchased[itemID] then
-    --         purchasedCount = itemspurchased[itemID].count
-    --     end
-    --     if desiredItems[itemID] and not ignoredItems[itemID] then
-    --         if (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) - purchasedCount) > 0 then
-    --             local isCheaper, pricePerItem, recipe = isCraftingCheaper(itemID)
-    --             if isCheaper then
-    --                 for index, reagent in ipairs(recipe) do
-    --                     local reagentCountPerItem = math.ceil(reagent[2] / (craftingCountperItem[itemID] or 1))
-    --                     local reagentCount = reagentCountPerItem *
-    --                                              (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
-    --                                                  purchasedCount)
-    --                     if craftingCountperItem[itemID] then
-    --                         local countToCraft = (desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
-    --                                                  purchasedCount)
-    --                         if countToCraft % craftingCountperItem[itemID] == 0 then
-    --                             reagentCount = reagentCountPerItem * countToCraft
-    --                         else
-    --                             reagentCount = reagentCountPerItem * (countToCraft + craftingCountperItem[itemID])
-    --                         end
-    --                     end
-    --                     for v, k in pairs(GBankItems) do
-    --                         local itemID = GetItemInfoFromHyperlink(v)
-    --                         if reagent[1] == itemID then
-    --                             reagentCount = reagentCount - k
-    --                             break
-    --                         end
-    --                     end
-
-    --                     local reagentID = reagent[1]
-    --                     if reagentCount > 0 then
-    --                         local purchasedReagentCount = 0
-    --                         if itemspurchased[reagentID] then
-    --                             purchasedReagentCount = itemspurchased[reagentID].count
-    --                         end
-    --                         if not vendorReagents[reagentID] then
-    --                             local count = 0
-    --                             if not shoppinglist[reagentID] then
-    --                                 shoppinglist[reagentID] = {
-    --                                     count = -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0) +
-    --                                         purchasedReagentCount),
-    --                                     type = "reagent"
-    --                                 }
-    --                             end
-    --                             if shoppinglist[reagentID] then
-    --                                 count = shoppinglist[reagentID].count
-    --                             end
-    --                             shoppinglist[reagentID] = {
-    --                                 ["type"] = "reagent",
-    --                                 ["count"] = count + reagentCount
-    --                             }
-    --                         else
-    --                             if not vendorItems[reagentID] then
-    --                                 vendorItems[reagentID] =
-    --                                     -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0) +
-    --                                         purchasedReagentCount)
-    --                             end
-    --                             vendorItems[reagentID] = (vendorItems[reagentID] or 0) + reagentCount
-    --                         end
-    --                     end
-    --                 end
-
-    --                 addedItems[itemID] = {(desiredItems[itemID] - gbcount - GetItemCount(itemID, false)) -
-    --                     purchasedCount, "craft"}
-    --             else
-    --                 local count = 0
-    --                 if shoppinglist[itemID] then
-    --                     count = shoppinglist[itemID].count
-    --                 end
-
-    --                 shoppinglist[itemID] = {
-    --                     ["type"] = "item",
-    --                     ["count"] = count + desiredItems[itemID] - gbcount - GetItemCount(itemID, false) -
-    --                         purchasedCount
-    --                 }
-    --                 addedItems[itemID] = {(desiredItems[itemID] - gbcount - GetItemCount(itemID, false)) -
-    --                     purchasedCount, "buy"}
-    --             end
-
-    --         end
-    --     end
-    -- end
 
     for item, desiredCount in pairs(desiredItems) do
         if not addedItems[item] then
@@ -1898,9 +1812,9 @@ local function CreateGBShopButton()
         shopButton:SetScript('OnClick', function()
             boughtItems = {}
             itemspurchased = {}
-            ignoredItems = {}
             itemtobuy = {}
             startShopping = true
+            GuildBankTools.db.profile.lastQuery = GetTime() - 901
             GuildBankTools:setShoppingList()
         end)
         GuildBankTools.GBButtonShop = shopButton
@@ -2027,11 +1941,23 @@ GuildBankTools:RegisterEvent('AUCTION_HOUSE_THROTTLED_SYSTEM_READY', function()
 end)
 
 GuildBankTools:RegisterEvent('COMMODITY_PURCHASE_SUCCEEDED', function()
+    local boughtItemId = AuctionHouseFrame.CommoditiesBuyFrame:GetItemID()
+    local boughtItemCount = AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay:GetQuantitySelected()
+    -- is bought item on shopping list
+    if boughtItemId then
+        if shoppinglist[boughtItemId] and itemtobuy == {} then
+            itemtobuy = {
+                itemId = boughtItemId,
+                count = boughtItemCount
+            }
+        end
+    end
     if itemtobuy.itemID then
         itemspurchased[itemtobuy.itemID] = {
             count = itemtobuy.count,
             price = itemprice
         }
+        itemtobuy = {}
         GuildBankTools:setShoppingList()
     end
 end)

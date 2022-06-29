@@ -394,7 +394,7 @@ AceGUI:RegisterLayout("GBCustom", function(content, children)
         elseif (i - 1) % 7 == 0 then
             local xOffset = 2
             if (i - 1) % 14 == 0 and i < (#children - 14) then
-                xOffset = 13
+                xOffset = 8
             end
             frame:SetPoint("TOPLEFT", children[i - 7].frame, "TOPRIGHT", xOffset, 0)
         else
@@ -413,7 +413,7 @@ function GuildBankTools:CreateOptions()
     OptionsPanel:SetStatusText("")
     OptionsPanel:EnableResize(false)
     OptionsPanel:SetWidth(780)
-    OptionsPanel:SetHeight(730)
+    OptionsPanel:SetHeight(600)
     OptionsPanel:SetCallback("OnClose", function(widget)
         AceGUI:Release(widget)
         GuildBankTools.OptionsPanel = nil
@@ -421,14 +421,14 @@ function GuildBankTools:CreateOptions()
 
     self.OptionsPanel = OptionsPanel
 
-    local newItemFrame = AceGUI:Create("SimpleGroup")
-    newItemFrame:SetLayout("Flow")
-    newItemFrame:SetFullWidth(true)
-    newItemFrame:SetHeight(50)
-    OptionsPanel:AddChild(newItemFrame)
-
     local function SelectGuildBankTab(container, event, group)
         local tabIndex = tonumber(string.match(group, "%d+"))
+        if not tabIndex then
+            return
+        end
+        if not GuildBankTools.db.profile.layoutEditor.layout[tabIndex] then
+            GuildBankTools.db.profile.layoutEditor.layout[tabIndex] = {}
+        end
         container:ReleaseChildren()
         for i = 1, 98 do
             local itemSlot = AceGUI:Create("ItemActionSlot")
@@ -474,26 +474,6 @@ function GuildBankTools:CreateOptions()
         GuildBankLayoutEditor:SetLayout("list")
         OptionsPanel:AddChild(GuildBankLayoutEditor)
 
-        local desiredItemsGroup = AceGUI:Create("InlineGroup")
-        desiredItemsGroup:SetFullWidth(true)
-        desiredItemsGroup:SetHeight(140)
-        desiredItemsGroup:SetLayout("Flow")
-        GuildBankLayoutEditor:AddChild(desiredItemsGroup)
-
-        local function updateDesiredSlots()
-            desiredItemsGroup:ReleaseChildren()
-            for i, j in pairs(GuildBankTools.db.profile.desiredItems) do
-                local desiredSlot = AceGUI:Create("ItemActionSlot")
-                desiredSlot:SetItemId(j.itemId)
-                desiredSlot:SetClone(true)
-                desiredSlot:SetCallback("OnClose", function(frame, event, itemId)
-                    GuildBankTools.db.profile.desiredItems[itemId] = nil
-                    updateDesiredSlots()
-                end)
-                desiredItemsGroup:AddChild(desiredSlot)
-            end
-        end
-
         local itemName = AceGUI:Create("EditBox")
         itemName:SetFullWidth(true)
         itemName:SetCallback("OnEnterPressed", function(widget, event, text)
@@ -508,14 +488,13 @@ function GuildBankTools:CreateOptions()
                         link = link,
                         name = name
                     }
-                    updateDesiredSlots()
+                    PickupItem(itemID)
                 end
                 itemName:SetText("")
             end, text)
         end)
-        newItemFrame:AddChild(itemName)
+        GuildBankLayoutEditor:AddChild(itemName)
 
-        updateDesiredSlots()
         local GuildBankTabs = AceGUI:Create("TabGroup")
         GuildBankTabs:SetFullWidth(true)
         GuildBankTabs:SetLayout("GBCustom")
@@ -535,15 +514,31 @@ function GuildBankTools:CreateOptions()
 
         local infoText = AceGUI:Create("Label")
         infoText:SetFullWidth(true)
-        local string1 = "|A:newplayertutorial-icon-mouse-leftbutton:17:13|a to drag to a different slot"
-        local string2 = "Shift + |A:newplayertutorial-icon-mouse-leftbutton:17:13|a to clone the slot"
-        local string3 = "Ctrl + |A:newplayertutorial-icon-mouse-leftbutton:17:13|a to clear the slot"
-        local string4 = "|A:newplayertutorial-icon-mouse-middlebutton:17:13|a to block/unblock the slot"
+        local string1 = "|A:newplayertutorial-icon-mouse-leftbutton:17:13|a to drag"
+        local string2 = "Shift + |A:newplayertutorial-icon-mouse-leftbutton:17:13|a to clone"
+        local string3 = "Ctrl + |A:newplayertutorial-icon-mouse-leftbutton:17:13|a to clear"
+        local string4 = "|A:newplayertutorial-icon-mouse-middlebutton:17:13|a to block/unblock"
         infoText:SetText("|cff00ff00" .. string1 .. "        " .. "|cff00ff00" .. string2 .. "   " .. "|cff00ff00" ..
                              string3 .. "     " .. "|cff00ff00" .. string4 .. "|r")
         infoText:SetFontObject(GameFontHighlight)
 
         GuildBankLayoutEditor:AddChild(infoText)
+
+        local craftingDiffSlider = AceGUI:Create("Slider")
+        craftingDiffSlider:SetLabel("Percentage difference between crafting or buying from auction house")
+        craftingDiffSlider:SetSliderValues(0, 1, 0.01)
+        craftingDiffSlider:SetIsPercent(true)
+        if self.db.profile.craftingDiff then
+            craftingDiffSlider:SetValue(self.db.profile.craftingDiff)
+        else
+            craftingDiffSlider:SetValue(0)
+            self.db.profile.craftingDiff = 0
+        end
+        craftingDiffSlider:SetCallback("OnValueChanged", function(widget, event, value)
+            self.db.profile.craftingDiff = value
+        end)
+        craftingDiffSlider:SetFullWidth(true)
+        GuildBankLayoutEditor:AddChild(craftingDiffSlider)
 
         local buttonGroup = AceGUI:Create("SimpleGroup")
         buttonGroup:SetFullWidth(true)
