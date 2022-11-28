@@ -1,7 +1,7 @@
-## Interface: 90100
+## Interface: 100002
 ## Author: Nerc
 ## Title: GuildBankTools
-## Version: 1.1
+## Version: 1.2
 ## Notes: GuildBankTools for filling up the guild bank
 ## SavedVariables: GuildBankToolsDB
 
