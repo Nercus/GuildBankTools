@@ -55,7 +55,7 @@ function TextEditBox_Show(text)
 
         -- Resizable
         f:SetResizable(true)
-        f:SetMinResize(150, 100)
+        f:SetResizeBounds(150, 100)
 
         local rb = CreateFrame("Button", "KethoEditBoxResizeButton", KethoEditBox)
         rb:SetPoint("BOTTOMRIGHT", -6, 7)
@@ -449,7 +449,7 @@ function GuildBankTools:CreateOptions()
             itemSlot:SetIndex(i)
             itemSlot:SetCallback("OnValueChanged", function(frame, event, itemId, count, index)
                 if itemId and count and index then
-                    GuildBankTools.db.profile.layoutEditor.layout[tabIndex][index] = {itemId, count}
+                    GuildBankTools.db.profile.layoutEditor.layout[tabIndex][index] = { itemId, count }
                 elseif itemId == -1 then
                     GuildBankTools.db.profile.layoutEditor.layout[tabIndex][index] = "b"
                 else
@@ -519,7 +519,7 @@ function GuildBankTools:CreateOptions()
         local string3 = "Ctrl + |A:newplayertutorial-icon-mouse-leftbutton:17:13|a to clear"
         local string4 = "|A:newplayertutorial-icon-mouse-middlebutton:17:13|a to block/unblock"
         infoText:SetText("|cff00ff00" .. string1 .. "        " .. "|cff00ff00" .. string2 .. "   " .. "|cff00ff00" ..
-                             string3 .. "     " .. "|cff00ff00" .. string4 .. "|r")
+            string3 .. "     " .. "|cff00ff00" .. string4 .. "|r")
         infoText:SetFontObject(GameFontHighlight)
 
         GuildBankLayoutEditor:AddChild(infoText)

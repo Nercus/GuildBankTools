@@ -323,7 +323,7 @@ function TextEditBox_Show(text)
 
         -- Resizable
         f:SetResizable(true)
-        f:SetMinResize(150, 100)
+        f:SetResizeBounds(150, 100)
 
         local rb = CreateFrame("Button", "KethoEditBoxResizeButton", KethoEditBox)
         rb:SetPoint("BOTTOMRIGHT", -6, 7)
@@ -555,9 +555,10 @@ function ShowTooltipLine(tooltip)
     end
 end
 
-GameTooltip:HookScript("OnTooltipSetItem", function(self)
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(self)
     ShowTooltipLine(self)
 end)
+
 
 local function ScanAuctions()
     wipe(auctions)
@@ -1708,11 +1709,33 @@ function GuildBankTools:UpdateItemsInGB()
 
 end
 
-GuildBankTools:RegisterEvent('GUILDBANKFRAME_OPENED', function()
-    GuildBankTools:UpdateItemsInGB()
+GuildBankTools:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_SHOW', function(self, arg1)
+    if arg1 == 10 then
+        GuildBankTools:UpdateItemsInGB()
+        return
+    elseif arg1 == 21 then
+        if select(2, GetInstanceInfo()) ~= "none" then
+            return
+        end
+        if GuildBankTools.db.profile.lastQuery then
+            local diff = GetTime() - GuildBankTools.db.profile.lastQuery
+            if diff > 900 then
+                StaticPopup_Show("GBT_ASK_AH_SCAN")
+            else
+                diff = 900 - diff
+                local minutes = math.floor(diff / 60)
+                local seconds = Round(diff % 60)
+                print("Next Auction Scan can be done in " .. minutes .. " minutes and " .. seconds .. " seconds")
+            end
+
+        end
+    else
+        return
+    end
 end)
 
-GuildBankTools:RegisterEvent('GUILDBANKFRAME_CLOSED', function()
+GuildBankTools:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_HIDE', function(self, arg1)
+    if arg1 ~= 10 then return end
     GuildBankTools.moveCounter = 1
     GuildBankTools:CancelTimer(GuildBankTools.moveTimer)
     isMoving = false
@@ -1734,25 +1757,10 @@ StaticPopupDialogs["GBT_ASK_AH_SCAN"] = {
     preferredIndex = 3
 }
 
-GuildBankTools:RegisterEvent('AUCTION_HOUSE_SHOW', function()
-    if select(2, GetInstanceInfo()) ~= "none" then
-        return
-    end
-    if GuildBankTools.db.profile.lastQuery then
-        local diff = GetTime() - GuildBankTools.db.profile.lastQuery
-        if diff > 900 then
-            StaticPopup_Show("GBT_ASK_AH_SCAN")
-        else
-            diff = 900 - diff
-            local minutes = math.floor(diff / 60)
-            local seconds = Round(diff % 60)
-            print("Next Auction Scan can be done in " .. minutes .. " minutes and " .. seconds .. " seconds")
-        end
 
-    end
-end)
 
 GuildBankTools:RegisterEvent("REPLICATE_ITEM_LIST_UPDATE", function()
+    print("Auction House scan complete")
     if initialQuery then
         ScanAuctions()
         initialQuery = false
@@ -1799,7 +1807,7 @@ GuildBankTools:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", function()
         GuildBankTools:UpdateItemsInGB()
         GuildBankTools:setShoppingList()
     else
-
+        return
     end
 end)
 

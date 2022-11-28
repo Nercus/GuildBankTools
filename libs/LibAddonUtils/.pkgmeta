@@ -1,0 +1,15 @@
+package-as: LibAddonUtils
+
+enable-nolib-creation: no
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
+externals:
+  Libs/LibStub:
+    url: https://repos.curseforge.com/wow/libstub/trunk
+    tag: 1.0
+
+ignore:
+  - README.md
