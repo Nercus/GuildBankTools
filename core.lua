@@ -12,114 +12,114 @@ local craftingCountperItem = {
 
 local recipeReagents = {
     --  Cooking
-    [172043] = {{173036, 10}, -- Spinefin Piranha
-    {173034, 10}, -- Silvergill Pike
-    {172053, 10}, -- Tenebrous Ribs
-    {172055, 10}, -- Phantasmal Haunch
-    {173037, 5}, -- Elysian Thade
-    {172058, 5}, -- Smuggled Azerothian Produce
-    {172059, 5}, -- Rich Grazer Milk
-    {178786, 5} -- Lusterwheat Flour
+    [172043] = { { 173036, 10 }, -- Spinefin Piranha
+        { 173034, 10 }, -- Silvergill Pike
+        { 172053, 10 }, -- Tenebrous Ribs
+        { 172055, 10 }, -- Phantasmal Haunch
+        { 173037, 5 }, -- Elysian Thade
+        { 172058, 5 }, -- Smuggled Azerothian Produce
+        { 172059, 5 }, -- Rich Grazer Milk
+        { 178786, 5 } -- Lusterwheat Flour
     }, -- Feast of Gluttonous Hedonism
-    [187648] = {{187812, 1}, -- Empty Kettle
-    {171841, 1}, -- Shaded Stone
-    {159, 5} -- Refreshing Spring Water
+    [187648] = { { 187812, 1 }, -- Empty Kettle
+        { 171841, 1 }, -- Shaded Stone
+        { 159, 5 } -- Refreshing Spring Water
     }, -- Empty Kettle of Stone Soup
-    [172041] = {{173036, 3}, -- Spinefin Piranha
-    {173033, 3}, -- Iridescent Amberjack
-    {172058, 4}, -- Smuggled Azerothian Produce
-    {172057, 2} -- Inconceivably Aged Vinegar
+    [172041] = { { 173036, 3 }, -- Spinefin Piranha
+        { 173033, 3 }, -- Iridescent Amberjack
+        { 172058, 4 }, -- Smuggled Azerothian Produce
+        { 172057, 2 } -- Inconceivably Aged Vinegar
     }, -- Spinefin Souffle and Fries
-    [172049] = {{173033, 3}, -- Iridescent Amberjack
-    {173032, 3}, -- Lost Sole
-    {172058, 3}, -- Smuggled Azerothian Produce
-    {178786, 2}, -- Lusterwheat Flour
-    {172057, 1} -- Inconceivably Aged Vinegar
+    [172049] = { { 173033, 3 }, -- Iridescent Amberjack
+        { 173032, 3 }, -- Lost Sole
+        { 172058, 3 }, -- Smuggled Azerothian Produce
+        { 178786, 2 }, -- Lusterwheat Flour
+        { 172057, 1 } -- Inconceivably Aged Vinegar
     }, -- Iridescent Ravioli with Apple Sauce
-    [172051] = {{179315, 3}, -- Shadowy Shank
-    {172054, 3}, -- Raw Seraphic Wing
-    {172059, 2}, -- Rich Grazer Milk
-    {172056, 2}, -- Medley of Transplanar Spices
-    {172057, 2} -- Inconceivably Aged Vinegar
+    [172051] = { { 179315, 3 }, -- Shadowy Shank
+        { 172054, 3 }, -- Raw Seraphic Wing
+        { 172059, 2 }, -- Rich Grazer Milk
+        { 172056, 2 }, -- Medley of Transplanar Spices
+        { 172057, 2 } -- Inconceivably Aged Vinegar
     }, -- Steak a la Mode
-    [172045] = {{172053, 3}, -- Tenebrous Ribs
-    {179314, 3}, -- Creeping Crawler Meat
-    {172056, 4}, -- Medley of Transplanar Spices
-    {172059, 2} -- Rich Grazer Milk
+    [172045] = { { 172053, 3 }, -- Tenebrous Ribs
+        { 179314, 3 }, -- Creeping Crawler Meat
+        { 172056, 4 }, -- Medley of Transplanar Spices
+        { 172059, 2 } -- Rich Grazer Milk
     }, -- Tenebrous Crown Roast Aspic
 
-    --  Alchemy
-    [171351] = {{180732, 1}, -- Rune Etched Vial
-    {168583, 3}, -- Widowbloom
-    {170554, 3} -- Vigil's Torch
-    }, -- Potion of Deathly Fixation
-    [171275] = {{180732, 1}, -- Rune Etched Vial
-    {168586, 5} -- Rising Glory
-    }, -- Potion of Spectral Strength
-    [171270] = {{180732, 1}, -- Rune Etched Vial
-    {168583, 5} -- Widowbloom
-    }, -- Potion of Spectral Agility
-    [171273] = {{180732, 1}, -- Rune Etched Vial
-    {168589, 5} -- Marrowroot
-    }, -- Potion of Spectral Intellect
-    [171349] = {{180732, 1}, -- Rune Etched Vial
-    {168589, 3}, -- Marrowroot
-    {168586, 3} -- Rising Glory
-    }, -- Potion of Phantom Fire
-    [171272] = {{180732, 1}, -- Rune Etched Vial
-    {170554, 5} -- Vigil's Torch
-    }, -- Potion of Spiritual Clarity
-    [171267] = {{180732, 1}, -- Rune Etched Vial
-    {169701, 2} -- Death Blossom
-    }, -- Spiritual Healing Potion
-    [171268] = {{180732, 1}, -- Rune Etched Vial
-    {169701, 2} -- Death Blossom
-    }, -- Spiritual Mana Potion
-    [171276] = {{180732, 1}, -- Rune Etched Vial
-    {171315, 3}, -- Nightshade
-    {168586, 4}, -- Rising Glory
-    {168589, 4}, -- Marrowroot
-    {168583, 4}, -- Widowbloom
-    {170554, 4} -- Vigil's Torch
-    }, -- Spectral Flask of Power
-    [171286] = {{180732, 1}, -- Rune Etched Vial
-    {169701, 2} -- Death Blossom
-    }, -- Embalmer's Oil
-    [171285] = {{180732, 1}, -- Rune Etched Vial
-    {169701, 2} -- Death Blossom
-    }, -- Shadowcore Oil
-    [171266] = {{180732, 1}, -- Rune Etched Vial
-    {169701, 2}, -- Death Blossom
-    {168586, 3} -- Rising Glory
-    }, -- Potion of the Hidden Spirit
+    -- --  Alchemy
+    -- [171351] = {{180732, 1}, -- Rune Etched Vial
+    -- {168583, 3}, -- Widowbloom
+    -- {170554, 3} -- Vigil's Torch
+    -- }, -- Potion of Deathly Fixation
+    -- [171275] = {{180732, 1}, -- Rune Etched Vial
+    -- {168586, 5} -- Rising Glory
+    -- }, -- Potion of Spectral Strength
+    -- [171270] = {{180732, 1}, -- Rune Etched Vial
+    -- {168583, 5} -- Widowbloom
+    -- }, -- Potion of Spectral Agility
+    -- [171273] = {{180732, 1}, -- Rune Etched Vial
+    -- {168589, 5} -- Marrowroot
+    -- }, -- Potion of Spectral Intellect
+    -- [171349] = {{180732, 1}, -- Rune Etched Vial
+    -- {168589, 3}, -- Marrowroot
+    -- {168586, 3} -- Rising Glory
+    -- }, -- Potion of Phantom Fire
+    -- [171272] = {{180732, 1}, -- Rune Etched Vial
+    -- {170554, 5} -- Vigil's Torch
+    -- }, -- Potion of Spiritual Clarity
+    -- [171267] = {{180732, 1}, -- Rune Etched Vial
+    -- {169701, 2} -- Death Blossom
+    -- }, -- Spiritual Healing Potion
+    -- [171268] = {{180732, 1}, -- Rune Etched Vial
+    -- {169701, 2} -- Death Blossom
+    -- }, -- Spiritual Mana Potion
+    -- [171276] = {{180732, 1}, -- Rune Etched Vial
+    -- {171315, 3}, -- Nightshade
+    -- {168586, 4}, -- Rising Glory
+    -- {168589, 4}, -- Marrowroot
+    -- {168583, 4}, -- Widowbloom
+    -- {170554, 4} -- Vigil's Torch
+    -- }, -- Spectral Flask of Power
+    -- [171286] = {{180732, 1}, -- Rune Etched Vial
+    -- {169701, 2} -- Death Blossom
+    -- }, -- Embalmer's Oil
+    -- [171285] = {{180732, 1}, -- Rune Etched Vial
+    -- {169701, 2} -- Death Blossom
+    -- }, -- Shadowcore Oil
+    -- [171266] = {{180732, 1}, -- Rune Etched Vial
+    -- {169701, 2}, -- Death Blossom
+    -- {168586, 3} -- Rising Glory
+    -- }, -- Potion of the Hidden Spirit
 
-    --  Engineering
-    [132514] = {{123918, 20}, -- Leystone Ore
-    {136637, 10}, -- Oversized Blasting Cap
-    {136633, 1} -- Loose Trigger
-    }, -- Auto-Hammer
-    [109076] = {{109119, 8}, -- True Iron Ore
-    {111557, 5} -- Sumptuous Fur
-    }, -- Goblin Glider Kit
-    [184308] = {{172937, 1}, -- Wormfed Gear Assembly,
-    {172936, 1}, -- Mortal Coiled Spring
-    {172934, 4}, -- Handful of Laestrite Bolts
-    {183952, 1} -- Machinist's Oil
-    }, -- Disposable Spectrophasic Reanimator
+    -- --  Engineering
+    -- [132514] = {{123918, 20}, -- Leystone Ore
+    -- {136637, 10}, -- Oversized Blasting Cap
+    -- {136633, 1} -- Loose Trigger
+    -- }, -- Auto-Hammer
+    -- [109076] = {{109119, 8}, -- True Iron Ore
+    -- {111557, 5} -- Sumptuous Fur
+    -- }, -- Goblin Glider Kit
+    -- [184308] = {{172937, 1}, -- Wormfed Gear Assembly,
+    -- {172936, 1}, -- Mortal Coiled Spring
+    -- {172934, 4}, -- Handful of Laestrite Bolts
+    -- {183952, 1} -- Machinist's Oil
+    -- }, -- Disposable Spectrophasic Reanimator
 
-    --  Inscription
-    [173049] = {{173059, 3}, -- Luminous Ink
-    {173058, 3}, -- Umbral Ink
-    {175886, 25} -- Dark Parchment
-    }, -- Tome of the Still Mind
+    -- --  Inscription
+    -- [173049] = {{173059, 3}, -- Luminous Ink
+    -- {173058, 3}, -- Umbral Ink
+    -- {175886, 25} -- Dark Parchment
+    -- }, -- Tome of the Still Mind
 
     --  Leatherworking
-    [172347] = {{172096, 8}, -- Heavy Desolate Leather
-    {177062, 4} -- Penumbra Thread
+    [172347] = { { 172096, 8 }, -- Heavy Desolate Leather
+        { 177062, 4 } -- Penumbra Thread
     }, -- Heavy Desolate Armor Kit
-    [172233] = {{172096, 3}, -- Heavy Desolate Leather
-    {172092, 3}, -- Pallid Bone
-    {177062, 1} -- Penumbra Thread
+    [172233] = { { 172096, 3 }, -- Heavy Desolate Leather
+        { 172092, 3 }, -- Pallid Bone
+        { 177062, 1 } -- Penumbra Thread
     } -- Drums of Deathly Ferocity
 
     -- -- Enchanting
@@ -235,176 +235,6 @@ local addedItems = {}
 
 local startShopping = false
 
-local defaultDesiredItems = {
-    [171273] = { -- Potion of Spectral Intellect
-        ["itemName"] = "Potion of Spectral Intellect",
-        ["itemLink"] = "|cffffffff|Hitem:171273::::::::60:270:::::::::|h[Potion of Spectral Intellect]|h|r",
-        ["icon"] = 3566836,
-        ["itemId"] = 171273
-    },
-    [180457] = { -- Shadestone
-        ["itemName"] = "Shadestone",
-        ["itemLink"] = "|cff1eff00|Hitem:180457::::::::60:270:::::::::|h[Shadestone]|h|r",
-        ["icon"] = 1778229,
-        ["itemId"] = 180457
-    },
-    [171285] = { -- Shadowcore Oil
-        ["itemName"] = "Shadowcore Oil",
-        ["itemLink"] = "|cffffffff|Hitem:171285::::::::60:270:::::::::|h[Shadowcore Oil]|h|r",
-        ["icon"] = 463543,
-        ["itemId"] = 171285
-    },
-    [171351] = { -- Potion of Deathly Fixation
-        ["itemName"] = "Potion of Deathly Fixation",
-        ["itemLink"] = "|cffffffff|Hitem:171351::::::::60:270:::::::::|h[Potion of Deathly Fixation]|h|r",
-        ["icon"] = 3566833,
-        ["itemId"] = 171351
-    },
-    [176811] = { -- Potion of Sacrificial Anima
-        ["itemName"] = "Potion of Sacrificial Anima",
-        ["itemLink"] = "|cffffffff|Hitem:176811::::::::60:270:::::::::|h[Potion of Sacrificial Anima]|h|r",
-        ["icon"] = 3566832,
-        ["itemId"] = 176811
-    },
-    [172041] = { -- Spinefin Souffle and Fries
-        ["itemName"] = "Spinefin Souffle and Fries",
-        ["itemLink"] = "|cffffffff|Hitem:172041::::::::60:270:::::::::|h[Spinefin Souffle and Fries]|h|r",
-        ["icon"] = 3671897,
-        ["itemId"] = 172041
-    },
-    [172045] = { -- Tenebrous Crown Roast Aspic
-        ["itemName"] = "Tenebrous Crown Roast Aspic",
-        ["itemLink"] = "|cffffffff|Hitem:172045::::::::60:270:::::::::|h[Tenebrous Crown Roast Aspic]|h|r",
-        ["icon"] = 3671905,
-        ["itemId"] = 172045
-    },
-    [172049] = { -- Iridescent Ravioli with Apple Sauce
-        ["itemName"] = "Iridescent Ravioli with Apple Sauce",
-        ["itemLink"] = "|cffffffff|Hitem:172049::::::::60:270:::::::::|h[Iridescent Ravioli with Apple Sauce]|h|r",
-        ["icon"] = 3671891,
-        ["itemId"] = 172049
-    },
-    [171437] = { -- Shaded Sharpening Stone
-        ["itemName"] = "Shaded Sharpening Stone",
-        ["itemLink"] = "|cff1eff00|Hitem:171437::::::::60:270:::::::::|h[Shaded Sharpening Stone]|h|r",
-        ["icon"] = 3528422,
-        ["itemId"] = 171437
-    },
-    [171286] = { -- Embalmer's Oil
-        ["itemName"] = "Embalmer's Oil",
-        ["itemLink"] = "|cffffffff|Hitem:171286::::::::60:270:::::::::|h[Embalmer's Oil]|h|r",
-        ["icon"] = 463544,
-        ["itemId"] = 171286
-    },
-    [171267] = { -- Spiritual Healing Potion
-        ["itemName"] = "Spiritual Healing Potion",
-        ["itemLink"] = "|cffffffff|Hitem:171267::::::::60:270:::::::::|h[Spiritual Healing Potion]|h|r",
-        ["icon"] = 3566860,
-        ["itemId"] = 171267
-    },
-    [172043] = { -- Feast of Gluttonous Hedonism
-        ["itemName"] = "Feast of Gluttonous Hedonism",
-        ["itemLink"] = "|cffffffff|Hitem:172043::::::::60:270:::::::::|h[Feast of Gluttonous Hedonism]|h|r",
-        ["icon"] = 3760523,
-        ["itemId"] = 172043
-    },
-    [171275] = { -- Potion of Spectral Strength
-        ["itemName"] = "Potion of Spectral Strength",
-        ["itemLink"] = "|cffffffff|Hitem:171275::::::::60:270:::::::::|h[Potion of Spectral Strength]|h|r",
-        ["icon"] = 3566838,
-        ["itemId"] = 171275
-    },
-    [172051] = { -- Steak a la Mode
-        ["itemName"] = "Steak a la Mode",
-        ["itemLink"] = "|cffffffff|Hitem:172051::::::::60:270:::::::::|h[Steak a la Mode]|h|r",
-        ["icon"] = 3671904,
-        ["itemId"] = 172051
-    },
-    [172347] = { -- Heavy Desolate Armor Kit
-        ["itemName"] = "Heavy Desolate Armor Kit",
-        ["itemLink"] = "|cffffffff|Hitem:172347::::::::60:270:::::::::|h[Heavy Desolate Armor Kit]|h|r",
-        ["icon"] = 3528447,
-        ["itemId"] = 172347
-    },
-    [171349] = { -- Potion of Phantom Fire
-        ["itemName"] = "Potion of Phantom Fire",
-        ["itemLink"] = "|cffffffff|Hitem:171349::::::::60:270:::::::::|h[Potion of Phantom Fire]|h|r",
-        ["icon"] = 3566829,
-        ["itemId"] = 171349
-    },
-    [186662] = { -- Vantus Rune: Sanctum of Domination
-        ["itemName"] = "Vantus Rune: Sanctum of Domination",
-        ["itemLink"] = "|cffffffff|Hitem:186662::::::::60:270:::::::::|h[Vantus Rune: Sanctum of Domination]|h|r",
-        ["icon"] = 4074774,
-        ["itemId"] = 186662
-    },
-    [132514] = { -- Auto-Hammer
-        ["itemName"] = "Auto-Hammer",
-        ["itemLink"] = "|cff1eff00|Hitem:132514::::::::60:270:::::::::|h[Auto-Hammer]|h|r",
-        ["icon"] = 1405803,
-        ["itemId"] = 132514
-    },
-    [171268] = { -- Spiritual Mana Potion
-        ["itemName"] = "Spiritual Mana Potion",
-        ["itemLink"] = "|cffffffff|Hitem:171268::::::::60:270:::::::::|h[Spiritual Mana Potion]|h|r",
-        ["icon"] = 3566858,
-        ["itemId"] = 171268
-    },
-    [171272] = { -- Potion of Spiritual Clarity
-        ["itemName"] = "Potion of Spiritual Clarity",
-        ["itemLink"] = "|cffffffff|Hitem:171272::::::::60:270:::::::::|h[Potion of Spiritual Clarity]|h|r",
-        ["icon"] = 3566828,
-        ["itemId"] = 171272
-    },
-    [109076] = { -- Goblin Glider Kit
-        ["itemName"] = "Goblin Glider Kit",
-        ["itemLink"] = "|cffffffff|Hitem:109076::::::::60:270:::::::::|h[Goblin Glider Kit]|h|r",
-        ["icon"] = 133632,
-        ["itemId"] = 109076
-    },
-    [171270] = { -- Potion of Spectral Agility
-        ["itemName"] = "Potion of Spectral Agility",
-        ["itemLink"] = "|cffffffff|Hitem:171270::::::::60:270:::::::::|h[Potion of Spectral Agility]|h|r",
-        ["icon"] = 3566835,
-        ["itemId"] = 171270
-    },
-    [171439] = { -- Shaded Weightstone
-        ["itemName"] = "Shaded Weightstone",
-        ["itemLink"] = "|cff1eff00|Hitem:171439::::::::60:270:::::::::|h[Shaded Weightstone]|h|r",
-        ["icon"] = 3528423,
-        ["itemId"] = 171439
-    },
-    [171276] = { -- Spectral Flask of Power
-        ["itemName"] = "Spectral Flask of Power",
-        ["itemLink"] = "|cffffffff|Hitem:171276::::::::60:270:::::::::|h[Spectral Flask of Power]|h|r",
-        ["icon"] = 3566840,
-        ["itemId"] = 171276
-    },
-    [171266] = { -- Potion of the Hidden Spirit
-        ["itemName"] = "Potion of the Hidden Spirit",
-        ["itemLink"] = "|cffffffff|Hitem:171266::::::::60:270:::::::::|h[Potion of the Hidden Spirit]|h|r",
-        ["icon"] = 3566868,
-        ["itemId"] = 171266
-    },
-    [172233] = { -- Drums of Deathly Ferocity
-        ["itemName"] = "Drums of Deathly Ferocity",
-        ["itemLink"] = "|cff1eff00|Hitem:172233::::::::60:270:::::::::|h[Drums of Deathly Ferocity]|h|r",
-        ["icon"] = 3528453,
-        ["itemId"] = 172233
-    },
-    [181468] = { -- Veiled Augment Rune
-        ["itemName"] = "Veiled Augment Rune",
-        ["itemLink"] = "|cff0070dd|Hitem:181468::::::::60:270:::::::::|h[Veiled Augment Rune]|h|r",
-        ["icon"] = 134078,
-        ["itemId"] = 181468
-    },
-    [173049] = { -- Tome of the Still Mind
-        ["itemName"] = "Tome of the Still Mind",
-        ["itemLink"] = "|cff1eff00|Hitem:173049::::::::60:270:::::::::|h[Tome of the Still Mind]|h|r",
-        ["icon"] = 3717418,
-        ["itemId"] = 173049
-    }
-}
 
 local defaults = {
     profile = {
@@ -534,7 +364,7 @@ end
 function GuildBankTools:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("GuildBankToolsDB", defaults, true)
     if not self.db.profile.desiredItems then
-        self.db.profile.desiredItems = defaultDesiredItems
+        self.db.profile.desiredItems = {}
     end
     LDBIcon:Register("GuildBankTools", GuildBankToolsBroker, self.db.profile.minimap)
     GuildBankTools:UpdateMinimapButton()
@@ -738,7 +568,7 @@ local function ScanAuctions()
     local iterationIndex = 1
     C_Timer.NewTicker(0.2, function()
         for i = lastStart, (numReplicates / chunks) * iterationIndex do
-            local item = {C_AuctionHouse.GetReplicateItemInfo(i)}
+            local item = { C_AuctionHouse.GetReplicateItemInfo(i) }
             if item[17] then
 
                 if not auctions[item[17]] then
@@ -804,8 +634,8 @@ local function createShoppingListEntry(itemID, countnum)
                             BuyMerchantItem(i, rest)
 
                             print("Buying " .. f.countnum .. " of " .. itemID .. " for " ..
-                                      GetCoinTextureString(price / quantity * f.countnum))
-                            boughtItems[f.itemID] = {price / quantity * f.countnum, f.countnum}
+                                GetCoinTextureString(price / quantity * f.countnum))
+                            boughtItems[f.itemID] = { price / quantity * f.countnum, f.countnum }
                             vendorItems[itemID] = nil
                         end
                     end
@@ -895,8 +725,8 @@ local function createShoppingListEntry(itemID, countnum)
                             BuyMerchantItem(i, rest)
 
                             print("Buying " .. f.countnum .. " of " .. itemID .. " for " ..
-                                      GetCoinTextureString(price / quantity * f.countnum))
-                            boughtItems[f.itemID] = {price / quantity * f.countnum, f.countnum}
+                                GetCoinTextureString(price / quantity * f.countnum))
+                            boughtItems[f.itemID] = { price / quantity * f.countnum, f.countnum }
                             if itemID then
                                 vendorItems[itemID] = nil
                             end
@@ -931,8 +761,8 @@ GuildBankTools.SLFEntries = {
     ["vendor"] = {}
 }
 
-local tooltipGradient = {'ff0000', 'fe4400', 'f86600', 'ee8200', 'df9b00', 'cdb200', 'b6c700', '98db00', '6fed00',
-                         '00ff00'}
+local tooltipGradient = { 'ff0000', 'fe4400', 'f86600', 'ee8200', 'df9b00', 'cdb200', 'b6c700', '98db00', '6fed00',
+    '00ff00' }
 
 function GuildBankTools:updateShoppingListFrame()
     if not self.SLFEntries["craftedHeader"] then
@@ -1321,15 +1151,15 @@ function GuildBankTools:setShoppingList()
                             else
                                 if not vendorItems[reagentID] then
                                     vendorItems[reagentID] =
-                                        -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0) +
-                                            purchasedReagentCount)
+                                    -(GetItemCount(reagentID, true) + (GBankItems[reagentID] or 0) +
+                                        purchasedReagentCount)
                                 end
                                 vendorItems[reagentID] = (vendorItems[reagentID] or 0) + reagentCount
                             end
                         end
                     end
 
-                    addedItems[item] = {totalCount, "craft"}
+                    addedItems[item] = { totalCount, "craft" }
                 else
                     local count = 0
                     if shoppinglist[item] then
@@ -1340,7 +1170,7 @@ function GuildBankTools:setShoppingList()
                         ["type"] = "item",
                         ["count"] = count + totalCount
                     }
-                    addedItems[item] = {totalCount, "buy"}
+                    addedItems[item] = { totalCount, "buy" }
                 end
 
             end
@@ -1371,22 +1201,22 @@ function GuildBankTools:generateMoves()
         for slotIndex = 1, 98 do
             local slotData = tabData[slotIndex]
             if slotData == -1 and not GetGuildBankItemLink(tabIndex, slotIndex) then
-                table.insert(freeSpace, {tabIndex, slotIndex})
+                table.insert(freeSpace, { tabIndex, slotIndex })
             elseif slotData == -1 and GetGuildBankItemLink(tabIndex, slotIndex) then
                 local itemID = GetItemInfoFromHyperlink(GetGuildBankItemLink(tabIndex, slotIndex))
                 if not itemsInFreeSpace[itemID] then
                     itemsInFreeSpace[itemID] = {}
                 end
                 local _, freeSpaceItemCount = GetGuildBankItemInfo(tabIndex, slotIndex)
-                table.insert(itemsInFreeSpace[itemID], {tabIndex, slotIndex, freeSpaceItemCount})
+                table.insert(itemsInFreeSpace[itemID], { tabIndex, slotIndex, freeSpaceItemCount })
             end
         end
     end
 
     for bag = 0, NUM_BAG_SLOTS do
-        for bagSlot = 1, GetContainerNumSlots(bag) do
-            if not GetContainerItemID(bag, bagSlot) then
-                table.insert(freeBagSpace, {bag, bagSlot})
+        for bagSlot = 1, C_Container.GetContainerNumSlots(bag) do
+            if not C_Container.GetContainerItemID(bag, bagSlot) then
+                table.insert(freeBagSpace, { bag, bagSlot })
             end
         end
     end
@@ -1418,8 +1248,8 @@ function GuildBankTools:generateMoves()
                     end
                     if freeSpaceSlot then
                         table.insert(moves, {
-                            ["source"] = {tabIndex, slotIndex},
-                            ["target"] = {freeSpaceSlot[1], freeSpaceSlot[2]},
+                            ["source"] = { tabIndex, slotIndex },
+                            ["target"] = { freeSpaceSlot[1], freeSpaceSlot[2] },
                             ["count"] = slotItemCount - desiredSlotItemCount,
                             ["from"] = "bank",
                             ["to"] = "bank"
@@ -1429,8 +1259,8 @@ function GuildBankTools:generateMoves()
                         -- moving to bags doesnt need a target
                         local freeBagSpaceSlot = table.remove(freeBagSpace)
                         table.insert(moves, {
-                            ["source"] = {tabIndex, slotIndex},
-                            ["target"] = {freeBagSpaceSlot[1], freeBagSpaceSlot[2]},
+                            ["source"] = { tabIndex, slotIndex },
+                            ["target"] = { freeBagSpaceSlot[1], freeBagSpaceSlot[2] },
                             ["count"] = slotItemCount - desiredSlotItemCount,
                             ["from"] = "bank",
                             ["to"] = "bags"
@@ -1442,17 +1272,17 @@ function GuildBankTools:generateMoves()
                     if itemsInFreeSpace[desiredSlotItemId] and #itemsInFreeSpace[desiredSlotItemId] > 0 then
                         local freeSpaceItemSlotSource = table.remove(itemsInFreeSpace[desiredSlotItemId], 1)
                         if (freeSpaceItemSlotSource[3] - desiredSlotItemCount) > 0 then
-                            table.insert(itemsInFreeSpace[desiredSlotItemId], {freeSpaceItemSlotSource[1],
-                                                                               freeSpaceItemSlotSource[2],
-                                                                               freeSpaceItemSlotSource[3] -
-                                desiredSlotItemCount})
+                            table.insert(itemsInFreeSpace[desiredSlotItemId], { freeSpaceItemSlotSource[1],
+                                freeSpaceItemSlotSource[2],
+                                freeSpaceItemSlotSource[3] -
+                                    desiredSlotItemCount })
                         elseif (freeSpaceItemSlotSource[3] - desiredSlotItemCount) == 0 then
-                            table.insert(freeSpace, {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]})
+                            table.insert(freeSpace, { freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2] })
                         end
                         if freeSpaceItemSlotSource then
                             table.insert(moves, {
-                                ["source"] = {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]},
-                                ["target"] = {tabIndex, slotIndex},
+                                ["source"] = { freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2] },
+                                ["target"] = { tabIndex, slotIndex },
                                 ["count"] = desiredSlotItemCount,
                                 ["from"] = "bank",
                                 ["to"] = "bank"
@@ -1465,15 +1295,15 @@ function GuildBankTools:generateMoves()
                     if not moveSet then
                         local movedCount = 0
                         for bag = 0, NUM_BAG_SLOTS do
-                            for slot = 1, GetContainerNumSlots(bag) do
-                                if desiredSlotItemId == GetContainerItemID(bag, slot) and
+                            for slot = 1, C_Container.GetContainerNumSlots(bag) do
+                                if desiredSlotItemId == C_Container.GetContainerItemID(bag, slot) and
                                     not usedBagSlots[bag .. "-" .. slot] then
-                                    local _, bagSlotItemCount = GetContainerItemInfo(bag, slot)
+                                    local _, bagSlotItemCount = C_Container.GetContainerItemInfo(bag, slot).stackCount
                                     if bagSlotItemCount >= desiredSlotItemCount then
                                         usedBagSlots[bag .. "-" .. slot] = true
                                         table.insert(moves, {
-                                            ["source"] = {bag, slot},
-                                            ["target"] = {tabIndex, slotIndex},
+                                            ["source"] = { bag, slot },
+                                            ["target"] = { tabIndex, slotIndex },
                                             ["count"] = desiredSlotItemCount,
                                             ["from"] = "bags",
                                             ["to"] = "bank"
@@ -1486,8 +1316,8 @@ function GuildBankTools:generateMoves()
                                         end
                                         usedBagSlots[bag .. "-" .. slot] = true
                                         table.insert(moves, {
-                                            ["source"] = {bag, slot},
-                                            ["target"] = {tabIndex, slotIndex},
+                                            ["source"] = { bag, slot },
+                                            ["target"] = { tabIndex, slotIndex },
                                             ["count"] = bagSlotItemCount,
                                             ["from"] = "bags",
                                             ["to"] = "bank"
@@ -1514,8 +1344,8 @@ function GuildBankTools:generateMoves()
                     end
                     if freeSpaceSlot then
                         table.insert(moves, {
-                            ["source"] = {tabIndex, slotIndex},
-                            ["target"] = {freeSpaceSlot[1], freeSpaceSlot[2]},
+                            ["source"] = { tabIndex, slotIndex },
+                            ["target"] = { freeSpaceSlot[1], freeSpaceSlot[2] },
                             ["count"] = slotItemCount,
                             ["from"] = "bank",
                             ["to"] = "bank"
@@ -1524,8 +1354,8 @@ function GuildBankTools:generateMoves()
                         -- moving to bags doesnt need a target
                         local freeBagSpaceSlot = table.remove(freeBagSpace)
                         table.insert(moves, {
-                            ["source"] = {tabIndex, slotIndex},
-                            ["target"] = {freeBagSpaceSlot[1], freeBagSpaceSlot[2]},
+                            ["source"] = { tabIndex, slotIndex },
+                            ["target"] = { freeBagSpaceSlot[1], freeBagSpaceSlot[2] },
                             ["count"] = slotItemCount,
                             ["from"] = "bank",
                             ["to"] = "bags"
@@ -1540,8 +1370,8 @@ function GuildBankTools:generateMoves()
                     end
                     if freeSpaceSlot then
                         table.insert(moves, {
-                            ["source"] = {tabIndex, slotIndex},
-                            ["target"] = {freeSpaceSlot[1], freeSpaceSlot[2]},
+                            ["source"] = { tabIndex, slotIndex },
+                            ["target"] = { freeSpaceSlot[1], freeSpaceSlot[2] },
                             ["count"] = slotItemCount,
                             ["from"] = "bank",
                             ["to"] = "bank"
@@ -1550,8 +1380,8 @@ function GuildBankTools:generateMoves()
                         -- moving to bags doesnt need a target
                         local freeBagSpaceSlot = table.remove(freeBagSpace)
                         table.insert(moves, {
-                            ["source"] = {tabIndex, slotIndex},
-                            ["target"] = {freeBagSpaceSlot[1], freeBagSpaceSlot[2]},
+                            ["source"] = { tabIndex, slotIndex },
+                            ["target"] = { freeBagSpaceSlot[1], freeBagSpaceSlot[2] },
                             ["count"] = slotItemCount,
                             ["from"] = "bank",
                             ["to"] = "bags"
@@ -1563,17 +1393,17 @@ function GuildBankTools:generateMoves()
                     if itemsInFreeSpace[desiredSlotItemId] and #itemsInFreeSpace[desiredSlotItemId] > 0 then
                         local freeSpaceItemSlotSource = table.remove(itemsInFreeSpace[desiredSlotItemId], 1)
                         if (freeSpaceItemSlotSource[3] - desiredSlotItemCount) > 0 then
-                            table.insert(itemsInFreeSpace[desiredSlotItemId], {freeSpaceItemSlotSource[1],
-                                                                               freeSpaceItemSlotSource[2],
-                                                                               freeSpaceItemSlotSource[3] -
-                                desiredSlotItemCount})
+                            table.insert(itemsInFreeSpace[desiredSlotItemId], { freeSpaceItemSlotSource[1],
+                                freeSpaceItemSlotSource[2],
+                                freeSpaceItemSlotSource[3] -
+                                    desiredSlotItemCount })
                         elseif (freeSpaceItemSlotSource[3] - desiredSlotItemCount) == 0 then
-                            table.insert(freeSpace, {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]})
+                            table.insert(freeSpace, { freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2] })
                         end
                         if freeSpaceItemSlotSource then
                             table.insert(moves, {
-                                ["source"] = {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]},
-                                ["target"] = {tabIndex, slotIndex},
+                                ["source"] = { freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2] },
+                                ["target"] = { tabIndex, slotIndex },
                                 ["count"] = desiredSlotItemCount,
                                 ["from"] = "bank",
                                 ["to"] = "bank"
@@ -1586,15 +1416,15 @@ function GuildBankTools:generateMoves()
                     if not moveSet then
                         local movedCount = 0
                         for bag = 0, NUM_BAG_SLOTS do
-                            for slot = 1, GetContainerNumSlots(bag) do
-                                if desiredSlotItemId == GetContainerItemID(bag, slot) and
+                            for slot = 1, C_Container.GetContainerNumSlots(bag) do
+                                if desiredSlotItemId == C_Container.GetContainerItemID(bag, slot) and
                                     not usedBagSlots[bag .. "-" .. slot] then
-                                    local _, bagSlotItemCount = GetContainerItemInfo(bag, slot)
+                                    local _, bagSlotItemCount = C_Container.GetContainerItemInfo(bag, slot).stackCount
                                     if bagSlotItemCount >= desiredSlotItemCount then
                                         usedBagSlots[bag .. "-" .. slot] = true
                                         table.insert(moves, {
-                                            ["source"] = {bag, slot},
-                                            ["target"] = {tabIndex, slotIndex},
+                                            ["source"] = { bag, slot },
+                                            ["target"] = { tabIndex, slotIndex },
                                             ["count"] = desiredSlotItemCount,
                                             ["from"] = "bags",
                                             ["to"] = "bank"
@@ -1607,8 +1437,8 @@ function GuildBankTools:generateMoves()
                                         end
                                         usedBagSlots[bag .. "-" .. slot] = true
                                         table.insert(moves, {
-                                            ["source"] = {bag, slot},
-                                            ["target"] = {tabIndex, slotIndex},
+                                            ["source"] = { bag, slot },
+                                            ["target"] = { tabIndex, slotIndex },
                                             ["count"] = bagSlotItemCount,
                                             ["from"] = "bags",
                                             ["to"] = "bank"
@@ -1636,17 +1466,17 @@ function GuildBankTools:generateMoves()
                     if itemsInFreeSpace[desiredSlotItemId] and #itemsInFreeSpace[desiredSlotItemId] > 0 then
                         local freeSpaceItemSlotSource = table.remove(itemsInFreeSpace[desiredSlotItemId], 1)
                         if (freeSpaceItemSlotSource[3] - desiredSlotItemCount) > 0 then
-                            table.insert(itemsInFreeSpace[desiredSlotItemId], {freeSpaceItemSlotSource[1],
-                                                                               freeSpaceItemSlotSource[2],
-                                                                               freeSpaceItemSlotSource[3] -
-                                desiredSlotItemCount})
+                            table.insert(itemsInFreeSpace[desiredSlotItemId], { freeSpaceItemSlotSource[1],
+                                freeSpaceItemSlotSource[2],
+                                freeSpaceItemSlotSource[3] -
+                                    desiredSlotItemCount })
                         elseif (freeSpaceItemSlotSource[3] - desiredSlotItemCount) == 0 then
-                            table.insert(freeSpace, {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]})
+                            table.insert(freeSpace, { freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2] })
                         end
                         if freeSpaceItemSlotSource then
                             table.insert(moves, {
-                                ["source"] = {freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2]},
-                                ["target"] = {tabIndex, slotIndex},
+                                ["source"] = { freeSpaceItemSlotSource[1], freeSpaceItemSlotSource[2] },
+                                ["target"] = { tabIndex, slotIndex },
                                 ["count"] = desiredSlotItemCount,
                                 ["from"] = "bank",
                                 ["to"] = "bank"
@@ -1659,15 +1489,15 @@ function GuildBankTools:generateMoves()
                     if not moveSet then
                         local movedCount = 0
                         for bag = 0, NUM_BAG_SLOTS do
-                            for slot = 1, GetContainerNumSlots(bag) do
-                                if desiredSlotItemId == GetContainerItemID(bag, slot) and
+                            for slot = 1, C_Container.GetContainerNumSlots(bag) do
+                                if desiredSlotItemId == C_Container.GetContainerItemID(bag, slot) and
                                     not usedBagSlots[bag .. "-" .. slot] then
-                                    local _, bagSlotItemCount = GetContainerItemInfo(bag, slot)
+                                    local _, bagSlotItemCount = C_Container.GetContainerItemInfo(bag, slot).stackCount
                                     if bagSlotItemCount >= desiredSlotItemCount then
                                         usedBagSlots[bag .. "-" .. slot] = true
                                         table.insert(moves, {
-                                            ["source"] = {bag, slot},
-                                            ["target"] = {tabIndex, slotIndex},
+                                            ["source"] = { bag, slot },
+                                            ["target"] = { tabIndex, slotIndex },
                                             ["count"] = desiredSlotItemCount,
                                             ["from"] = "bags",
                                             ["to"] = "bank"
@@ -1680,8 +1510,8 @@ function GuildBankTools:generateMoves()
                                         end
                                         usedBagSlots[bag .. "-" .. slot] = true
                                         table.insert(moves, {
-                                            ["source"] = {bag, slot},
-                                            ["target"] = {tabIndex, slotIndex},
+                                            ["source"] = { bag, slot },
+                                            ["target"] = { tabIndex, slotIndex },
                                             ["count"] = bagSlotItemCount,
                                             ["from"] = "bags",
                                             ["to"] = "bank"
@@ -1722,7 +1552,6 @@ function GuildBankTools:DoMove(moves)
                 to, GuildBankTools.moveCounter)
             return
         end
-        print(count, from, source[1], source[2], to, target[1], target[2], GuildBankTools.moveCounter, #moves)
         print(string.format("Moving %d from %s (%s, %s) to %s (%s, %s) - Move %s from %s", count, from, source[1],
             source[2], to, target[1], target[2], GuildBankTools.moveCounter, #moves))
 
@@ -1748,7 +1577,6 @@ function GuildBankTools:DoMove(moves)
         GuildBankTools.moveCounter = GuildBankTools.moveCounter + 1
         print(GuildBankTools.moveCounter == #moves and "Done" or "")
         if GuildBankTools.moveCounter == #moves then
-            print("cancelTimer")
             isMoving = false
             GuildBankTools:SortGuildBank()
             return

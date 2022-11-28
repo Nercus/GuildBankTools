@@ -547,12 +547,12 @@ function GuildBankTools:CreateOptions()
 
         local importLayoutButton = AceGUI:Create("Button")
         importLayoutButton:SetText("Import Layout")
-        importLayoutButton:SetRelativeWidth(0.5)
+        importLayoutButton:SetRelativeWidth(0.50)
         buttonGroup:AddChild(importLayoutButton)
 
         local exportLayoutButton = AceGUI:Create("Button")
         exportLayoutButton:SetText("Export Layout")
-        exportLayoutButton:SetRelativeWidth(0.5)
+        exportLayoutButton:SetRelativeWidth(0.50)
         buttonGroup:AddChild(exportLayoutButton)
 
         local editBox = AceGUI:Create("EditBox")
