@@ -1,0 +1,27 @@
+{
+    "Lua.diagnostics.disable": [
+        "undefined-field",
+        "deprecated",
+        "param-type-mismatch",
+        "param-type-mismatch"
+    ],
+    "diagnostics.globals": [
+        "SlashCmdList",
+        "AuctionHouseFrame",
+        "GuildBankFrame",
+        "StaticPopup_Show",
+        "GameTooltip",
+        "TooltipDataProcessor",
+        "NUM_BAG_SLOTS",
+        "StaticPopupDialogs",
+        "GameFontHighlight",
+        "GBTLogWindow",
+        "GBTLogWindowButton",
+        "GBTLogWindowScrollFrame",
+        "GBTLogWindowEditBox"
+    ],
+    "workspace.ignoreDir": [
+        ".vscode",
+        "libs"
+    ]
+}

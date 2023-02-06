@@ -6,84 +6,6 @@ local AceGUI = LibStub("AceGUI-3.0")
 local LibAceSerializer = LibStub:GetLibrary("AceSerializer-3.0")
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
 
-function TextEditBox_Show(text)
-    if not KethoEditBox then
-        local f = CreateFrame("Frame", "KethoEditBox", UIParent, "DialogBoxFrame")
-        f:SetPoint("CENTER")
-        f:SetSize(600, 500)
-
-        f:SetBackdrop({
-            bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-            edgeFile = "Interface\\PVPFrame\\UI-Character-PVP-Highlight", -- this one is neat
-            edgeSize = 16,
-            insets = {
-                left = 8,
-                right = 6,
-                top = 8,
-                bottom = 8
-            }
-        })
-        f:SetBackdropBorderColor(0, 0, 0, 0.5) -- darkblue
-
-        -- Movable
-        f:SetMovable(true)
-        f:SetClampedToScreen(true)
-        f:SetScript("OnMouseDown", function(self, button)
-            if button == "LeftButton" then
-                self:StartMoving()
-            end
-        end)
-        f:SetScript("OnMouseUp", f.StopMovingOrSizing)
-
-        -- ScrollFrame
-        local sf = CreateFrame("ScrollFrame", "KethoEditBoxScrollFrame", KethoEditBox, "UIPanelScrollFrameTemplate")
-        sf:SetPoint("LEFT", 16, 0)
-        sf:SetPoint("RIGHT", -32, 0)
-        sf:SetPoint("TOP", 0, -16)
-        sf:SetPoint("BOTTOM", KethoEditBoxButton, "TOP", 0, 0)
-
-        -- EditBox
-        local eb = CreateFrame("EditBox", "KethoEditBoxEditBox", KethoEditBoxScrollFrame)
-        eb:SetSize(sf:GetSize())
-        eb:SetMultiLine(true)
-        eb:SetAutoFocus(false) -- dont automatically focus
-        eb:SetFontObject("ChatFontNormal")
-        eb:SetScript("OnEscapePressed", function()
-            f:Hide()
-        end)
-        sf:SetScrollChild(eb)
-
-        -- Resizable
-        f:SetResizable(true)
-        f:SetResizeBounds(150, 100)
-
-        local rb = CreateFrame("Button", "KethoEditBoxResizeButton", KethoEditBox)
-        rb:SetPoint("BOTTOMRIGHT", -6, 7)
-        rb:SetSize(16, 16)
-
-        rb:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-        rb:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
-        rb:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-
-        rb:SetScript("OnMouseDown", function(self, button)
-            if button == "LeftButton" then
-                f:StartSizing("BOTTOMRIGHT")
-                self:GetHighlightTexture():Hide() -- more noticeable
-            end
-        end)
-        rb:SetScript("OnMouseUp", function(self, button)
-            f:StopMovingOrSizing()
-            self:GetHighlightTexture():Show()
-            eb:SetWidth(sf:GetWidth())
-        end)
-        f:Show()
-    end
-
-    if text then
-        KethoEditBoxEditBox:SetText(text)
-    end
-    KethoEditBox:Show()
-end
 
 do
     local Type, Version = "ItemActionSlot", 1
@@ -217,6 +139,26 @@ do
         end
     end
 
+    local function getItemQualityOverlay(itemIDOrLink)
+        local quality = nil;
+        local button = {}
+        if itemIDOrLink then
+            quality = C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemIDOrLink);
+            if quality then
+                button.isCraftedItem = false;
+            else
+                quality = C_TradeSkillUI.GetItemCraftedQualityByItemInfo(itemIDOrLink);
+                button.isCraftedItem = quality ~= nil;
+            end
+
+            button.isProfessionItem = quality ~= nil;
+        else
+            button.isProfessionItem = false;
+        end
+        button.quality = quality;
+        return button;
+    end
+
     local methods = {}
 
     function methods:OnAcquire()
@@ -263,14 +205,18 @@ do
                     local _, _, _, _, _, _, _, maxCount, _, texture = GetItemInfo(itemID)
                     widget.maxCount = maxCount
                     widget.frame:SetNormalTexture(texture or [[Interface\\Icons\\INV_Misc_QuestionMark]])
+                    local qualityInfo = getItemQualityOverlay(itemID)
                     widget.frame:GetNormalTexture():SetTexCoord(0, 1, 0, 1)
+                    widget.frame.iconOverlay:SetQuality(qualityInfo.quality)
                 end, itemId)
             else
-                self.frame:SetNormalTexture([[Interface\Buttons\UI-Slot-Background]])
+                self.frame:SetNormalAtlas("bags-item-slot64")
+                self.frame.iconOverlay:SetQuality(nil)
                 self.frame:GetNormalTexture():SetTexCoord(0, 41 / 64, 0, 41 / 64)
             end
         else
-            self.frame:SetNormalTexture([[Interface\Buttons\UI-Slot-Background]])
+            self.frame:SetNormalAtlas("bags-item-slot64")
+            self.frame.iconOverlay:SetQuality(nil)
             self.frame:GetNormalTexture():SetTexCoord(0, 41 / 64, 0, 41 / 64)
         end
         self:Fire("OnValueChanged", self.itemId, self.count, self.index)
@@ -322,6 +268,21 @@ do
         frame:SetScript("OnLeave", Button_OnLeave)
 
         frame:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]], "ADD")
+
+
+        local iconOverlay = frame:CreateTexture(nil, "OVERLAY")
+        iconOverlay:SetPoint("TOPLEFT", 2, -2)
+        iconOverlay:SetAtlas("Professions-Icon-Quality-Tier" .. 1)
+        iconOverlay:Hide()
+        iconOverlay.SetQuality = function(self, quality)
+            if quality then
+                self:SetAtlas("Professions-Icon-Quality-Tier" .. quality)
+                self:Show()
+            else
+                self:Hide()
+            end
+        end
+        frame.iconOverlay = iconOverlay
 
         local blockedOverlay = frame:CreateTexture(nil, "OVERLAY")
         blockedOverlay:SetAllPoints()
@@ -382,6 +343,13 @@ local function safecall(func, ...)
 end
 
 AceGUI:RegisterLayout("GBCustom", function(content, children)
+    local fullWidth = content.width or content:GetWidth() or 0
+    local numDoubleColumns = 7
+    local width = fullWidth / (numDoubleColumns * 2)
+    if width < 0 then
+        width = 0
+    end
+
     local height = 0
     for i = 1, #children do
         local child = children[i]
@@ -392,16 +360,16 @@ AceGUI:RegisterLayout("GBCustom", function(content, children)
         if i == 1 then
             frame:SetPoint("TOPLEFT", content)
         elseif (i - 1) % 7 == 0 then
-            local xOffset = 2
-            if (i - 1) % 14 == 0 and i < (#children - 14) then
-                xOffset = 8
+            local xOffset = 0
+            if (i - 1) % 14 == 0 then
+                xOffset = 6
             end
             frame:SetPoint("TOPLEFT", children[i - 7].frame, "TOPRIGHT", xOffset, 0)
         else
             frame:SetPoint("TOPLEFT", children[i - 1].frame, "BOTTOMLEFT")
         end
-
         height = frame:GetHeight() * 7
+        frame:SetWidth(width)
     end
     safecall(content.obj.LayoutFinished, content.obj, nil, height)
 end)
@@ -413,7 +381,7 @@ function GuildBankTools:CreateOptions()
     OptionsPanel:SetStatusText("")
     OptionsPanel:EnableResize(false)
     OptionsPanel:SetWidth(780)
-    OptionsPanel:SetHeight(600)
+    OptionsPanel:SetHeight(560)
     OptionsPanel:SetCallback("OnClose", function(widget)
         AceGUI:Release(widget)
         GuildBankTools.OptionsPanel = nil
@@ -475,36 +443,50 @@ function GuildBankTools:CreateOptions()
         OptionsPanel:AddChild(GuildBankLayoutEditor)
 
         local itemName = AceGUI:Create("EditBox")
-        itemName:SetFullWidth(true)
+        itemName:SetRelativeWidth(0.5)
         itemName:SetCallback("OnEnterPressed", function(widget, event, text)
             LibAddonUtils.CacheItem(text, function(itemID)
                 local name, link, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemID)
                 local itemID = GetItemInfoFromHyperlink(link)
-                if not GuildBankTools.db.profile.desiredItems[itemID] then
-                    GuildBankTools.db.profile.desiredItems[itemID] = {
-                        itemId = itemID,
-                        icon = itemTexture,
-                        count = 1,
-                        link = link,
-                        name = name
-                    }
+                if not GuildBankTools.db.profile.desiredItems[itemID] and itemID then
+                    -- GuildBankTools.db.profile.desiredItems[itemID] = {
+                    --     itemId = itemID,
+                    --     icon = itemTexture,
+                    --     count = 1,
+                    --     link = link,
+                    --     name = name
+                    -- }
                     PickupItem(itemID)
                 end
                 itemName:SetText("")
             end, text)
         end)
+        itemName:SetLabel("Item Suche (Link, Name oder ItemID)")
         GuildBankLayoutEditor:AddChild(itemName)
+
+        local tabs = {}
+        for i, j in pairs(self.db.profile.layoutEditor.gbankslots) do
+            table.insert(tabs, j.name)
+        end
+
+
+        -- TODO: Check if this works
+        local storageTab = AceGUI:Create("Dropdown")
+        storageTab:SetRelativeWidth(0.5)
+        storageTab:SetList(tabs)
+        storageTab:SetLabel("Storage Tab")
+        storageTab:SetMultiselect(true)
+        storageTab:SetCallback("OnValueChanged", function(widget, event, value)
+            self.db.profile.layoutEditor.storageTab = tonumber(string.match(value, "%d+"))
+        end)
+        if self.db.profile.layoutEditor.storageTab then
+            storageTab:SetValue(tabs[self.db.profile.layoutEditor.storageTab])
+        end
 
         local GuildBankTabs = AceGUI:Create("TabGroup")
         GuildBankTabs:SetFullWidth(true)
         GuildBankTabs:SetLayout("GBCustom")
-        local tabs = {}
-        for i, j in pairs(self.db.profile.layoutEditor.gbankslots) do
-            table.insert(tabs, {
-                text = "|T" .. j.icon .. ":16:16:0:0:64:64:4:60:4:60|t " .. j.name,
-                value = "subTab" .. i
-            })
-        end
+
         GuildBankTabs:SetTabs(tabs)
         GuildBankTabs:SetCallback("OnGroupSelected", SelectGuildBankTab)
         GuildBankTabs:SelectTab("subTab1")
@@ -512,53 +494,20 @@ function GuildBankTools:CreateOptions()
 
         GuildBankLayoutEditor:AddChild(GuildBankTabs)
 
-        local infoText = AceGUI:Create("Label")
-        infoText:SetFullWidth(true)
-        local string1 = "|A:newplayertutorial-icon-mouse-leftbutton:17:13|a to drag"
-        local string2 = "Shift + |A:newplayertutorial-icon-mouse-leftbutton:17:13|a to clone"
-        local string3 = "Ctrl + |A:newplayertutorial-icon-mouse-leftbutton:17:13|a to clear"
-        local string4 = "|A:newplayertutorial-icon-mouse-middlebutton:17:13|a to block/unblock"
-        infoText:SetText("|cff00ff00" .. string1 .. "        " .. "|cff00ff00" .. string2 .. "   " .. "|cff00ff00" ..
-            string3 .. "     " .. "|cff00ff00" .. string4 .. "|r")
-        infoText:SetFontObject(GameFontHighlight)
-
-        GuildBankLayoutEditor:AddChild(infoText)
-
-        local craftingDiffSlider = AceGUI:Create("Slider")
-        craftingDiffSlider:SetLabel("Percentage difference between crafting or buying from auction house")
-        craftingDiffSlider:SetSliderValues(0, 1, 0.01)
-        craftingDiffSlider:SetIsPercent(true)
-        if self.db.profile.craftingDiff then
-            craftingDiffSlider:SetValue(self.db.profile.craftingDiff)
-        else
-            craftingDiffSlider:SetValue(0)
-            self.db.profile.craftingDiff = 0
-        end
-        craftingDiffSlider:SetCallback("OnValueChanged", function(widget, event, value)
-            self.db.profile.craftingDiff = value
-        end)
-        craftingDiffSlider:SetFullWidth(true)
-        GuildBankLayoutEditor:AddChild(craftingDiffSlider)
-
-        local buttonGroup = AceGUI:Create("SimpleGroup")
-        buttonGroup:SetFullWidth(true)
-        buttonGroup:SetLayout("Flow")
-        GuildBankLayoutEditor:AddChild(buttonGroup)
-
-        local importLayoutButton = AceGUI:Create("Button")
-        importLayoutButton:SetText("Import Layout")
-        importLayoutButton:SetRelativeWidth(0.50)
-        buttonGroup:AddChild(importLayoutButton)
-
         local exportLayoutButton = AceGUI:Create("Button")
         exportLayoutButton:SetText("Export Layout")
-        exportLayoutButton:SetRelativeWidth(0.50)
-        buttonGroup:AddChild(exportLayoutButton)
+        exportLayoutButton:SetFullWidth(true)
+        GuildBankLayoutEditor:AddChild(exportLayoutButton)
 
         local editBox = AceGUI:Create("EditBox")
         editBox:SetFullWidth(true)
         editBox:SetFullHeight(true)
-        buttonGroup:AddChild(editBox)
+        GuildBankLayoutEditor:AddChild(editBox)
+
+        local importLayoutButton = AceGUI:Create("Button")
+        importLayoutButton:SetText("Import Layout")
+        importLayoutButton:SetFullWidth(true)
+        GuildBankLayoutEditor:AddChild(importLayoutButton)
 
         exportLayoutButton:SetCallback("OnClick", function()
             if (LibDeflate and LibAceSerializer) then
