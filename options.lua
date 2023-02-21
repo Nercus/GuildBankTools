@@ -23,7 +23,6 @@ do
             else
                 local kind, newId = GetCursorInfo()
                 if kind == "item" and tonumber(newId) then
-                    widget:IsBlocked(false)
                     if widget.clone then
                         PickupItem(widget.itemId)
                     else
@@ -36,20 +35,11 @@ do
                     end
                 end
             end
-        elseif button == "MiddleButton" then
-            if widget.blocked then
-                widget:IsBlocked(false)
-            else
-                widget:IsBlocked(true)
-            end
         end
     end
 
     local function Button_OnDragStart(frame)
         local widget = frame.obj
-        if widget.blocked then
-            return
-        end
         PickupItem(widget.itemId)
         if widget.clone or IsShiftKeyDown() then
             widget:SetItemId(widget.itemId)
@@ -60,7 +50,6 @@ do
             widget:SetItemId(nil)
             widget:SetCount(nil)
         end
-
     end
 
     local function Button_OnReceiveDrag(frame)
@@ -71,7 +60,6 @@ do
 
         local kind, newId = GetCursorInfo()
         if kind == "item" and tonumber(newId) then
-            widget:IsBlocked(false)
             if widget.clone then
                 PickupItem(widget.itemId)
                 widget:SetItemId(widget.itemId)
@@ -85,7 +73,6 @@ do
                 end
             end
         end
-
     end
 
     local function Button_OnEnter(frame)
@@ -117,9 +104,6 @@ do
             return
         end
         if widget.clone then
-            return
-        end
-        if widget.blocked then
             return
         end
         if dir == 1 then
@@ -172,9 +156,7 @@ do
         self.itemId = nil
         self.count = nil
         self.maxCount = nil
-        self.blocked = false
         self.clone = nil
-        self.frame.blockedOverlay:Hide()
     end
 
     function methods:SetClone(clone)
@@ -235,21 +217,6 @@ do
         self:SetItemId(self.itemId)
     end
 
-    function methods:IsBlocked(bool)
-        if bool then
-            self.blocked = true
-            self.frame.blockedOverlay:Show()
-            self:SetCount(nil)
-            self:SetItemId(-1)
-        else
-            self.blocked = false
-            if self.itemId == -1 then
-                self:SetItemId(nil)
-            end
-            self.frame.blockedOverlay:Hide()
-        end
-    end
-
     local function Constructor()
         local name = "AceGUI30ItemActionSlot" .. AceGUI:GetNextWidgetNum(Type)
         local frame = CreateFrame("Button", name, UIParent)
@@ -271,7 +238,8 @@ do
 
 
         local iconOverlay = frame:CreateTexture(nil, "OVERLAY")
-        iconOverlay:SetPoint("TOPLEFT", 2, -2)
+        iconOverlay:SetSize(30, 30)
+        iconOverlay:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
         iconOverlay:SetAtlas("Professions-Icon-Quality-Tier" .. 1)
         iconOverlay:Hide()
         iconOverlay.SetQuality = function(self, quality)
@@ -283,12 +251,6 @@ do
             end
         end
         frame.iconOverlay = iconOverlay
-
-        local blockedOverlay = frame:CreateTexture(nil, "OVERLAY")
-        blockedOverlay:SetAllPoints()
-        blockedOverlay:SetAtlas("common-icon-redx")
-        blockedOverlay:Hide()
-        frame.blockedOverlay = blockedOverlay
 
         local countText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
         countText:SetPoint("BOTTOMRIGHT", -2, 2)
@@ -381,7 +343,7 @@ function GuildBankTools:CreateOptions()
     OptionsPanel:SetStatusText("")
     OptionsPanel:EnableResize(false)
     OptionsPanel:SetWidth(780)
-    OptionsPanel:SetHeight(560)
+    OptionsPanel:SetHeight(565)
     OptionsPanel:SetCallback("OnClose", function(widget)
         AceGUI:Release(widget)
         GuildBankTools.OptionsPanel = nil
@@ -404,10 +366,6 @@ function GuildBankTools:CreateOptions()
             if type(GuildBankTools.db.profile.layoutEditor.layout[tabIndex][i]) == "table" then
                 itemSlot:SetItemId(GuildBankTools.db.profile.layoutEditor.layout[tabIndex][i][1])
                 itemSlot:SetCount(GuildBankTools.db.profile.layoutEditor.layout[tabIndex][i][2])
-            elseif type(GuildBankTools.db.profile.layoutEditor.layout[tabIndex][i]) == "string" then
-                itemSlot:SetCount(nil)
-                itemSlot:SetItemId(nil)
-                itemSlot:IsBlocked(true)
             else
                 GuildBankTools.db.profile.layoutEditor.layout[tabIndex][i] = -1
                 itemSlot:SetCount(nil)
@@ -418,15 +376,12 @@ function GuildBankTools:CreateOptions()
             itemSlot:SetCallback("OnValueChanged", function(frame, event, itemId, count, index)
                 if itemId and count and index then
                     GuildBankTools.db.profile.layoutEditor.layout[tabIndex][index] = { itemId, count }
-                elseif itemId == -1 then
-                    GuildBankTools.db.profile.layoutEditor.layout[tabIndex][index] = "b"
                 else
                     GuildBankTools.db.profile.layoutEditor.layout[tabIndex][index] = -1
                 end
             end)
             container:AddChild(itemSlot)
         end
-
     end
 
     if self.db.profile.layoutEditor.num == 0 then
@@ -442,9 +397,16 @@ function GuildBankTools:CreateOptions()
         GuildBankLayoutEditor:SetLayout("list")
         OptionsPanel:AddChild(GuildBankLayoutEditor)
 
-        local itemName = AceGUI:Create("EditBox")
-        itemName:SetRelativeWidth(0.5)
-        itemName:SetCallback("OnEnterPressed", function(widget, event, text)
+
+
+
+        local headerGroup = AceGUI:Create("SimpleGroup")
+        headerGroup:SetFullWidth(true)
+        headerGroup:SetLayout("Flow")
+
+        local itemSearch = AceGUI:Create("EditBox")
+        itemSearch:SetRelativeWidth(0.5)
+        itemSearch:SetCallback("OnEnterPressed", function(widget, event, text)
             LibAddonUtils.CacheItem(text, function(itemID)
                 local name, link, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemID)
                 local itemID = GetItemInfoFromHyperlink(link)
@@ -458,41 +420,57 @@ function GuildBankTools:CreateOptions()
                     -- }
                     PickupItem(itemID)
                 end
-                itemName:SetText("")
+                itemSearch:SetText("")
             end, text)
         end)
-        itemName:SetLabel("Item Suche (Link, Name oder ItemID)")
-        GuildBankLayoutEditor:AddChild(itemName)
+        itemSearch:SetLabel("Item Suche (Link, Name oder ItemID)")
+        headerGroup:AddChild(itemSearch)
 
         local tabs = {}
         for i, j in pairs(self.db.profile.layoutEditor.gbankslots) do
-            table.insert(tabs, j.name)
+            table.insert(tabs, "|T" .. j.icon .. ":16:16:0:0:64:64:4:60:4:60|t " .. j.name)
         end
-
-
-        -- TODO: Check if this works
         local storageTab = AceGUI:Create("Dropdown")
         storageTab:SetRelativeWidth(0.5)
         storageTab:SetList(tabs)
         storageTab:SetLabel("Storage Tab")
         storageTab:SetMultiselect(true)
-        storageTab:SetCallback("OnValueChanged", function(widget, event, value)
-            self.db.profile.layoutEditor.storageTab = tonumber(string.match(value, "%d+"))
+        storageTab:SetCallback("OnValueChanged", function(widget, event, value, checked)
+            if checked then
+                table.insert(self.db.profile.layoutEditor.storageTab, value)
+            else
+                for i, j in pairs(self.db.profile.layoutEditor.storageTab) do
+                    if j == value then
+                        table.remove(self.db.profile.layoutEditor.storageTab, i)
+                    end
+                end
+            end
         end)
         if self.db.profile.layoutEditor.storageTab then
-            storageTab:SetValue(tabs[self.db.profile.layoutEditor.storageTab])
+            for i, j in pairs(self.db.profile.layoutEditor.storageTab) do
+                storageTab:SetItemValue(j, true)
+            end
         end
+        headerGroup:AddChild(storageTab)
+        GuildBankLayoutEditor:AddChild(headerGroup)
 
         local GuildBankTabs = AceGUI:Create("TabGroup")
         GuildBankTabs:SetFullWidth(true)
         GuildBankTabs:SetLayout("GBCustom")
-
-        GuildBankTabs:SetTabs(tabs)
+        local tabsTable = {}
+        for i, j in pairs(self.db.profile.layoutEditor.gbankslots) do
+            table.insert(tabsTable, {
+                text = "|T" .. j.icon .. ":16:16:0:0:64:64:4:60:4:60|t " .. j.name,
+                value = "subTab" .. i
+            })
+        end
+        GuildBankTabs:SetTabs(tabsTable)
         GuildBankTabs:SetCallback("OnGroupSelected", SelectGuildBankTab)
         GuildBankTabs:SelectTab("subTab1")
         GuildBankTabs:SetFullHeight(true)
-
         GuildBankLayoutEditor:AddChild(GuildBankTabs)
+
+
 
         local exportLayoutButton = AceGUI:Create("Button")
         exportLayoutButton:SetText("Export Layout")
@@ -546,19 +524,16 @@ function GuildBankTools:CreateOptions()
                 end
             end
         end)
-
     end
 
     OptionsPanel:Show()
 end
 
 function GuildBankTools:ToggleOptions()
-
     if not self.OptionsPanel then
         self:CreateOptions()
     else
         AceGUI:Release(self.OptionsPanel)
         self.OptionsPanel = nil
     end
-
 end
