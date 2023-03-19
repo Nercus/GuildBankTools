@@ -38,12 +38,9 @@ local defaults = {
     }
 }
 
-
 -- TFDtUnmiqyy4tuLmmZWpxIUQR9Pi3F1yZlPwXmQXvrkTQErZSa7hOaFqYCy(J535J3F76FXwrAfTvSwj1k5wP0k1wjmrfNaqbKcqfWkawaTqHbHeRtX1Xry(Y1pWpIFSpoXpIFuh)(r6Vi9xK(lYWpIVmn(9f6pPpXq)j8)JGVGVGVGVGVY4xXtXt7Z04P4P4P4P4P4z4z4z4z4z9Lo8m8m8m8m8s4LWlHxcVeEP(Eb8szM3sXfI(0wc(e8z4ZWNHpdFwhYKP3Y9TEm6ZWNHVaFb(c8f4lm6l4vWR03lJxbVkEv8Q4vXRIxfVkEv8QnVL9FBdybtdltG32C(6cBT6rdxHAqwwY(XPRvaDy8AZdSn)945TXdX)bbWw94jUw9pFetEnxFnoshYEnu8AO6D6WKxd(X0w18EXhoME3lkENG9vU9(geVguVgEE3KoUduVPf1BXu9wmvVfZN4PdJ7aZB3sYBTBZbkopW(tyCEqV5PK380MdLg)a)FoLs)D8LSp69(9duE0R5B1V)lnZ2brSLL0BNbC8S)oO46S9XVvFhKSM3oEqEhKUcD8793bzRzQZViGteZoJyN)U0Z0aPH0zA4mnCMgAPHlZZF(
 
-
 -- Tp9YTrmiuyy0kksHxxGMWRYAxft)RKio0f3fZ8V7iBdFVL3FEF83Zx)9REM2z6NzCM4mZZSoZ(mLVTCkGkKkOkSkWk0k4k8Q8Q3NlEvEvEvEvEvEvEvEnEnET7lkVgVgVgVgVgVgVoVoVoV(9lhVoVoVoVoVoVbVbVbVbVX9OG3G3G3G3GxWl4f8cEbV4E2Yl4f8cEtEtEtEtEtEtEZ7LfEtEtElElElElElElElER7TpElEBEBEBEBEBEBEBEBE7J3N)lGSgYAiRHtn0YAiRHSgud9SgYAiRb1WiRHSgYAqneznK1qwdNA4Z77V
-
 
 -- Broker
 GuildBankToolsBroker = LibStub("LibDataBroker-1.1"):NewDataObject("GuildBankTools", {
@@ -63,6 +60,25 @@ GuildBankToolsBroker = LibStub("LibDataBroker-1.1"):NewDataObject("GuildBankTool
     end
 })
 
+local function printProgressBar(min, max, type)
+    local length = 20    -- length of the bar
+    local barChar = "||" -- character to use for the bar
+    local percent = math.floor((min / max) * length)
+    local bar = ""
+    for i = 1, length do
+        if i <= percent then
+            bar = bar .. "\124cFF00FF00" .. barChar .. "\124r"
+        else
+            bar = bar .. "\124cFF000000" .. barChar .. "\124r"
+        end
+    end
+    -- add percent
+    bar = "[" .. bar .. string.format("] %s%%", math.floor((min / max) * 100))
+    bar = type .. bar
+    print(bar)
+end
+
+
 function GBTLogWindow_Show(text)
     if not GBTLogWindow then
         local f = CreateFrame("Frame", "GBTLogWindow", UIParent, "DialogBoxFrame")
@@ -76,7 +92,7 @@ function GBTLogWindow_Show(text)
             insets = { left = 0, right = 0, top = 0, bottom = 0 },
         })
         f:SetBackdropBorderColor(0, 0, 0, 1) -- black
-        f:SetBackdropColor(0, 0, 0, 0.5) -- transparent black
+        f:SetBackdropColor(0, 0, 0, 0.5)     -- transparent black
         -- Movable
         f:SetMovable(true)
         f:SetClampedToScreen(true)
@@ -440,191 +456,219 @@ function GuildBankTools:setShoppingList()
     GuildBankTools:updateShoppingListFrame()
 end
 
-local function getItemIDFromHyperLink(itemLink)
-    if not itemLink then
+local function getFreeSpaceSlot()
+    if not GuildBankTools.freeSpace then
         return
     end
-    local itemID = string.match(itemLink, "item:(%d+)")
-    return tonumber(itemID)
-end
-
-
-function GuildBankTools:getFreeSpaceSlot(itemID, itemCount)
-    if not self.freeSpace then
-        return
-    end
-    if itemID then
-        local storageTabs = self.db.profile.layoutEditor.storageTab
-        for i, j in pairs(storageTabs) do
-            for slotIndex = 1, 98 do
-                local gbItemLink = GetGuildBankItemLink(j, slotIndex)
-                if gbItemLink then
-                    local gbItemID = getItemIDFromHyperLink(gbItemLink)
-                    if gbItemID == itemID then
-                        local _, gbItemCount = GetGuildBankItemInfo(j, slotIndex)
-                        local maxStack = select(8, GetItemInfo(itemID))
-                        -- if there is space in the stack, return that slots as free space slot as long it has enough space for all items
-                        if gbItemCount < maxStack and gbItemCount + itemCount <= maxStack then
-                            return { j, slotIndex }, "bank"
-                        end
-                    end
-                end
-            end
-        end
-    end
-    if #self.freeSpace.gb > 0 then
-        return table.remove(self.freeSpace.gb, 1), "bank"
-    elseif #self.freeSpace.bag > 0 then
-        return table.remove(self.freeSpace.bag, 1), "bag"
+    if #GuildBankTools.freeSpace > 0 then
+        return table.remove(GuildBankTools.freeSpace, 1), "bag"
     end
 end
 
-function GuildBankTools:getItemFromBagOrStorageTab(itemID)
-    -- gets item from storage tab if it exists, otherwise gets it from bag
-    local storageTabs = self.db.profile.layoutEditor.storageTab
-    for i, j in pairs(storageTabs) do
-        for slotIndex = 1, 98 do
-            local gbItemLink = GetGuildBankItemLink(j, slotIndex)
-            if gbItemLink then
-                local gbItemID = getItemIDFromHyperLink(gbItemLink)
-                if gbItemID == itemID then
-                    local _, gbItemCount = GetGuildBankItemInfo(j, slotIndex)
-                    table.insert(self.freeSpace.gb, { j, slotIndex }) -- after we get the item, we add the slot to the free space list
-                    return j, slotIndex, gbItemCount, "bank"
-                end
-            end
-        end
-    end
-
+function GuildBankTools:getItemFromBag(itemID)
+    -- gets item from bag
     for bag = 0, NUM_BAG_SLOTS do
         for slot = 1, C_Container.GetContainerNumSlots(bag) do
             local itemId = C_Container.GetContainerItemID(bag, slot)
             if itemId == itemID then
                 local bagSlotItemInfo = C_Container.GetContainerItemInfo(bag, slot)
                 local bagSlotItemCount = bagSlotItemInfo.stackCount
-                table.insert(self.freeSpace.bag, { bag, slot }) -- after we get the item, we add the slot to the free space list
-                return bag, slot, bagSlotItemCount, "bag"
+                table.insert(self.freeSpace, { bag, slot }) -- after we get the item, we add the slot to the free space list
+                if self.bagSlotUsedCount[bag .. ":" .. slot] then
+                    bagSlotItemCount = bagSlotItemCount - self.bagSlotUsedCount[bag .. ":" .. slot]
+                end
+                if bagSlotItemCount > 0 then
+                    return bag, slot, bagSlotItemCount, "bag"
+                end
             end
         end
     end
 end
 
-function GuildBankTools:IsTabStorageTab(tabNum)
-    local storageTabs = self.db.profile.layoutEditor.storageTab
-    for i, j in pairs(storageTabs) do
-        if j == tabNum then
-            return true
-        end
-    end
-    return false
-end
-
-function GuildBankTools:generateMoves()
+function GuildBankTools:MoveIn(tabIndex)
     local layout = GuildBankTools.db.profile.layoutEditor.layout
-    local storageTabs = self.db.profile.layoutEditor.storageTab
+    local tabData = layout[tabIndex]
     local moves = {}
-
-    self.freeSpace = {
-        ["gb"] = {},
-        ["bag"] = {}
-    }
-
+    self.bagSlotUsedCount = {}
+    self.freeSpace = {}
 
     -- slotData has 3 possible values:
     -- -1: free space
     -- b: blocked space
     -- { itemID, count }: item in slot
-    for _, tabIndex in ipairs(storageTabs) do
-        for slotIndex = 1, 98 do
-            if not GetGuildBankItemLink(tabIndex, slotIndex) then -- this slot is free and should stay free
-                table.insert(self.freeSpace.gb, { tabIndex, slotIndex })
-            end
-        end
-    end
 
     for bag = 0, NUM_BAG_SLOTS do
         for bagSlot = 1, C_Container.GetContainerNumSlots(bag) do
             if not C_Container.GetContainerItemID(bag, bagSlot) then
-                table.insert(self.freeSpace.bag, { bag, bagSlot })
+                table.insert(self.freeSpace, { bag, bagSlot })
             end
         end
     end
 
+    for slotIndex, slotData in ipairs(tabData) do
+        local existingItemLink = GetGuildBankItemLink(tabIndex, slotIndex)
+        local existingItemId
+        if existingItemLink then
+            existingItemId = GetItemInfoFromHyperlink(existingItemLink)
+        end
+        local _, existingtItemCount = GetGuildBankItemInfo(tabIndex, slotIndex)
 
-    for tabIndex, tabData in ipairs(layout) do
-        if not GuildBankTools:IsTabStorageTab(tabIndex) then
-            for slotIndex, slotData in ipairs(tabData) do
-                local existingItemLink = GetGuildBankItemLink(tabIndex, slotIndex)
-                local existingItemId
-                if existingItemLink then
-                    existingItemId = GetItemInfoFromHyperlink(existingItemLink)
+        local desiredSlotItemId
+        local desiredSlotItemCount
+        if type(slotData) == "table" then
+            desiredSlotItemId = slotData[1]
+            desiredSlotItemCount = slotData[2]
+        end
+
+        if existingItemId == nil and desiredSlotItemId then -- slot is empty and should contain item
+            -- move from bag
+            local sourceBag, sourceSlot, sourceCount, sourceType = self:getItemFromBag(
+                desiredSlotItemId)
+            if sourceBag and sourceSlot and sourceCount and sourceType then
+                local diff = sourceCount - desiredSlotItemCount
+                local moveCount = desiredSlotItemCount
+                if diff < 0 then
+                    -- not enough items in bag -> move all available
+                    moveCount = sourceCount
                 end
-                local _, existingtItemCount = GetGuildBankItemInfo(tabIndex, slotIndex)
-
-                local desiredSlotItemId
-                local desiredSlotItemCount
-                if type(slotData) == "table" then
-                    desiredSlotItemId = slotData[1]
-                    desiredSlotItemCount = slotData[2]
+                if self.bagSlotUsedCount[sourceBag .. ":" .. sourceSlot] then
+                    self.bagSlotUsedCount[sourceBag .. ":" .. sourceSlot] =
+                        self.bagSlotUsedCount[sourceBag .. ":" .. sourceSlot] + moveCount
+                else
+                    self.bagSlotUsedCount[sourceBag .. ":" .. sourceSlot] = moveCount
                 end
 
-                if existingItemId == nil and desiredSlotItemId then -- slot is empty and should contain item
-                    -- move from bag or free space
-                    local sourceBag, sourceSlot, sourceCount, sourceType = self:getItemFromBagOrStorageTab(
-                        desiredSlotItemId)
-                    if sourceBag and sourceSlot and sourceCount and sourceType then
-                        local diff = sourceCount - desiredSlotItemCount
-                        local moveCount = desiredSlotItemCount
-                        if diff < 0 then
-                            -- not enough items in bag -> move all available
-                            moveCount = sourceCount
-                        end
-                        table.insert(moves, {
-                            ["source"] = { sourceBag, sourceSlot, sourceType },
-                            ["destination"] = { tabIndex, slotIndex, "bank" },
-                            ["count"] = moveCount
-                        })
+                table.insert(moves, {
+                    ["source"] = { sourceBag, sourceSlot, sourceType },
+                    ["destination"] = { tabIndex, slotIndex, "bank" },
+                    ["count"] = moveCount
+                })
+            end
+        elseif existingItemId and existingItemId == desiredSlotItemId then -- slot contains this item
+            local diff = existingtItemCount - desiredSlotItemCount
+            if diff > 0 then                                               -- too many items in slot
+                -- too many -> move to bag only move to free space if no bag space
+                local freeSpaceSlot, freeSlotType = getFreeSpaceSlot()
+                if freeSpaceSlot then
+                    table.insert(moves, {
+                        ["source"] = { tabIndex, slotIndex, "bank" },
+                        ["destination"] = { freeSpaceSlot[1], freeSpaceSlot[2], freeSlotType },
+                        ["count"] = diff
+                    })
+                end
+            elseif diff < 0 then -- too few items in slot
+                -- too few -> move from bag
+                local sourceBag, sourceSlot, sourceCount, sourceType = self:getItemFromBag(
+                    desiredSlotItemId)
+                if sourceBag and sourceSlot and sourceCount and sourceType then
+                    local sourceDiff = sourceCount - desiredSlotItemCount
+                    local moveCount = desiredSlotItemCount
+                    if sourceDiff < 0 then
+                        -- not enough items in bag -> move all available
+                        moveCount = sourceCount
                     end
-                elseif existingItemId and existingItemId == desiredSlotItemId then -- slot contains this item
-                    local diff = existingtItemCount - desiredSlotItemCount
-                    if diff > 0 then -- too many items in slot
-                        -- too many -> move to bag only move to free space if no bag space
-                        local freeSpaceSlot, freeSlotType = self:getFreeSpaceSlot(existingItemId, diff)
-                        if freeSpaceSlot then
-                            table.insert(moves, {
-                                ["source"] = { tabIndex, slotIndex, "bank" },
-                                ["destination"] = { freeSpaceSlot[1], freeSpaceSlot[2], freeSlotType },
-                                ["count"] = diff
-                            })
-                        end
-                    elseif diff < 0 then -- too few items in slot
-                        -- too few -> move from bag or free space
-                        local sourceBag, sourceSlot, sourceCount, sourceType = self:getItemFromBagOrStorageTab(
-                            desiredSlotItemId)
-                        if sourceBag and sourceSlot and sourceCount and sourceType then
-                            local sourceDiff = sourceCount - desiredSlotItemCount
-                            local moveCount = desiredSlotItemCount
-                            if sourceDiff < 0 then
-                                -- not enough items in bag -> move all available
-                                moveCount = sourceCount
-                            end
-                            table.insert(moves, {
-                                ["source"] = { sourceBag, sourceSlot, sourceType },
-                                ["destination"] = { tabIndex, slotIndex, "bank" },
-                                ["count"] = moveCount
-                            })
-                        end
+                    if self.bagSlotUsedCount[sourceBag .. ":" .. sourceSlot] then
+                        self.bagSlotUsedCount[sourceBag .. ":" .. sourceSlot] =
+                            self.bagSlotUsedCount[sourceBag .. ":" .. sourceSlot] + moveCount
+                    else
+                        self.bagSlotUsedCount[sourceBag .. ":" .. sourceSlot] = moveCount
                     end
-                elseif existingItemId and existingItemId ~= desiredSlotItemId then -- slot contains another item
-                    -- wrong item -> move to bag only move to free space if no bag space -> get correct item in next iteration -> also moves if slot should be empty
-                    local freeSpaceSlot, freeSlotType = self:getFreeSpaceSlot(existingItemId, existingtItemCount)
-                    if freeSpaceSlot then
-                        table.insert(moves, {
-                            ["source"] = { tabIndex, slotIndex, "bank" },
-                            ["destination"] = { freeSpaceSlot[1], freeSpaceSlot[2], freeSlotType },
-                            ["count"] = existingtItemCount
-                        })
-                    end
+                    table.insert(moves, {
+                        ["source"] = { sourceBag, sourceSlot, sourceType },
+                        ["destination"] = { tabIndex, slotIndex, "bank" },
+                        ["count"] = moveCount
+                    })
+                end
+            end
+        elseif existingItemId and existingItemId ~= desiredSlotItemId then -- slot contains another item
+            -- wrong item -> move to bag only move to free space if no bag space -> get correct item in next iteration -> also moves if slot should be empty
+            local freeSpaceSlot, freeSlotType = getFreeSpaceSlot()
+            if freeSpaceSlot then
+                table.insert(moves, {
+                    ["source"] = { tabIndex, slotIndex, "bank" },
+                    ["destination"] = { freeSpaceSlot[1], freeSpaceSlot[2], freeSlotType },
+                    ["count"] = existingtItemCount
+                })
+            end
+        end
+    end
+
+    return moves
+end
+
+function GuildBankTools:getBagItemSlotForCount(itemID, count)
+    -- gets item from bag
+    for bag = 0, NUM_BAG_SLOTS do
+        for slot = 1, C_Container.GetContainerNumSlots(bag) do
+            local itemId = C_Container.GetContainerItemID(bag, slot)
+            if itemId == itemID then
+                local bagSlotItemInfo = C_Container.GetContainerItemInfo(bag, slot)
+                local bagSlotItemCount = bagSlotItemInfo.stackCount or 0
+                local maxStackSize = select(8, GetItemInfo(itemID)) or 1
+                local bonusCount = self.bagSlotBonusCount[bag .. ":" .. slot] or
+                    0 -- use bonus count to track previous moves
+                if (bagSlotItemCount + count + bonusCount) <= maxStackSize then
+                    self.bagSlotBonusCount[bag .. ":" .. slot] = count
+                    return bag, slot, bagSlotItemCount, "bag"
+                end
+            end
+        end
+    end
+end
+
+function GuildBankTools:MoveOut(tabIndex)
+    local layout = GuildBankTools.db.profile.layoutEditor.layout
+    local tabData = layout[tabIndex]
+    local moves = {}
+    self.freeSpace = {}
+    self.bagSlotBonusCount = {}
+    -- slotData has 3 possible values:
+    -- -1: free space
+    -- b: blocked space
+    -- { itemID, count }: item in slot
+
+    for bag = 0, NUM_BAG_SLOTS do
+        for bagSlot = 1, C_Container.GetContainerNumSlots(bag) do
+            if not C_Container.GetContainerItemID(bag, bagSlot) then
+                table.insert(self.freeSpace, { bag, bagSlot })
+            end
+        end
+    end
+    for slotIndex, slotData in ipairs(tabData) do
+        local existingItemLink = GetGuildBankItemLink(tabIndex, slotIndex)
+        local existingItemId
+        if existingItemLink then
+            existingItemId = GetItemInfoFromHyperlink(existingItemLink)
+        end
+        local _, existingtItemCount = GetGuildBankItemInfo(tabIndex, slotIndex)
+        -- move to bag
+        if existingItemId then
+            -- check if item is already in bag getItemFromBag
+            local sourceBag, sourceSlot, sourceCount, sourceType = self:getBagItemSlotForCount(existingItemId,
+                existingtItemCount)
+            if sourceBag and sourceSlot and sourceCount and sourceType then
+                local maxStackSize = select(8, GetItemInfo(existingItemId)) -- max stack size
+                local bagSlotSpace = maxStackSize - sourceCount             -- number of avaiable stacks of that item
+                local diff = bagSlotSpace -
+                    existingtItemCount                                      -- number of stacks that need to be moved -> negative if too many items want to be moved
+                local moveCount = existingtItemCount                        -- number of items to move
+                if diff < 0 then                                            -- not enough space in bag -> move all available stacks
+                    moveCount = bagSlotSpace
+                end
+                -- move to bag
+                table.insert(moves, {
+                    ["source"] = { tabIndex, slotIndex, "bank" },
+                    ["destination"] = { sourceBag, sourceSlot, sourceType },
+                    ["count"] = moveCount
+                })
+            else
+                local freeSpaceSlot, freeSlotType = getFreeSpaceSlot()
+                if freeSpaceSlot then
+                    table.insert(moves, {
+                        ["source"] = { tabIndex, slotIndex, "bank" },
+                        ["destination"] = { freeSpaceSlot[1], freeSpaceSlot[2], freeSlotType },
+                        ["count"] = existingtItemCount
+                    })
                 end
             end
         end
@@ -632,36 +676,9 @@ function GuildBankTools:generateMoves()
     return moves
 end
 
-local function SetCurrentGBTab(tab)
-    if not GuildBankFrame then
-        return
-    end
-    if not GuildBankFrame:IsShown() then
-        return
-    end
-    if not tab then
-        return
-    end
-
-    local tabBTNFrame = "GuildBankTab" .. tab
-    local tabBTN = _G[tabBTNFrame]
-    if not tabBTN then
-        return
-    end
-    tabBTN = tabBTN.Button
-    if not tabBTN then
-        return
-    end
-
-    if tab ~= GetCurrentGuildBankTab() then
-        tabBTN:Click()
-    end
-end
-
-
 local isMoving = false
 
-function GuildBankTools:DoMove(moves)
+function GuildBankTools:DoMove(moves, mode)
     local move = moves[GuildBankTools.moveCounter]
     if move then
         local source = move["source"]
@@ -676,18 +693,18 @@ function GuildBankTools:DoMove(moves)
                 to, GuildBankTools.moveCounter)
             return
         end
-        print(string.format("Moving %d from %s (%s, %s) to %s (%s, %s) - Move %s from %s", count, from, source[1],
-            source[2], to, target[1], target[2], GuildBankTools.moveCounter, #moves))
+        -- print(string.format("Moving %d from %s (%s, %s) to %s (%s, %s) - Move %s from %s", count, from, source[1],
+        --     source[2], to, target[1], target[2], GuildBankTools.moveCounter, #moves))
+        printProgressBar(GuildBankTools.moveCounter, #moves, mode == "in" and "Moving in" or "Moving out")
+
 
         ClearCursor() -- Clear Cursor before moving item
         if from == "bank" then
             SplitGuildBankItem(source[1], source[2], count)
-            SetCurrentGBTab(source[1])
             if to == "bag" then
                 C_Container.PickupContainerItem(target[1], target[2])
             elseif to == "bank" then
                 PickupGuildBankItem(target[1], target[2])
-                SetCurrentGBTab(target[1])
             else
                 print("ERROR: Could not move item from bank")
             end
@@ -696,36 +713,40 @@ function GuildBankTools:DoMove(moves)
             if to == "bank" then
                 PickupGuildBankItem(target[1], target[2])
                 -- open that tab
-                SetCurrentGBTab(target[1])
             else
                 print("ERROR: Could not move item from bag")
             end
         end
 
-
-        self.moveCounter = self.moveCounter + 1
         if self.moveCounter == #moves then
             isMoving = false
             self:SortGuildBank()
             return
         end
+        self.moveCounter = self.moveCounter + 1
     end
 end
 
 local maxIterations = 10
 local numIterations = 0
 
-function GuildBankTools:SortGuildBank()
+function GuildBankTools:SortGuildBank(mode)
     if InCombatLockdown() then
         return
     end
     GuildBankTools:CancelTimer(GuildBankTools.moveTimer)
     -- Set Items Based on layout
-    local moves = self:generateMoves()
+    local moves = {}
+    local tabIndex = GetCurrentGuildBankTab()
+    if mode == "in" then
+        moves = GuildBankTools:MoveIn(tabIndex)
+    elseif mode == "out" then
+        moves = GuildBankTools:MoveOut(tabIndex)
+    end
     numIterations = numIterations + 1
     isMoving = true
     GuildBankTools.moveCounter = 1
-    GuildBankTools.moveTimer = GuildBankTools:ScheduleRepeatingTimer("DoMove", 0.5, moves)
+    GuildBankTools.moveTimer = GuildBankTools:ScheduleRepeatingTimer("DoMove", 0.5, moves, mode)
     -- Move Items and reduce moves table
     if #moves == 0 and numIterations > maxIterations then
         GuildBankTools:CancelTimer(GuildBankTools.moveTimer)
@@ -735,18 +756,38 @@ function GuildBankTools:SortGuildBank()
     end
 end
 
-StaticPopupDialogs["GBT_CONFIRM_SORT_GBANK"] = {
-    text = "Sorting the guild bank will take some time! Are you sure to continue?",
+StaticPopupDialogs["GBT_CONFIRM_MOVE_OUT"] = {
+    text = "GuildBankTools will try to move all items from the open gbank tab to your bags! Are you sure to continue?",
     button1 = "Accept",
     button2 = "Cancel",
     OnAccept = function()
         numIterations = 0
-        GuildBankTools:SortGuildBank()
+        GuildBankTools:SortGuildBank("out")
     end,
     timeout = 0,
     hideOnEscape = true,
     preferredIndex = 3
 }
+
+
+StaticPopupDialogs["GBT_CONFIRM_MOVE_IN"] = {
+    text =
+    "GuildBankTools will try to sort all items from your bag to the appropriate slot in the current open gbank tab! Are you sure to continue?",
+    button1 = "Accept",
+    button2 = "Cancel",
+    OnAccept = function()
+        numIterations = 0
+        GuildBankTools:SortGuildBank("in")
+    end,
+    timeout = 0,
+    hideOnEscape = true,
+    preferredIndex = 3
+}
+
+
+
+
+
 
 local function CreateGBShopButton()
     if GuildBankFrame then
@@ -772,21 +813,38 @@ local function CreateGBShopButton()
         end)
         GuildBankTools.GBButtonShop = shopButton
 
-        local sortButton = CreateFrame("Button", "GuildBankTools_SortButton", GuildBankFrame)
-        sortButton:SetPoint("LEFT", shopButton, "RIGHT", 10, 0)
-        sortButton:SetWidth(60)
-        sortButton:SetHeight(27)
-        sortButton:SetFrameStrata("HIGH")
-        sortButton:SetText("Sort")
-        sortButton:SetNormalFontObject("GameFontNormalSmall")
+        local moveOutButton = CreateFrame("Button", "GuildBankTools_moveOutButton", GuildBankFrame)
+        moveOutButton:SetPoint("LEFT", shopButton, "RIGHT", 30, 0)
+        moveOutButton:SetWidth(60)
+        moveOutButton:SetHeight(27)
+        moveOutButton:SetFrameStrata("HIGH")
+        moveOutButton:SetText("Move Out")
+        moveOutButton:SetNormalFontObject("GameFontNormalSmall")
 
 
-        sortButton:SetNormalAtlas("groupfinder-button-cover")
-        sortButton:SetPushedAtlas("groupfinder-button-cover-down")
-        sortButton:SetHighlightAtlas("groupfinder-button-highlight")
+        moveOutButton:SetNormalAtlas("groupfinder-button-cover")
+        moveOutButton:SetPushedAtlas("groupfinder-button-cover-down")
+        moveOutButton:SetHighlightAtlas("groupfinder-button-highlight")
 
-        sortButton:SetScript('OnClick', function()
-            StaticPopup_Show("GBT_CONFIRM_SORT_GBANK")
+        moveOutButton:SetScript('OnClick', function()
+            StaticPopup_Show("GBT_CONFIRM_MOVE_OUT")
+        end)
+
+        local moveInButton = CreateFrame("Button", "GuildBankTools_moveInButton", GuildBankFrame)
+        moveInButton:SetPoint("LEFT", moveOutButton, "RIGHT", 10, 0)
+        moveInButton:SetWidth(60)
+        moveInButton:SetHeight(27)
+        moveInButton:SetFrameStrata("HIGH")
+        moveInButton:SetText("Move In")
+        moveInButton:SetNormalFontObject("GameFontNormalSmall")
+
+
+        moveInButton:SetNormalAtlas("groupfinder-button-cover")
+        moveInButton:SetPushedAtlas("groupfinder-button-cover-down")
+        moveInButton:SetHighlightAtlas("groupfinder-button-highlight")
+
+        moveInButton:SetScript('OnClick', function()
+            StaticPopup_Show("GBT_CONFIRM_MOVE_IN")
         end)
     end
 end
@@ -849,6 +907,9 @@ end)
 GuildBankTools:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_HIDE', function(self, arg1)
     if arg1 ~= 10 then return end
     GuildBankTools.moveCounter = 1
+    if GuildBankTools:TimeLeft(GuildBankTools.moveTimer) > 0 then
+        print("|cFFFF0000GuildBankTools: Stopped moving items!|r")
+    end
     GuildBankTools:CancelTimer(GuildBankTools.moveTimer)
     isMoving = false
     gbankScanned = false

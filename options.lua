@@ -405,7 +405,7 @@ function GuildBankTools:CreateOptions()
         headerGroup:SetLayout("Flow")
 
         local itemSearch = AceGUI:Create("EditBox")
-        itemSearch:SetRelativeWidth(0.5)
+        itemSearch:SetRelativeWidth(1)
         itemSearch:SetCallback("OnEnterPressed", function(widget, event, text)
             LibAddonUtils.CacheItem(text, function(itemID)
                 local name, link, _, _, _, _, _, _, _, itemTexture = GetItemInfo(itemID)
@@ -425,33 +425,6 @@ function GuildBankTools:CreateOptions()
         end)
         itemSearch:SetLabel("Item Suche (Link, Name oder ItemID)")
         headerGroup:AddChild(itemSearch)
-
-        local tabs = {}
-        for i, j in pairs(self.db.profile.layoutEditor.gbankslots) do
-            table.insert(tabs, "|T" .. j.icon .. ":16:16:0:0:64:64:4:60:4:60|t " .. j.name)
-        end
-        local storageTab = AceGUI:Create("Dropdown")
-        storageTab:SetRelativeWidth(0.5)
-        storageTab:SetList(tabs)
-        storageTab:SetLabel("Storage Tab")
-        storageTab:SetMultiselect(true)
-        storageTab:SetCallback("OnValueChanged", function(widget, event, value, checked)
-            if checked then
-                table.insert(self.db.profile.layoutEditor.storageTab, value)
-            else
-                for i, j in pairs(self.db.profile.layoutEditor.storageTab) do
-                    if j == value then
-                        table.remove(self.db.profile.layoutEditor.storageTab, i)
-                    end
-                end
-            end
-        end)
-        if self.db.profile.layoutEditor.storageTab then
-            for i, j in pairs(self.db.profile.layoutEditor.storageTab) do
-                storageTab:SetItemValue(j, true)
-            end
-        end
-        headerGroup:AddChild(storageTab)
         GuildBankLayoutEditor:AddChild(headerGroup)
 
         local GuildBankTabs = AceGUI:Create("TabGroup")
