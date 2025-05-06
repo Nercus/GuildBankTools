@@ -1,11 +1,25 @@
-## Interface: 100005
-## Author: Nerc
+## Interface: 110100
+
 ## Title: GuildBankTools
-## Version: 2.0
-## Notes: GuildBankTools for filling up the guild bank
+## Notes: An organization tool for your guild bank
+
+## Author: Nerc
+## Version: @project-version@
+## IconTexture: Interface\AddOns\GuildBankTools\assets\icon.blp
 ## SavedVariables: GuildBankToolsDB
 
-embeds.xml
+## Category-enUS: Inventory
+## Category-deDE: Inventar
+## Category-esES: Inventario
+## Category-esMX: Inventario
+## Category-frFR: Inventaire
+## Category-itIT: Inventario
+## Category-koKR: 소지품
+## Category-ptBR: Inventário
+## Category-ruRU: Инвентарь
+## Category-zhCN: 物品栏
+## Category-zhTW: 物品欄
 
-core.lua
-options.lua
+libs\_imports.xml
+GuildBankTools.lua
+modules\_imports.xml

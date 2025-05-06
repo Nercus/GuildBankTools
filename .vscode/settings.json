@@ -1,0 +1,117 @@
+{
+    "editor.tabSize": 4,
+    "workbench.colorCustomizations": {
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#6dbaaf",
+        "statusBar.background": "#4ea699",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#3e8379",
+        "statusBarItem.remoteBackground": "#4ea699",
+        "statusBarItem.remoteForeground": "#15202b",
+        "tab.activeBorder": "#6dbaaf",
+        "titleBar.activeBackground": "#4ea699",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#4ea69999",
+        "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.color": "#4EA699",
+    "wowAPI.luals.defineKnownGlobals": false,
+    "Lua.workspace.ignoreDir": [
+        ".github",
+        ".vscode",
+        "libs"
+    ],
+    "Lua.diagnostics.disable": [],
+    "Lua.diagnostics.groupSeverity": {
+        "global": "Error"
+    },
+    "cSpell.words": [
+        "callbackhandler",
+        "herebedragons",
+        "libdatabroker",
+        "libdbicon",
+        "libdeflate",
+        "libstub",
+        "Nerc",
+        "nerclib",
+        "nolib",
+        "realrow",
+        "sortnext",
+        "strsplit",
+        "strsplittable",
+        "unicode"
+    ],
+    "[lua]": {
+        "editor.defaultFormatter": "sumneko.lua"
+    },
+    "[xml]": {
+        "editor.defaultFormatter": "redhat.vscode-xml"
+    },
+    "editor.formatOnSave": true,
+    "editor.indentSize": "tabSize",
+    "editor.tabCompletion": "onlySnippets",
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": true,
+    "explorer.fileNesting.patterns": {
+        "*.lua": "${capture}.lua, ${capture}.xml",
+        "*.toc": ".pkgmeta, .luarc.json, README.md, .gitignore, LICENSE, CHANGELOG.md",
+    },
+    "explorer.sortOrder": "default",
+    "Lua.completion.autoRequire": false,
+    "Lua.diagnostics.groupFileStatus": {
+        "ambiguity": "Any",
+        "await": "Any",
+        "duplicate": "Any",
+        "global": "Any",
+        "luadoc": "Any",
+        "redefined": "Any",
+        "strict": "Any",
+        "strong": "Any",
+        "type-check": "Any",
+        "unbalanced": "Any",
+        "unused": "Any"
+    },
+    "Lua.diagnostics.libraryFiles": "Disable",
+    "Lua.diagnostics.neededFileStatus": {
+        "undefined-field": "Any!"
+    },
+    "Lua.format.defaultConfig": {
+        "indent_size": "4",
+        "indent_style": "space"
+    },
+    "Lua.hint.setType": false,
+    "Lua.runtime.version": "Lua 5.1",
+    "Lua.runtime.builtin": {
+        "basic": "disable",
+        "debug": "disable",
+        "io": "disable",
+        "math": "disable",
+        "os": "disable",
+        "package": "disable",
+        "string": "disable",
+        "table": "disable",
+        "utf8": "disable"
+    },
+    "Lua.workspace.library": [
+        "libs\\NercLib",
+        "~\\.vscode\\extensions\\ketho.wow-api-0.20.6\\Annotations\\Core",
+        "~\\.vscode\\extensions\\ketho.wow-api-0.20.6\\Annotations\\FrameXML"
+    ],
+    "dryerLint.ruleSets": [
+        {
+            "name": "WoW Addon Code Styling",
+            "language": "lua",
+            "glob": "{*.lua,**/!(libs)/**/*.lua}",
+            "rules": [
+                {
+                    // "name" is a string used to identify the rule
+                    "name": "NoPrint",
+                    "pattern": "\\bprint\\s*\\(",
+                    "message": "Don't use print in production code.",
+                    "fix": "",
+                    "severity": "Error",
+                },
+            ]
+        },
+    ]
+}

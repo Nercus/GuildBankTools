@@ -1,0 +1,60 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Script file="LayoutEditorTabBar.lua" />
+    <Frame name="GuildBankToolsLayoutEditorTabBarTemplate"
+        mixin="GuildBankToolsLayoutEditorTabBarMixin" virtual="true">
+        <Frames>
+            <Button inherits="GuildBankToolsLayoutEditorTabTemplate" text="Tab 1" parentKey="Tab1">
+                <Size x="90" y="20" />
+                <Anchors>
+                    <Anchor point="LEFT" x="5" />
+                </Anchors>
+            </Button>
+            <Button inherits="GuildBankToolsLayoutEditorTabTemplate" text="Tab 2" parentKey="Tab2">
+                <Size x="90" y="20" />
+                <Anchors>
+                    <Anchor point="LEFT" x="5" relativeKey="$parent.Tab1" relativePoint="RIGHT" />
+                </Anchors>
+            </Button>
+            <Button inherits="GuildBankToolsLayoutEditorTabTemplate" text="Tab 3" parentKey="Tab3">
+                <Size x="90" y="20" />
+                <Anchors>
+                    <Anchor point="LEFT" x="5" relativeKey="$parent.Tab2" relativePoint="RIGHT" />
+                </Anchors>
+            </Button>
+            <Button inherits="GuildBankToolsLayoutEditorTabTemplate" text="Tab 4" parentKey="Tab4">
+                <Size x="90" y="20" />
+                <Anchors>
+                    <Anchor point="LEFT" x="5" relativeKey="$parent.Tab3" relativePoint="RIGHT" />
+                </Anchors>
+            </Button>
+            <Button inherits="GuildBankToolsLayoutEditorTabTemplate" text="Tab 5" parentKey="Tab5">
+                <Size x="90" y="20" />
+                <Anchors>
+                    <Anchor point="LEFT" x="5" relativeKey="$parent.Tab4" relativePoint="RIGHT" />
+                </Anchors>
+            </Button>
+            <Button inherits="GuildBankToolsLayoutEditorTabTemplate" text="Tab 6" parentKey="Tab6">
+                <Size x="90" y="20" />
+                <Anchors>
+                    <Anchor point="LEFT" x="5" relativeKey="$parent.Tab5" relativePoint="RIGHT" />
+                </Anchors>
+            </Button>
+            <Button inherits="GuildBankToolsLayoutEditorTabTemplate" text="Tab 7" parentKey="Tab7">
+                <Size x="90" y="20" />
+                <Anchors>
+                    <Anchor point="LEFT" x="5" relativeKey="$parent.Tab6" relativePoint="RIGHT" />
+                </Anchors>
+            </Button>
+            <Button inherits="GuildBankToolsLayoutEditorTabTemplate" text="Tab 8" parentKey="Tab8">
+                <Size x="90" y="20" />
+                <Anchors>
+                    <Anchor point="LEFT" x="5" relativeKey="$parent.Tab7" relativePoint="RIGHT" />
+                </Anchors>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad method="OnLoad" />
+        </Scripts>
+    </Frame>
+</Ui>
