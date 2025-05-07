@@ -25,22 +25,6 @@
     "Lua.diagnostics.groupSeverity": {
         "global": "Error"
     },
-    "cSpell.words": [
-        "callbackhandler",
-        "herebedragons",
-        "libdatabroker",
-        "libdbicon",
-        "libdeflate",
-        "libstub",
-        "Nerc",
-        "nerclib",
-        "nolib",
-        "realrow",
-        "sortnext",
-        "strsplit",
-        "strsplittable",
-        "unicode"
-    ],
     "[lua]": {
         "editor.defaultFormatter": "sumneko.lua"
     },
@@ -93,9 +77,8 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "libs\\NercLib",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.20.6\\Annotations\\Core",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.20.6\\Annotations\\FrameXML"
+        "libs\\NercUtils",
+        "~\\.vscode\\extensions\\ketho.wow-api-0.20.6\\Annotations\\Core"
     ],
     "dryerLint.ruleSets": [
         {

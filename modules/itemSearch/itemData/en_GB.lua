@@ -1,7 +1,5 @@
----@type string
-local AddOnName = ...
----@class GuildBankTools : NercLibAddon
-local GuildBankTools = LibStub("NercLib"):GetAddon(AddOnName)
+---@class GuildBankTools : NercUtilsAddon
+local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
 
 local Localization = GuildBankTools:GetModule("Localization")
 ---@class ItemSearch

@@ -1,13 +1,8 @@
----@type string
-local AddOnName = ...
+---@class GuildBankTools : NercUtilsAddon
+local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
 
----@class GuildBankTools : NercLibAddon
-local GuildBankTools = LibStub("NercLib"):GetAddon(AddOnName)
-
-
-local SlashCommand = GuildBankTools:GetModule("SlashCommand")
-SlashCommand:SetSlashTrigger("/gbt")
-SlashCommand:EnableHelpCommand('help', 'Show This Help Message')
+GuildBankTools:SetSlashTrigger("/gbt", 1)
+GuildBankTools:EnableHelpCommand()
 
 
 -- TODO: layout mechanism
