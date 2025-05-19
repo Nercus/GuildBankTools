@@ -1,10 +1,10 @@
 ---@class GuildBankTools : NercUtilsAddon
 local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
 
-local Localization = GuildBankTools:GetModule("Localization")
+
 ---@class ItemSearch
 local ItemSearch = GuildBankTools:GetModule("ItemSearch")
-local Locale = Localization.locale
+local Locale = GuildBankTools.locale
 
 if Locale ~= "enUS" and Locale ~= "enGB" then
     return

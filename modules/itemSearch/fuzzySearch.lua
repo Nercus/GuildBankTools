@@ -65,7 +65,7 @@ local function has_match(needle, haystack, case_sensitive)
 
     local j = 1
     for i = 1, string.len(needle) do
-        j = string.find(haystack, needle:sub(i, i), j, true)
+        j = string.find(haystack, needle:sub(i, i), j, true) --[[@as number]]
         if not j then
             return false
         else
@@ -251,7 +251,7 @@ function ItemSearch:Filter(needle, haystacks, case_sensitive)
     for i, line in ipairs(haystacks) do
         if has_match(needle, line, case_sensitive) then
             local p, s = positions(needle, line, case_sensitive)
-            table.insert(result, { i, p, s })
+            table.insert(result, { i = i, p = p, s = s, line = line })
         end
     end
 

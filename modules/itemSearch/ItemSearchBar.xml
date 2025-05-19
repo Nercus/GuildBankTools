@@ -87,10 +87,40 @@
                 self.SearchResults:Show()
             </OnEditFocusGained>
             <OnEditFocusLost>
-                self.SearchResults:Hide()
+                C_Timer.After(0.1, function()
+                    self.SearchResults:Hide()
+                end)
             </OnEditFocusLost>
             <OnChar method="OnChar" />
             <OnEvent method="OnEvent" />
+            <OnTextChanged method="OnTextChanged" />
+            <OnLoad method="OnLoad" />
+            <OnHide method="OnHide" />
         </Scripts>
     </EditBox>
+
+
+    <Button name="GuildBankToolsItemSearchResultsButtonTemplate" virtual="true">
+        <Size x="0" y="20" />
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" justifyH="LEFT"
+                    inherits="GameFontNormal">
+                    <Anchors>
+                        <Anchor point="LEFT" x="3" y="0" />
+                        <Anchor point="RIGHT" x="-3" y="0" />
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="HIGHLIGHT">
+                <Texture atlas="AftLevelup-CloudyLineRight" alpha="0.3" setAllPoints="true" />
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnClick>
+                if not self.itemID then return end
+                C_Item.PickupItem(self.itemID)
+            </OnClick>
+        </Scripts>
+    </Button>
 </Ui>

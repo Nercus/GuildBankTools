@@ -1,0 +1,187 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Script file="LayoutEditor.lua" />
+    <Frame name="GuildBankToolsLayoutEditor" mixin="GuildBankToolsLayoutEditorMixin"
+        inherits="PortraitFrameTemplate"
+        enableMouse="true" toplevel="true" parent="UIParent" movable="true" clampedToScreen="true"
+        frameStrata="HIGH" hidden="true">
+        <Size x="1000" y="500" />
+        <Anchors>
+            <Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
+        </Anchors>
+        <Frames>
+            <Button parentKey="settingsButton">
+                <Size x="20" y="20" />
+                <NormalTexture atlas="mechagon-projects" />
+                <PushedTexture atlas="mechagon-projects" rotation="15" />
+                <DisabledTexture atlas="mechagon-projects" desaturated="true" />
+                <HighlightTexture atlas="mechagon-projects" alphaMode="ADD" alpha="0.8" />
+
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-3" y="3" />
+                </Anchors>
+            </Button>
+            <Frame parentKey="leftContainer">
+                <Size x="210" y="0" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="3" y="-23" />
+                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="3" y="3" />
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture setAllPoints="true" atlas="auctionhouse-background-buy-commodities" />
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <Texture horizTile="true" atlas="Tab-Divider-Top">
+                            <Size x="0" y="16" />
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="-30" />
+                                <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="0" y="-30" />
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <EditBox inherits="SearchBoxTemplate" parentKey="searchBox">
+                        <Size x="0" y="35" />
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="55" y="-2" />
+                            <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-3" y="-2" />
+                        </Anchors>
+                    </EditBox>
+                    <Frame parentKey="scrollBox" inherits="WowScrollBoxList">
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="-17" y="-5"
+                                relativeKey="$parent.searchBox" />
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="5" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <EventFrame parentKey="scrollBar" inherits="MinimalScrollBar">
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="-5" y="-8"
+                                relativeKey="$parent.searchBox" />
+                            <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-5" y="3" />
+                        </Anchors>
+                    </EventFrame>
+                </Frames>
+            </Frame>
+            <Frame parentKey="rightContainer">
+                <Size x="0" y="0" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="0"
+                        relativeKey="$parent.leftContainer" />
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-3" y="3" />
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture setAllPoints="true" atlas="auctionhouse-background-index" />
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <EditBox inherits="GuildBankToolsItemSearchBarTemplate">
+                        <Size x="300" y="30" />
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-15" y="-15" />
+                        </Anchors>
+                    </EditBox>
+
+                    <Frame
+                        parentKey="layoutTitle">
+                        <Size x="120" y="30" />
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="15" y="-15" />
+                        </Anchors>
+                        <Layers>
+                            <Layer level="ARTWORK">
+                                <FontString inherits="GameFontNormalHuge" text="Layout 1"
+                                    parentKey="layoutTitleText">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="0" />
+                                    </Anchors>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+                    </Frame>
+                    <Frame inherits="GuildBankToolsItemButtonGroupTemplate"
+                        parentKey="itemButtonGroup1">
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="15" y="15" />
+                        </Anchors>
+                    </Frame>
+                    <Frame inherits="GuildBankToolsItemButtonGroupTemplate"
+                        parentKey="itemButtonGroup2">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT"
+                                x="0" relativeKey="$parent.itemButtonGroup1" />
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT"
+                                x="0" relativeKey="$parent.itemButtonGroup1" />
+                        </Anchors>
+                    </Frame>
+                    <Frame inherits="GuildBankToolsItemButtonGroupTemplate"
+                        parentKey="itemButtonGroup3">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT"
+                                relativeKey="$parent.itemButtonGroup2" x="0" y="0" />
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT"
+                                relativeKey="$parent.itemButtonGroup2" x="0" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame inherits="GuildBankToolsItemButtonGroupTemplate"
+                        parentKey="itemButtonGroup4">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT"
+                                relativeKey="$parent.itemButtonGroup3" x="0" y="0" />
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT"
+                                relativeKey="$parent.itemButtonGroup3" x="0" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame inherits="GuildBankToolsItemButtonGroupTemplate"
+                        parentKey="itemButtonGroup5">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT"
+                                relativeKey="$parent.itemButtonGroup4" x="0" y="0" />
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT"
+                                relativeKey="$parent.itemButtonGroup4" x="0" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame inherits="GuildBankToolsItemButtonGroupTemplate"
+                        parentKey="itemButtonGroup6">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT"
+                                relativeKey="$parent.itemButtonGroup5" x="0" y="0" />
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT"
+                                relativeKey="$parent.itemButtonGroup5" x="0" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <Frame inherits="GuildBankToolsItemButtonGroupTemplate"
+                        parentKey="itemButtonGroup7">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT"
+                                relativeKey="$parent.itemButtonGroup6" x="0" y="0" />
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT"
+                                relativeKey="$parent.itemButtonGroup6" x="0" y="0" />
+                        </Anchors>
+                    </Frame>
+
+                    <Frame parentKey="tabContainer"
+                        inherits="GuildBankToolsLayoutEditorTabBarTemplate">
+                        <Size x="0" y="40" />
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT"
+                                x="10" y="-50" />
+                            <Anchor point="TOPRIGHT"
+                                relativePoint="TOPRIGHT" x="-10" y="-50" />
+                        </Anchors>
+                    </Frame>
+                </Frames>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad method="OnLoad" />
+            <OnMouseDown method="OnMouseDown" />
+            <OnMouseUp method="OnMouseUp" />
+            <OnDragStop method="OnDragStop" />
+        </Scripts>
+    </Frame>
+</Ui>

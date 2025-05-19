@@ -3,9 +3,8 @@
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
 
     <Script file="core.lua" />
-    <!-- <Include file="shared/_imports.xml" />
-    <Include file="itemSearch/ItemSearchBar.xml" />
-    <Include file="itemSearch/itemSearch.lua" />
-    <Include file="LayoutEditor/frames/_imports.xml" />
-    <Include file="Mover/MoveProgress.xml" /> -->
+    <Include file="shared/_imports.xml" />
+    <Include file="ItemSearch/_imports.xml" />
+    <Include file="LayoutEditor/_imports.xml" />
+    <Include file="ItemMover/_imports.xml" />
 </Ui>
