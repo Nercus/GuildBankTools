@@ -4,55 +4,8 @@
 
     <EditBox name="GuildBankLayoutsItemSearchBarTemplate" mixin="GuildBankLayoutsItemSearchBarMixin"
         virtual="true"
-        font="GameFontNormal" autoFocus="false">
-        <TextInsets left="27" right="25" />
-        <Size x="200" y="28" />
-        <Layers>
-            <Layer level="BACKGROUND">
-                <Texture parentKey="Left" atlas="common-search-border-left" useAtlasSize="false">
-                    <Anchors>
-                        <Anchor point="LEFT" x="0" y="0" />
-                    </Anchors>
-                </Texture>
-                <Texture parentKey="Right" atlas="common-search-border-right">
-                    <Anchors>
-                        <Anchor point="RIGHT" x="0" y="0" />
-                    </Anchors>
-                </Texture>
-                <Texture parentKey="Middle" atlas="_common-search-border-center" horizTile="true">
-                    <Size x="1" />
-                    <Anchors>
-                        <Anchor point="LEFT" relativeKey="$parent.Left" relativePoint="RIGHT" />
-                        <Anchor point="RIGHT" relativeKey="$parent.Right" relativePoint="LEFT" />
-                    </Anchors>
-                </Texture>
-            </Layer>
-            <Layer level="ARTWORK">
-                <Texture atlas="common-search-magnifyingglass">
-                    <Anchors>
-                        <Anchor point="LEFT" x="8" y="0" />
-                    </Anchors>
-                    <Size x="12" y="12" />
-                </Texture>
-            </Layer>
-        </Layers>
+        autoFocus="false" inherits="SearchBoxTemplate">
         <Frames>
-            <Button parentKey="ClearButton" hidden="true">
-                <Anchors>
-                    <Anchor point="RIGHT" x="-8" y="0" />
-                </Anchors>
-                <Size x="12" y="12" />
-                <NormalTexture parentKey="Normal" atlas="common-search-clearbutton" alpha="0.8" />
-                <HighlightTexture parentKey="Highlight" atlas="common-search-clearbutton" alpha="1" />
-                <Scripts>
-                    <OnClick>
-                        if self:GetParent():GetText() ~= "" then
-                            self:GetParent():SetText("")
-                            self:GetParent():ClearFocus()
-                        end
-                    </OnClick>
-                </Scripts>
-            </Button>
             <Frame parentKey="SearchResults" frameStrata="DIALOG" hidden="true">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT"
@@ -69,33 +22,18 @@
             </Frame>
         </Frames>
         <Scripts>
-            <OnLoad>
-                self:RegisterEvent("GLOBAL_MOUSE_DOWN")
-            </OnLoad>
-            <OnSizeChanged>
-                -- original left and right texture has a ratio of 1:2.5
-                local height = self:GetHeight()
-                self.Left:SetSize(height / 2.5, height)
-                self.Right:SetSize(height / 2.5, height)
-                self.Middle:SetSize(height / 2.5, height)
-            </OnSizeChanged>
-            <OnEscapePressed>
+            <OnEscapePressed inherit="prepend">
                 self:ClearFocus()
+                self:SetText("")
             </OnEscapePressed>
-            <OnEditFocusGained>
-                self:HighlightText()
-                self.SearchResults:Show()
-            </OnEditFocusGained>
-            <OnEditFocusLost>
+            <OnEditFocusLost inherit="prepend">
                 C_Timer.After(0.1, function()
                     self.SearchResults:Hide()
                 end)
             </OnEditFocusLost>
-            <OnChar method="OnChar" />
-            <OnEvent method="OnEvent" />
-            <OnTextChanged method="OnTextChanged" />
-            <OnLoad method="OnLoad" />
-            <OnHide method="OnHide" />
+            <OnTextChanged method="OnTextChanged" inherit="prepend" />
+            <OnLoad method="OnLoad" inherit="prepend" />
+            <OnHide method="OnHide" inherit="prepend" />
         </Scripts>
     </EditBox>
 
@@ -116,11 +54,5 @@
                 <Texture atlas="AftLevelup-CloudyLineRight" alpha="0.3" setAllPoints="true" />
             </Layer>
         </Layers>
-        <Scripts>
-            <OnClick>
-                if not self.itemID then return end
-                C_Item.PickupItem(self.itemID)
-            </OnClick>
-        </Scripts>
     </Button>
 </Ui>

@@ -1,0 +1,59 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Script file="TabButton.lua" />
+
+    <Button name="GuildBankLayoutsLayoutEditorTabTemplate" virtual="true" alpha="0.8"
+        mixin="GuildBankLayoutsLayoutEditorTabMixin">
+        <NormalTexture atlas="groupfinder-button-cover" />
+        <PushedTexture atlas="groupfinder-button-cover-down" />
+        <HighlightTexture atlas="groupfinder-button-highlight" alphaMode="ADD" />
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="active"
+                    atlas="groupfinder-button-select"
+                    hidden="true" setAllPoints="true" alphaMode="ADD" />
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture parentKey="icon"
+                    atlas="common-icon-checkmark-yellow"
+                    hidden="true">
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                if not self.iconTexture then return end
+                local height = self:GetHeight()
+                local fontString = self:GetFontString()
+                if fontString then
+                    fontString:ClearAllPoints()
+                    fontString:SetPoint("CENTER", (height - 15) / 2, 0)
+                end
+                if self.iconTexture then
+                    self.icon:SetSize(height - 15, height - 15)
+                    self.icon:ClearAllPoints()
+                    if fontString then
+                        self.icon:SetPoint("RIGHT", fontString, "LEFT", -3, 0)
+                    else
+                        self.icon:SetPoint("CENTER")
+                    end
+                    self.icon:SetTexture(self.iconTexture)
+                    self.icon:Show()
+                end
+                self:SetInactive()
+            </OnLoad>
+        </Scripts>
+        <Frames>
+            <Button parentKey="deleteButton" hidden="true" alpha="0.8">
+                <Anchors>
+                    <Anchor point="RIGHT" x="-2" />
+                </Anchors>
+                <Size x="12" y="12" />
+                <NormalTexture atlas="questlog-questtypeicon-questfailed" />
+
+            </Button>
+        </Frames>
+        <NormalFont style="GameFontNormal" />
+        <DisabledFont style="GameFontDisable" />
+    </Button>
+</Ui>

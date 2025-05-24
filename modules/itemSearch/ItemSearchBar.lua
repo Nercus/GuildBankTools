@@ -26,7 +26,7 @@ end
 
 function GuildBankLayoutsItemSearchBarMixin:PopulateDropdown()
     local dropdown = self.SearchResults
-    if not self.results then
+    if not self.results or self:GetText() == "" then
         dropdown:Hide()
         return
     end
@@ -44,7 +44,15 @@ function GuildBankLayoutsItemSearchBarMixin:PopulateDropdown()
             button:SetPoint("TOPRIGHT", dropdown, "TOPRIGHT",
                 -DROPDOWN_INSET, -((i - 1) * (DEFAULT_ENTRY_HEIGHT + DROPDOWN_GAP)) - DROPDOWN_INSET)
             button:Show()
-            button.itemID = self.results[i].id
+
+            button:SetScript("OnClick", function()
+                C_Item.PickupItem(self.results[i].id)
+                self:ClearFocus()
+                self.SearchResults:Hide()
+                self:SetText("")
+                self.lastText = nil
+                self.results = nil
+            end)
             height = height + DEFAULT_ENTRY_HEIGHT + DROPDOWN_GAP
             if i == MAX_ENTRIES then
                 break
@@ -57,18 +65,8 @@ function GuildBankLayoutsItemSearchBarMixin:PopulateDropdown()
     end
 end
 
-function GuildBankLayoutsItemSearchBarMixin:UpdateClearButtonVisibility()
-    if self:GetText() == "" then
-        self.ClearButton:Hide()
-    else
-        self.ClearButton:Show()
-    end
-end
-
 function GuildBankLayoutsItemSearchBarMixin:OnTextChanged()
     local text = self:GetText()
-    self:UpdateClearButtonVisibility()
-
     if text ~= self.lastText and text:len() >= 3 then
         self.lastText = text
         GuildBankLayouts:DebounceChange(function()
@@ -77,25 +75,6 @@ function GuildBankLayoutsItemSearchBarMixin:OnTextChanged()
         end, 0.5)() --[[@as table]]
     else
         self.SearchResults:Hide()
-    end
-end
-
-function GuildBankLayoutsItemSearchBarMixin:OnChar()
-    self:UpdateClearButtonVisibility()
-end
-
-function GuildBankLayoutsItemSearchBarMixin:GLOBAL_MOUSE_DOWN()
-    if (self:IsMouseOver() or self.ClearButton:IsMouseOver()) then
-        return
-    end
-    self:SetText("")
-    self.ClearButton:Hide()
-    self:ClearFocus()
-end
-
-function GuildBankLayoutsItemSearchBarMixin:OnEvent(event)
-    if event == "GLOBAL_MOUSE_DOWN" then
-        self:GLOBAL_MOUSE_DOWN()
     end
 end
 

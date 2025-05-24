@@ -1,7 +1,7 @@
 ---@class GuildBankLayouts : NercUtilsAddon
 local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
 
-GuildBankLayouts:SetSlashTrigger("/gbt", 1)
+GuildBankLayouts:SetSlashTrigger("/gbl", 1)
 GuildBankLayouts:EnableHelpCommand()
 
 

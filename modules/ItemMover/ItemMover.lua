@@ -47,6 +47,8 @@ end
 ---@alias BankLayout table<number, table<number, {id: number, count: number}>> a layout with the tab index as the first key and a a dict that uses [slot] = itemID
 
 ---@class Layout
+---@field id string
+---@field name string
 ---@field restockStrategy RestockStrategy
 ---@field bankLayout BankLayout
 
@@ -122,6 +124,8 @@ end)
 
 GuildBankLayouts:AddSlashCommand("layout", function()
     ItemMover:ApplyLayout({
+        id = "test-layout",
+        name = "Test Layout",
         bankLayout = {
             [1] = {
                 [1] = { id = 124120, count = 1 },

@@ -1,0 +1,175 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Script file="LayoutEditor.lua" />
+    <Frame name="GuildBankLayoutsLayoutEditor" mixin="GuildBankLayoutsLayoutEditorMixin"
+        inherits="PortraitFrameTemplate"
+        enableMouse="true" toplevel="true" parent="UIParent" movable="true" clampedToScreen="true"
+        frameStrata="HIGH" hidden="true">
+        <Size x="1000" y="500" />
+        <Anchors>
+            <Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
+        </Anchors>
+        <Frames>
+            <Button parentKey="settingsButton">
+                <Size x="20" y="20" />
+                <NormalTexture atlas="mechagon-projects" />
+                <PushedTexture atlas="mechagon-projects" rotation="15" />
+                <DisabledTexture atlas="mechagon-projects" desaturated="true" />
+                <HighlightTexture atlas="mechagon-projects" alphaMode="ADD" alpha="0.8" />
+
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-3" y="3" />
+                </Anchors>
+            </Button>
+            <Frame parentKey="leftContainer">
+                <Size x="210" y="0" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="3" y="-23" />
+                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="3" y="3" />
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture setAllPoints="true" atlas="auctionhouse-background-buy-commodities" />
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <Texture horizTile="true" atlas="Tab-Divider-Top">
+                            <Size x="0" y="16" />
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="-50" />
+                                <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="0" y="-50" />
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Button parentKey="addLayoutButton" text="+ Add Layout">
+                        <Size x="0" y="25" />
+                        <NormalTexture atlas="groupfinder-button-cover" />
+                        <PushedTexture atlas="groupfinder-button-cover-down" />
+                        <HighlightTexture atlas="groupfinder-button-highlight" alphaMode="ADD" />
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="55" y="-3" />
+                            <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-5" y="-3" />
+                        </Anchors>
+                        <NormalFont style="GameFontNormalSmall" />
+                        <DisabledFont style="GameFontDisableSmall" />
+                        <Scripts>
+                            <OnClick>
+                                self:GetParent():GetParent():AddLayout();
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <EditBox inherits="SearchBoxTemplate" parentKey="searchBox">
+                        <Size x="0" y="35" />
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="10" y="-25" />
+                            <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-5" y="-25" />
+                        </Anchors>
+                    </EditBox>
+                    <Frame parentKey="scrollBox" inherits="WowScrollBoxList">
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="-17" y="-5"
+                                relativeKey="$parent.searchBox" />
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="5" y="0" />
+                        </Anchors>
+                    </Frame>
+                    <EventFrame parentKey="scrollBar" inherits="MinimalScrollBar">
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="-5" y="-8"
+                                relativeKey="$parent.searchBox" />
+                            <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-5" y="3" />
+                        </Anchors>
+                    </EventFrame>
+                </Frames>
+            </Frame>
+            <Frame parentKey="rightContainer">
+                <Size x="0" y="0" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="0"
+                        relativeKey="$parent.leftContainer" />
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-3" y="3" />
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture setAllPoints="true" atlas="auctionhouse-background-index" />
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <FontString inherits="GameFontNormalHuge" parentKey="infoText"
+                            text="Select or create layout to start editing." setAllPoints="true"
+                            justifyH="CENTER" justifyV="MIDDLE" />
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <EditBox inherits="GuildBankLayoutsItemSearchBarTemplate"
+                        parentKey="itemSearchBox" hidden="true">
+                        <Size x="300" y="30" />
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-15" y="-15" />
+                        </Anchors>
+                    </EditBox>
+
+                    <EditBox parentKey="layoutTitle" hidden="true" autoFocus="false"
+                        inherits="LargeInputBoxTemplate">
+                        <Size x="300" y="33" />
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="15" y="-15" />
+                        </Anchors>
+                        <FontString inherits="GameFontNormalLarge" />
+                        <Scripts>
+                            <OnMouseDown>
+                                self:HighlightText();
+                                self:SetFocus();
+                            </OnMouseDown>
+                            <OnEscapePressed>
+                                self:ClearFocus();
+                            </OnEscapePressed>
+                            <OnEditFocusGained>
+                                self:HighlightText();
+                                self.Left:SetAlpha(1)
+                                self.Right:SetAlpha(1)
+                                self.Middle:SetAlpha(1)
+                            </OnEditFocusGained>
+                            <OnEditFocusLost>
+                                self.Left:SetAlpha(0.5)
+                                self.Right:SetAlpha(0.5)
+                                self.Middle:SetAlpha(0.5)
+                            </OnEditFocusLost>
+                            <OnLoad>
+                                self.Left:SetAlpha(0.5)
+                                self.Right:SetAlpha(0.5)
+                                self.Middle:SetAlpha(0.5)
+                            </OnLoad>
+                        </Scripts>
+                    </EditBox>
+
+                    <Frame parentKey="tabContainer"
+                        inherits="GuildBankLayoutsLayoutEditorTabBarTemplate" hidden="true">
+                        <Size x="0" y="40" />
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT"
+                                x="15" y="-50" />
+                            <Anchor point="TOPRIGHT"
+                                relativePoint="TOPRIGHT" x="-15" y="-50" />
+                        </Anchors>
+                    </Frame>
+
+
+                    <Frame parentKey="itemButtonContainer" hidden="true">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-5"
+                                relativeKey="$parent.tabContainer" />
+                            <Anchor point="BOTTOMRIGHT" x="-10" y="15" />
+                        </Anchors>
+                    </Frame>
+                </Frames>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad method="OnLoad" />
+            <OnMouseDown method="OnMouseDown" />
+            <OnMouseUp method="OnMouseUp" />
+            <OnDragStop method="OnDragStop" />
+        </Scripts>
+    </Frame>
+</Ui>

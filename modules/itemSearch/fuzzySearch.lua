@@ -241,11 +241,17 @@ end
 --     in `haystacks`, each entry giving the index of the line in `haystacks`
 --     as well as the equivalent to the return value of `positions` for that
 --     line.
+---@class SearchResult
+---@field i number Index of the line in the haystacks
+---@field line string The line in the haystacks
+---@field p table<number, number> Positions of the matches in the line
+---@field s number Score of the match
+
 
 ---@param needle string
 ---@param haystacks string[]
 ---@param case_sensitive boolean|nil
----@return table
+---@return SearchResult[]
 function ItemSearch:Filter(needle, haystacks, case_sensitive)
     local result = {}
     for i, line in ipairs(haystacks) do

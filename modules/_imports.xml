@@ -4,7 +4,7 @@
 
     <Script file="core.lua" />
     <Include file="shared/_imports.xml" />
-    <Include file="ItemSearch/_imports.xml" />
-    <Include file="LayoutEditor/_imports.xml" />
-    <Include file="ItemMover/_imports.xml" />
+    <Include file="itemSearch/_imports.xml" />
+    <Include file="editor/_imports.xml" />
+    <Include file="itemMover/_imports.xml" />
 </Ui>
