@@ -1,12 +1,12 @@
-GuildBankToolsLayoutEditorTabMixin = {}
+GuildBankLayoutsLayoutEditorTabMixin = {}
 
 
-function GuildBankToolsLayoutEditorTabMixin:SetActive()
+function GuildBankLayoutsLayoutEditorTabMixin:SetActive()
     self.isActive = true
     self.active:Show()
 end
 
-function GuildBankToolsLayoutEditorTabMixin:SetInactive()
+function GuildBankLayoutsLayoutEditorTabMixin:SetInactive()
     self.isActive = false
     self.active:Hide()
 end

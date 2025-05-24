@@ -1,5 +1,5 @@
----@class GuildBankTools : NercUtilsAddon
-local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
+---@class GuildBankLayouts : NercUtilsAddon
+local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
 
 -- Note:
 -- available layout restock options:
@@ -10,22 +10,22 @@ local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
 
 
 ---@class LayoutEditor
----@field frame GuildBankToolsLayoutEditorMixin
-local LayoutEditor = GuildBankTools:GetModule("LayoutEditor")
+---@field frame GuildBankLayoutsLayoutEditorMixin
+local LayoutEditor = GuildBankLayouts:GetModule("LayoutEditor")
 
----@class GuildBankToolsLayoutEditorLeftContainer : Frame
+---@class GuildBankLayoutsLayoutEditorLeftContainer : Frame
 ---@field scrollBox ScrollBoxBaseTemplate
 ---@field scrollBar ScrollBarBaseTemplate
 
 
----@class GuildBankToolsLayoutEditorMixin : PortraitFrameMixin,Frame
----@field leftContainer GuildBankToolsLayoutEditorLeftContainer
+---@class GuildBankLayoutsLayoutEditorMixin : PortraitFrameMixin,Frame
+---@field leftContainer GuildBankLayoutsLayoutEditorLeftContainer
 ---@field rightContainer Frame
 ---@field TitleContainer Frame
-GuildBankToolsLayoutEditorMixin = {}
+GuildBankLayoutsLayoutEditorMixin = {}
 
 
-function GuildBankToolsLayoutEditorMixin:InitScrollBox()
+function GuildBankLayoutsLayoutEditorMixin:InitScrollBox()
     local view = CreateScrollBoxListLinearView();
 
     local dataProvider = CreateDataProvider();
@@ -42,7 +42,7 @@ function GuildBankToolsLayoutEditorMixin:InitScrollBox()
         frame:SetText(messageInfo.text)
     end
     view:SetElementExtent(40)
-    view:SetElementInitializer("GuildBankToolsLayoutEditorTabTemplate", Initializer)
+    view:SetElementInitializer("GuildBankLayoutsLayoutEditorTabTemplate", Initializer)
     dataProvider:InsertTable({
         { categoryID = 1,  text = "Layout 1" },
         { categoryID = 2,  text = "Layout 2" },
@@ -64,35 +64,35 @@ function GuildBankToolsLayoutEditorMixin:InitScrollBox()
     })
 end
 
-function GuildBankToolsLayoutEditorMixin:OnLoad()
-    self:SetTitle(GuildBankTools.name .. " - Layout Editor");
+function GuildBankLayoutsLayoutEditorMixin:OnLoad()
+    self:SetTitle(GuildBankLayouts.name .. " - Layout Editor");
     self:RegisterForDrag("LeftButton")
-    self:SetPortraitTextureRaw("Interface\\AddOns\\GuildBankTools\\assets\\icon.blp");
+    self:SetPortraitTextureRaw("Interface\\AddOns\\GuildBankLayouts\\assets\\icon.blp");
     table.insert(UISpecialFrames, self:GetName());
     self:InitScrollBox();
     LayoutEditor.frame = self
 end
 
-function GuildBankToolsLayoutEditorMixin:OnMouseDown()
+function GuildBankLayoutsLayoutEditorMixin:OnMouseDown()
     if (not self.TitleContainer:IsMouseOver()) then
         return
     end
     self:StartMoving()
 end
 
-function GuildBankToolsLayoutEditorMixin:OnMouseUp()
+function GuildBankLayoutsLayoutEditorMixin:OnMouseUp()
     self:StopMovingOrSizing()
 end
 
-function GuildBankToolsLayoutEditorMixin:OnDragStop()
+function GuildBankLayoutsLayoutEditorMixin:OnDragStop()
     self:StopMovingOrSizing()
 end
 
-function GuildBankToolsLayoutEditorMixin:Open()
+function GuildBankLayoutsLayoutEditorMixin:Open()
     self:Show()
 end
 
-function GuildBankToolsLayoutEditorMixin:Close()
+function GuildBankLayoutsLayoutEditorMixin:Close()
     self:Hide()
 end
 
@@ -104,6 +104,6 @@ function LayoutEditor:Toggle()
     end
 end
 
-GuildBankTools:SetDefaultAction(function()
+GuildBankLayouts:SetDefaultAction(function()
     LayoutEditor:Toggle()
 end)

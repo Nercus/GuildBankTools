@@ -1,10 +1,10 @@
----@class GuildBankTools : NercUtilsAddon
-local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
+---@class GuildBankLayouts : NercUtilsAddon
+local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
 
 
 ---@class ItemSearch
-local ItemSearch = GuildBankTools:GetModule("ItemSearch")
-local Locale = GuildBankTools.locale
+local ItemSearch = GuildBankLayouts:GetModule("ItemSearch")
+local Locale = GuildBankLayouts.locale
 
 if Locale ~= 'ruRU' then
     return

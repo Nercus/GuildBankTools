@@ -1,5 +1,5 @@
-GuildBankToolsLayoutEditorTabBarMixin = {}
+GuildBankLayoutsLayoutEditorTabBarMixin = {}
 
 
-function GuildBankToolsLayoutEditorTabBarMixin:OnLoad()
+function GuildBankLayoutsLayoutEditorTabBarMixin:OnLoad()
 end

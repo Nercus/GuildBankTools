@@ -2,7 +2,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
     <Script file="ItemButton.lua" />
-    <Button name="GuildBankToolsItemButtonTemplate" mixin="GuildBankToolsItemButtonMixin"
+    <Button name="GuildBankLayoutsItemButtonTemplate" mixin="GuildBankLayoutsItemButtonMixin"
         registerForClicks="AnyDown"
         virtual="true">
         <Size x="45" y="45" />
@@ -61,88 +61,88 @@
     </Button>
 
 
-    <Frame name="GuildBankToolsItemButtonGroupTemplate" virtual="true">
+    <Frame name="GuildBankLayoutsItemButtonGroupTemplate" virtual="true">
         <Size x="110" y="362" />
         <Frames>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton1">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton1">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="0" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton2">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton2">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="5" y="0"
                         relativeKey="$parent.itemButton1" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton3">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton3">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-5"
                         relativeKey="$parent.itemButton1" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton4">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton4">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="5" y="0"
                         relativeKey="$parent.itemButton3" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton5">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton5">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-5"
                         relativeKey="$parent.itemButton3" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton6">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton6">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="5" y="0"
                         relativeKey="$parent.itemButton5" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton7">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton7">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-5"
                         relativeKey="$parent.itemButton5" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton8">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton8">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="5" y="0"
                         relativeKey="$parent.itemButton7" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton9">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton9">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-5"
                         relativeKey="$parent.itemButton7" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton10">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton10">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="5" y="0"
                         relativeKey="$parent.itemButton9" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton11">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton11">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-5"
                         relativeKey="$parent.itemButton9" />
                 </Anchors>
             </Button>
 
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton12">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton12">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="5" y="0"
                         relativeKey="$parent.itemButton11" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton13">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton13">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-5"
                         relativeKey="$parent.itemButton11" />
                 </Anchors>
             </Button>
-            <Button inherits="GuildBankToolsItemButtonTemplate" parentKey="itemButton14">
+            <Button inherits="GuildBankLayoutsItemButtonTemplate" parentKey="itemButton14">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="5" y="0"
                         relativeKey="$parent.itemButton13" />

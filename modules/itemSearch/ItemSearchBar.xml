@@ -2,7 +2,7 @@
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
     <Script file="ItemSearchBar.lua" />
 
-    <EditBox name="GuildBankToolsItemSearchBarTemplate" mixin="GuildBankToolsItemSearchBarMixin"
+    <EditBox name="GuildBankLayoutsItemSearchBarTemplate" mixin="GuildBankLayoutsItemSearchBarMixin"
         virtual="true"
         font="GameFontNormal" autoFocus="false">
         <TextInsets left="27" right="25" />
@@ -100,7 +100,7 @@
     </EditBox>
 
 
-    <Button name="GuildBankToolsItemSearchResultsButtonTemplate" virtual="true">
+    <Button name="GuildBankLayoutsItemSearchResultsButtonTemplate" virtual="true">
         <Size x="0" y="20" />
         <Layers>
             <Layer level="ARTWORK">

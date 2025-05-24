@@ -1,17 +1,17 @@
----@class GuildBankTools : NercUtilsAddon
-local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
+---@class GuildBankLayouts : NercUtilsAddon
+local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
 
 ---@class ItemSearch
-local ItemSearch = GuildBankTools:GetModule("ItemSearch")
+local ItemSearch = GuildBankLayouts:GetModule("ItemSearch")
 
----@class GuildBankToolsItemSearchBarMixin : EditBox
+---@class GuildBankLayoutsItemSearchBarMixin : EditBox
 ---@field ClearButton Button
 ---@field SearchResults Frame
----@field framePool FramePool<GuildBankToolsItemSearchResultsButtonTemplate>
-GuildBankToolsItemSearchBarMixin = {}
+---@field framePool FramePool<GuildBankLayoutsItemSearchResultsButtonTemplate>
+GuildBankLayoutsItemSearchBarMixin = {}
 
 
----@class GuildBankToolsItemSearchResultsButtonTemplate : Button
+---@class GuildBankLayoutsItemSearchResultsButtonTemplate : Button
 ---@field text FontString
 
 
@@ -20,11 +20,11 @@ local MAX_ENTRIES = 10
 local DEFAULT_ENTRY_HEIGHT = 20
 local DROPDOWN_INSET = 10
 
-function GuildBankToolsItemSearchBarMixin:OnHide()
+function GuildBankLayoutsItemSearchBarMixin:OnHide()
     self.framePool:ReleaseAll()
 end
 
-function GuildBankToolsItemSearchBarMixin:PopulateDropdown()
+function GuildBankLayoutsItemSearchBarMixin:PopulateDropdown()
     local dropdown = self.SearchResults
     if not self.results then
         dropdown:Hide()
@@ -57,7 +57,7 @@ function GuildBankToolsItemSearchBarMixin:PopulateDropdown()
     end
 end
 
-function GuildBankToolsItemSearchBarMixin:UpdateClearButtonVisibility()
+function GuildBankLayoutsItemSearchBarMixin:UpdateClearButtonVisibility()
     if self:GetText() == "" then
         self.ClearButton:Hide()
     else
@@ -65,13 +65,13 @@ function GuildBankToolsItemSearchBarMixin:UpdateClearButtonVisibility()
     end
 end
 
-function GuildBankToolsItemSearchBarMixin:OnTextChanged()
+function GuildBankLayoutsItemSearchBarMixin:OnTextChanged()
     local text = self:GetText()
     self:UpdateClearButtonVisibility()
 
     if text ~= self.lastText and text:len() >= 3 then
         self.lastText = text
-        GuildBankTools:DebounceChange(function()
+        GuildBankLayouts:DebounceChange(function()
             self.results = ItemSearch:SearchForItem(text)
             self:PopulateDropdown()
         end, 0.5)() --[[@as table]]
@@ -80,11 +80,11 @@ function GuildBankToolsItemSearchBarMixin:OnTextChanged()
     end
 end
 
-function GuildBankToolsItemSearchBarMixin:OnChar()
+function GuildBankLayoutsItemSearchBarMixin:OnChar()
     self:UpdateClearButtonVisibility()
 end
 
-function GuildBankToolsItemSearchBarMixin:GLOBAL_MOUSE_DOWN()
+function GuildBankLayoutsItemSearchBarMixin:GLOBAL_MOUSE_DOWN()
     if (self:IsMouseOver() or self.ClearButton:IsMouseOver()) then
         return
     end
@@ -93,12 +93,12 @@ function GuildBankToolsItemSearchBarMixin:GLOBAL_MOUSE_DOWN()
     self:ClearFocus()
 end
 
-function GuildBankToolsItemSearchBarMixin:OnEvent(event)
+function GuildBankLayoutsItemSearchBarMixin:OnEvent(event)
     if event == "GLOBAL_MOUSE_DOWN" then
         self:GLOBAL_MOUSE_DOWN()
     end
 end
 
-function GuildBankToolsItemSearchBarMixin:OnLoad()
-    self.framePool = CreateFramePool("BUTTON", self.SearchResults, "GuildBankToolsItemSearchResultsButtonTemplate")
+function GuildBankLayoutsItemSearchBarMixin:OnLoad()
+    self.framePool = CreateFramePool("BUTTON", self.SearchResults, "GuildBankLayoutsItemSearchResultsButtonTemplate")
 end

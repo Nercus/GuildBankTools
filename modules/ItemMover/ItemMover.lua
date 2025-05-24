@@ -1,8 +1,8 @@
----@class GuildBankTools : NercUtilsAddon
-local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
+---@class GuildBankLayouts : NercUtilsAddon
+local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
 
 ---@class ItemMover
-local ItemMover = GuildBankTools:GetModule("ItemMover")
+local ItemMover = GuildBankLayouts:GetModule("ItemMover")
 
 local GUILD_BANK_TAB_SLOTS = 98
 
@@ -104,12 +104,12 @@ function ItemMover:ApplyLayout(layout)
     activeLayout = layout
     freeSpace = {}
     local currentLayout = GetCurrentLayout()
-    GuildBankTools:Debug(currentLayout)
-    GuildBankTools:Debug(activeLayout)
+    GuildBankLayouts:Debug(currentLayout)
+    GuildBankLayouts:Debug(activeLayout)
 end
 
 local numTabsQueried = 0
-GuildBankTools:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", function()
+GuildBankLayouts:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", function()
     if numTabsQueried == 0 then
         QueryAllTabs()
     end
@@ -120,7 +120,7 @@ GuildBankTools:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", function()
     end
 end)
 
-GuildBankTools:AddSlashCommand("layout", function()
+GuildBankLayouts:AddSlashCommand("layout", function()
     ItemMover:ApplyLayout({
         bankLayout = {
             [1] = {

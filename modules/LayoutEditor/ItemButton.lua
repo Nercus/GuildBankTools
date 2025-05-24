@@ -1,17 +1,17 @@
----@class GuildBankTools : NercUtilsAddon
-local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
+---@class GuildBankLayouts : NercUtilsAddon
+local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
 
 ---@class LayoutEditor
-local LayoutEditor = GuildBankTools:GetModule("LayoutEditor")
+local LayoutEditor = GuildBankLayouts:GetModule("LayoutEditor")
 
----@class GuildBankToolsItemButtonMixin : Button
+---@class GuildBankLayoutsItemButtonMixin : Button
 ---@field count FontString
 ---@field tier Texture
 ---@field icon Texture
-GuildBankToolsItemButtonMixin = {}
+GuildBankLayoutsItemButtonMixin = {}
 
 
-function GuildBankToolsItemButtonMixin:SetTier(tier)
+function GuildBankLayoutsItemButtonMixin:SetTier(tier)
     if not tier then
         self.tier:Hide()
         return
@@ -20,13 +20,13 @@ function GuildBankToolsItemButtonMixin:SetTier(tier)
     self.tier:Show()
 end
 
-function GuildBankToolsItemButtonMixin:CloneItem()
+function GuildBankLayoutsItemButtonMixin:CloneItem()
     if not self.item then return end
     LayoutEditor.cloneCount = self.itemCount or 1
     C_Item.PickupItem(self.item)
 end
 
-function GuildBankToolsItemButtonMixin:SetCount(count)
+function GuildBankLayoutsItemButtonMixin:SetCount(count)
     if not self.item then return end
     local maxCount = C_Item.GetItemMaxStackSizeByID(self.item)
     if count > maxCount then
@@ -41,7 +41,7 @@ function GuildBankToolsItemButtonMixin:SetCount(count)
     end
 end
 
-function GuildBankToolsItemButtonMixin:IncrementCount()
+function GuildBankLayoutsItemButtonMixin:IncrementCount()
     local increment = IsShiftKeyDown() and 10 or 1
     if self.itemCount then
         self:SetCount(self.itemCount + increment)
@@ -50,7 +50,7 @@ function GuildBankToolsItemButtonMixin:IncrementCount()
     end
 end
 
-function GuildBankToolsItemButtonMixin:DecrementCount()
+function GuildBankLayoutsItemButtonMixin:DecrementCount()
     local increment = IsShiftKeyDown() and 10 or 1
     if self.itemCount and self.itemCount > increment then
         self:SetCount(self.itemCount - increment)
@@ -59,7 +59,7 @@ function GuildBankToolsItemButtonMixin:DecrementCount()
     end
 end
 
-function GuildBankToolsItemButtonMixin:SetItem(itemID)
+function GuildBankLayoutsItemButtonMixin:SetItem(itemID)
     if self.item == itemID then
         self:IncrementCount()
         return
@@ -78,7 +78,7 @@ function GuildBankToolsItemButtonMixin:SetItem(itemID)
     end)
 end
 
-function GuildBankToolsItemButtonMixin:ResetItem()
+function GuildBankLayoutsItemButtonMixin:ResetItem()
     self.item = nil
     self.itemCount = nil
     self.icon:SetTexture(nil)
@@ -86,7 +86,7 @@ function GuildBankToolsItemButtonMixin:ResetItem()
     self.tier:Hide()
 end
 
-function GuildBankToolsItemButtonMixin:OnMouseWheel(delta)
+function GuildBankLayoutsItemButtonMixin:OnMouseWheel(delta)
     if delta > 0 then
         self:IncrementCount()
     else
@@ -94,11 +94,11 @@ function GuildBankToolsItemButtonMixin:OnMouseWheel(delta)
     end
 end
 
-function GuildBankToolsItemButtonMixin:ShowMenu()
+function GuildBankLayoutsItemButtonMixin:ShowMenu()
     if not self.item then return end
     local _, itemLink = C_Item.GetItemInfo(self.item)
     -- TODO: add a tooltip with the item
-    GuildBankTools:GenerateMenu(self, {
+    GuildBankLayouts:GenerateMenu(self, {
         {
             type = "title",
             label = itemLink,
@@ -121,7 +121,7 @@ function GuildBankToolsItemButtonMixin:ShowMenu()
     })
 end
 
-function GuildBankToolsItemButtonMixin:OnClick(mouseButton)
+function GuildBankLayoutsItemButtonMixin:OnClick(mouseButton)
     if mouseButton == "RightButton" then
         self:ShowMenu()
         return

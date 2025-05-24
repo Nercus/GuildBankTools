@@ -1,0 +1,25 @@
+## Interface: 110100
+
+## Title: GuildBankLayouts
+## Notes: An organization tool for your guild bank
+
+## Author: Nerc
+## Version: @project-version@
+## IconTexture: Interface\AddOns\GuildBankLayouts\assets\icon.blp
+## SavedVariables: GuildBankLayoutsDB
+
+## Category-enUS: Inventory
+## Category-deDE: Inventar
+## Category-esES: Inventario
+## Category-esMX: Inventario
+## Category-frFR: Inventaire
+## Category-itIT: Inventario
+## Category-koKR: 소지품
+## Category-ptBR: Inventário
+## Category-ruRU: Инвентарь
+## Category-zhCN: 物品栏
+## Category-zhTW: 物品欄
+
+libs\_imports.xml
+GuildBankLayouts.lua
+modules\_imports.xml

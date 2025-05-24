@@ -1,8 +1,8 @@
----@class GuildBankTools : NercUtilsAddon
-local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
+---@class GuildBankLayouts : NercUtilsAddon
+local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
 
 ---@class ItemSearch
-local ItemSearch = GuildBankTools:GetModule("ItemSearch")
+local ItemSearch = GuildBankLayouts:GetModule("ItemSearch")
 
 
 
@@ -12,7 +12,7 @@ local ItemSearch = GuildBankTools:GetModule("ItemSearch")
 ---@return table
 function ItemSearch:SearchForItem(searchString, max)
     local results = self:Filter(searchString, self.itemData, false)
-    GuildBankTools:Debug(results)
+    GuildBankLayouts:Debug(results)
     local itemResults = {}
     for i = 1, #results do
         local item = results[i]

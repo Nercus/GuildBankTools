@@ -1,8 +1,8 @@
----@class GuildBankTools : NercUtilsAddon
-local GuildBankTools = LibStub("NercUtils"):GetAddon(...)
+---@class GuildBankLayouts : NercUtilsAddon
+local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
 
-GuildBankTools:SetSlashTrigger("/gbt", 1)
-GuildBankTools:EnableHelpCommand()
+GuildBankLayouts:SetSlashTrigger("/gbt", 1)
+GuildBankLayouts:EnableHelpCommand()
 
 
 -- TODO: layout mechanism
