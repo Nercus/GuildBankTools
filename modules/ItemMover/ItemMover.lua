@@ -41,6 +41,7 @@ end
 
 ---@alias RestockStrategy
 ---| 'bag' Uses items and free space in the players bag
+---| 'bag-fallback' Uses items and free space in the players bag and falls back to the bank
 ---| 'storage' Uses a defined storage tab for items and free space
 ---| 'storage-fallback' Uses a defined storage tab with the bag as a fallback
 
@@ -52,6 +53,7 @@ end
 ---@field index number
 ---@field restockStrategy RestockStrategy
 ---@field bankLayout BankLayout
+---@field restockTab number|nil
 
 local function GetCurrentLayout()
     ---@type BankLayout

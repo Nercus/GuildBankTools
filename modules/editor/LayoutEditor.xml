@@ -11,17 +11,6 @@
             <Anchor point="CENTER" relativePoint="CENTER" x="0" y="0" />
         </Anchors>
         <Frames>
-            <Button parentKey="settingsButton">
-                <Size x="20" y="20" />
-                <NormalTexture atlas="mechagon-projects" />
-                <PushedTexture atlas="mechagon-projects" rotation="15" />
-                <DisabledTexture atlas="mechagon-projects" desaturated="true" />
-                <HighlightTexture atlas="mechagon-projects" alphaMode="ADD" alpha="0.8" />
-
-                <Anchors>
-                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-3" y="3" />
-                </Anchors>
-            </Button>
             <Frame parentKey="leftContainer">
                 <Size x="210" y="0" />
                 <Anchors>
@@ -101,19 +90,11 @@
                     </Layer>
                 </Layers>
                 <Frames>
-                    <EditBox inherits="GuildBankLayoutsItemSearchBarTemplate"
-                        parentKey="itemSearchBox" hidden="true">
-                        <Size x="300" y="30" />
-                        <Anchors>
-                            <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-15" y="-15" />
-                        </Anchors>
-                    </EditBox>
-
                     <EditBox parentKey="layoutTitle" hidden="true" autoFocus="false"
                         inherits="LargeInputBoxTemplate">
                         <Size x="300" y="33" />
                         <Anchors>
-                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="15" y="-15" />
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="15" y="-10" />
                         </Anchors>
                         <FontString inherits="GameFontNormalLarge" />
                         <Scripts>
@@ -143,6 +124,14 @@
                         </Scripts>
                     </EditBox>
 
+                    <DropdownButton inherits="WowStyle1DropdownTemplate"
+                        parentKey="strategyDropdown" hidden="true">
+                        <Size x="200" y="30" />
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-20" y="-10" />
+                        </Anchors>
+                    </DropdownButton>
+
                     <Button parentKey="deleteButton" hidden="true" alpha="0.8">
                         <Size x="20" y="20" />
                         <Anchors>
@@ -169,19 +158,28 @@
                         <Size x="0" y="40" />
                         <Anchors>
                             <Anchor point="TOPLEFT" relativePoint="TOPLEFT"
-                                x="15" y="-50" />
+                                x="15" y="-40" />
                             <Anchor point="TOPRIGHT"
-                                relativePoint="TOPRIGHT" x="-15" y="-50" />
+                                relativePoint="TOPRIGHT" x="-15" y="-40" />
                         </Anchors>
                     </Frame>
 
+                    <EditBox inherits="GuildBankLayoutsItemSearchBarTemplate"
+                        parentKey="itemSearchBox" hidden="true">
+                        <Size x="0" y="30" />
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="80" y="5" />
+                            <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-80" y="5" />
+                        </Anchors>
+                    </EditBox>
 
                     <Frame parentKey="itemButtonContainer" hidden="true"
                         inherits="GuildBankLayoutsItemGridTemplate">
                         <Anchors>
-                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-5"
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT"
                                 relativeKey="$parent.tabContainer" />
-                            <Anchor point="BOTTOMRIGHT" x="-10" y="15" />
+                            <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT"
+                                relativeKey="$parent.itemSearchBox" />
                         </Anchors>
                     </Frame>
                 </Frames>

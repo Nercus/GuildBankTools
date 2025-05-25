@@ -30,6 +30,7 @@ function GuildBankLayoutsLayoutEditorTabBarMixin:PersistTabs()
         end
     end
     GuildBankLayouts:SetVar("layouts", activeLayout.id, activeLayout)
+    LayoutEditor.frame:UpdateStrategyDropdown()
 end
 
 function GuildBankLayoutsLayoutEditorTabBarMixin:UpdateAddButton()
@@ -121,7 +122,6 @@ function GuildBankLayoutsLayoutEditorTabBarMixin:AddTab(setActive)
     button:SetScript("OnClick", function()
         self:SetActiveTab(button);
     end)
-
 
     self:UpdateTabsPositions()
 end

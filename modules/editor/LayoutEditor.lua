@@ -25,6 +25,7 @@ local LayoutEditor = GuildBankLayouts:GetModule("LayoutEditor")
 ---@field infoText FontString
 ---@field itemButtonContainer GuildBankLayoutsItemGridMixin
 ---@field deleteButton Button
+---@field strategyDropdown DropdownButton
 
 ---@class GuildBankLayoutsLayoutEditorMixin : PortraitFrameMixin,Frame
 ---@field leftContainer GuildBankLayoutsLayoutEditorLeftContainer
@@ -35,6 +36,128 @@ GuildBankLayoutsLayoutEditorMixin = {}
 
 
 
+local function GetRestockTabSubmenu()
+    local tabMenu = {
+        {
+            type = "title",
+            label = "Select restock/fallback tab"
+        }
+    }
+
+    local tabsNum = #LayoutEditor.activeLayout.bankLayout
+    for i = 1, tabsNum do
+        local tabName = "Tab " .. i
+        local tabData = {
+            type = "radio",
+            label = tabName,
+            data = i,
+            isSelected = function()
+                return i == LayoutEditor.activeLayout.restockTab
+            end,
+            setSelected = function()
+                if LayoutEditor.activeLayout then
+                    LayoutEditor.activeLayout.restockTab = i
+                    GuildBankLayouts:SetVar("layouts", LayoutEditor.activeLayout.id, LayoutEditor.activeLayout)
+                end
+            end,
+        }
+        table.insert(tabMenu, tabData)
+    end
+
+    return tabMenu
+end
+
+function GuildBankLayoutsLayoutEditorMixin:UpdateStrategyDropdown()
+    if not LayoutEditor.activeLayout then
+        return
+    end
+
+    ---@type AnyMenuEntry[]
+    local baseMenu = {
+        {
+            type = "radio",
+            label = "Use bag for restock",
+            data = "bag",
+            isSelected = function()
+                local layout = LayoutEditor.activeLayout
+                return layout and layout.restockStrategy == "bag"
+            end,
+            setSelected = function()
+                local layout = LayoutEditor.activeLayout
+                if layout then
+                    layout.restockStrategy = "bag"
+                    GuildBankLayouts:SetVar("layouts", layout.id, layout)
+                end
+            end,
+        },
+        {
+            type = "radio",
+            label = "Use bag for restock and fallback to bank",
+            data = "bag-fallback",
+            isSelected = function()
+                local layout = LayoutEditor.activeLayout
+                return layout and layout.restockStrategy == "bag-fallback"
+            end,
+            setSelected = function()
+                local layout = LayoutEditor.activeLayout
+                if layout then
+                    layout.restockStrategy = "bag-fallback"
+                    GuildBankLayouts:SetVar("layouts", layout.id, layout)
+                end
+            end,
+        },
+        {
+            type = "radio",
+            label = "Use storage tab for restock",
+            data = "storage",
+            isSelected = function()
+                local layout = LayoutEditor.activeLayout
+                return layout and layout.restockStrategy == "storage"
+            end,
+            setSelected = function()
+                local layout = LayoutEditor.activeLayout
+                if layout then
+                    layout.restockStrategy = "storage"
+                    GuildBankLayouts:SetVar("layouts", layout.id, layout)
+                end
+            end,
+        },
+        {
+            type = "radio",
+            label = "Use storage tab for restock and fallback to bag",
+            data = "storage-fallback",
+            isSelected = function()
+                local layout = LayoutEditor.activeLayout
+                return layout and layout.restockStrategy == "storage-fallback"
+            end,
+            setSelected = function()
+                local layout = LayoutEditor.activeLayout
+                if layout then
+                    layout.restockStrategy = "storage-fallback"
+                    GuildBankLayouts:SetVar("layouts", layout.id, layout)
+                end
+            end,
+        },
+        {
+            type = "divider"
+        },
+        {
+            type = "submenu",
+            entry = {
+                type = "button",
+                label = "Select restock tab",
+            },
+            entries = GetRestockTabSubmenu(),
+        },
+    }
+
+    local generatorFunction = GuildBankLayouts:GetGeneratorFunction(baseMenu)
+
+
+
+
+    self.rightContainer.strategyDropdown:SetupMenu(generatorFunction)
+end
 
 function GuildBankLayoutsLayoutEditorMixin:InitScrollBox()
     local view = CreateScrollBoxListLinearView();
@@ -69,6 +192,7 @@ function GuildBankLayoutsLayoutEditorMixin:OnLoad()
     self:SetPortraitTextureRaw("Interface\\AddOns\\GuildBankLayouts\\assets\\icon.blp");
     table.insert(UISpecialFrames, self:GetName());
     self:InitScrollBox();
+    self:UpdateStrategyDropdown();
     LayoutEditor.frame = self
 
     GuildBankLayouts:RegisterEvent("PLAYER_ENTERING_WORLD", function(isLogin)
@@ -132,6 +256,7 @@ function GuildBankLayoutsLayoutEditorMixin:AddLayout()
         name = "New Layout",
         id = newID,
         index = self.dataProvider:GetSize() + 1,
+        restockStrategy = "bag", -- default restock strategy
     }
     self.dataProvider:Insert(newLayout);
 
@@ -165,6 +290,7 @@ function GuildBankLayoutsLayoutEditorMixin:SetRightContainerChildrenVisibility(s
         self.rightContainer.tabContainer:Show()
         self.rightContainer.itemButtonContainer:Show()
         self.rightContainer.deleteButton:Show()
+        self.rightContainer.strategyDropdown:Show()
         self.rightContainer.infoText:Hide()
     else
         self.rightContainer.layoutTitle:Hide()
@@ -172,6 +298,7 @@ function GuildBankLayoutsLayoutEditorMixin:SetRightContainerChildrenVisibility(s
         self.rightContainer.tabContainer:Hide()
         self.rightContainer.itemButtonContainer:Hide()
         self.rightContainer.deleteButton:Hide()
+        self.rightContainer.strategyDropdown:Hide()
         self.rightContainer.infoText:Show()
     end
 end
@@ -187,6 +314,7 @@ function GuildBankLayoutsLayoutEditorMixin:SetActiveLayout(layoutButton)
     layoutButton:SetActive();
     self.rightContainer.layoutTitle:SetText(layoutButton.layoutInfo.name);
     self.rightContainer.tabContainer:Update()
+    self:UpdateStrategyDropdown();
 end
 
 function LayoutEditor:Toggle()
