@@ -21,7 +21,9 @@
         ".vscode",
         "libs"
     ],
-    "Lua.diagnostics.disable": [],
+    "Lua.diagnostics.disable": [
+        "assign-type-mismatch"
+    ],
     "Lua.diagnostics.groupSeverity": {
         "global": "Error"
     },
@@ -97,5 +99,6 @@
                 },
             ]
         },
-    ]
+    ],
+    "Lua.type.weakUnionCheck": true
 }

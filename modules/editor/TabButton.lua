@@ -2,6 +2,7 @@
 ---@field active Texture
 ---@field layoutInfo Layout
 ---@field deleteButton Button
+---@field index number
 GuildBankLayoutsLayoutEditorTabMixin = {}
 
 

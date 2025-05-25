@@ -12,6 +12,28 @@ local LayoutEditor = GuildBankLayouts:GetModule("LayoutEditor")
 GuildBankLayoutsItemButtonMixin = {}
 
 
+function GuildBankLayoutsItemButtonMixin:Persist()
+    local item = self.item
+    local count = self.itemCount or 1
+    local activeLayout = LayoutEditor.activeLayout
+    if not activeLayout or not activeLayout.bankLayout then
+        return
+    end
+    local bankLayout = activeLayout.bankLayout
+    if not bankLayout[LayoutEditor.activeTab] then
+        bankLayout[LayoutEditor.activeTab] = {}
+    end
+    if item and count then
+        bankLayout[LayoutEditor.activeTab][self.slot] = {
+            id = item,
+            count = count,
+        }
+    else
+        bankLayout[LayoutEditor.activeTab][self.slot] = nil
+    end
+    GuildBankLayouts:SetVar("layouts", activeLayout.id, activeLayout)
+end
+
 function GuildBankLayoutsItemButtonMixin:SetTier(tier)
     if not tier then
         self.tier:Hide()
@@ -34,12 +56,9 @@ function GuildBankLayoutsItemButtonMixin:SetCount(count)
         count = maxCount
     end
     self.itemCount = count
-    if count > 1 then
-        self.count:SetText(count)
-        self.count:Show()
-    else
-        self.count:Hide()
-    end
+    self.count:SetText(count)
+    self:Persist()
+    self.count:Show()
 end
 
 function GuildBankLayoutsItemButtonMixin:IncrementCount()
@@ -71,15 +90,17 @@ function GuildBankLayoutsItemButtonMixin:SetItem(itemID)
     item:ContinueOnItemLoad(function()
         local icon = item:GetItemIcon()
         self.icon:SetTexture(icon)
-        self:SetCount(1)
 
         local itemLink = item:GetItemLink()
         if not itemLink then
             self:ResetItem()
+            self:Persist()
             return
         end
         local tier = C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemLink)
         self:SetTier(tier)
+        self:Persist()
+        self:SetCount(1)
     end)
 end
 
@@ -121,6 +142,7 @@ function GuildBankLayoutsItemButtonMixin:ShowMenu()
             label = "Reset [Ctrl + Click]",
             onClick = function()
                 self:ResetItem()
+                self:Persist()
             end,
         },
     })
@@ -133,6 +155,7 @@ function GuildBankLayoutsItemButtonMixin:OnClick(mouseButton)
     end
     if IsControlKeyDown() then
         self:ResetItem()
+        self:Persist()
         return
     end
     if IsAltKeyDown() and self.item then
@@ -150,4 +173,30 @@ function GuildBankLayoutsItemButtonMixin:OnClick(mouseButton)
         ClearCursor()
         LayoutEditor.cloneCount = nil
     end
+end
+
+function GuildBankLayoutsItemButtonMixin:Update()
+    self:ResetItem()
+    local activeLayout = LayoutEditor.activeLayout
+    if not activeLayout or not activeLayout.bankLayout then
+        return
+    end
+    local bankLayout = activeLayout.bankLayout
+    if not bankLayout then
+        return
+    end
+    local activeTab = LayoutEditor.activeTab
+    if not activeTab or not bankLayout[activeTab] then
+        return
+    end
+    local tabLayout = bankLayout[activeTab]
+    if not tabLayout or not tabLayout[self.slot] then
+        return
+    end
+    local itemData = tabLayout[self.slot]
+    if not itemData or not itemData.id then
+        return
+    end
+    self:SetItem(itemData.id)
+    self:SetCount(itemData.count or 1)
 end

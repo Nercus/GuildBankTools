@@ -21,9 +21,10 @@ local LayoutEditor = GuildBankLayouts:GetModule("LayoutEditor")
 ---@class GuildBankLayoutsLayoutEditorRightContainer : Frame
 ---@field layoutTitle EditBox
 ---@field itemSearchBox EditBox
----@field tabContainer Frame
+---@field tabContainer GuildBankLayoutsLayoutEditorTabBarMixin
 ---@field infoText FontString
----@field itemButtonContainer Frame
+---@field itemButtonContainer GuildBankLayoutsItemGridMixin
+---@field deleteButton Button
 
 ---@class GuildBankLayoutsLayoutEditorMixin : PortraitFrameMixin,Frame
 ---@field leftContainer GuildBankLayoutsLayoutEditorLeftContainer
@@ -39,6 +40,9 @@ function GuildBankLayoutsLayoutEditorMixin:InitScrollBox()
     local view = CreateScrollBoxListLinearView();
 
     self.dataProvider = CreateDataProvider();
+    self.dataProvider:SetSortComparator(function(a, b)
+        return a.index < b.index;
+    end)
     view:SetDataProvider(self.dataProvider)
 
     ScrollUtil.InitScrollBoxListWithScrollBar(self.leftContainer.scrollBox, self.leftContainer.scrollBar, view);
@@ -59,33 +63,6 @@ function GuildBankLayoutsLayoutEditorMixin:InitScrollBox()
     view:SetElementInitializer("GuildBankLayoutsLayoutEditorTabTemplate", Initializer)
 end
 
-function GuildBankLayoutsLayoutEditorMixin:CreateItemButtons()
-    local firstColButton = nil
-    for col = 1, 14 do
-        local lastRowButton = nil
-        for row = 1, 7 do
-            local slot = row + (col - 1) * 7
-            local itemButton = CreateFrame("Button", nil, self.rightContainer.itemButtonContainer,
-                "GuildBankLayoutsItemButtonTemplate");
-            if not lastRowButton then
-                if firstColButton then
-                    itemButton:SetPoint("TOPLEFT", firstColButton, "TOPRIGHT", col % 2 == 0 and 7 or 12, 0);
-                    firstColButton = nil
-                else
-                    itemButton:SetPoint("TOPLEFT", self.rightContainer.itemButtonContainer, "TOPLEFT", 0, 0);
-                end
-            else
-                itemButton:SetPoint("TOPLEFT", lastRowButton, "BOTTOMLEFT", 0, -7);
-            end
-            if not firstColButton then
-                firstColButton = itemButton;
-            end
-            lastRowButton = itemButton;
-            itemButton.slow = slot
-        end
-    end
-end
-
 function GuildBankLayoutsLayoutEditorMixin:OnLoad()
     self:SetTitle(GuildBankLayouts.name .. " - Layout Editor");
     self:RegisterForDrag("LeftButton")
@@ -93,7 +70,37 @@ function GuildBankLayoutsLayoutEditorMixin:OnLoad()
     table.insert(UISpecialFrames, self:GetName());
     self:InitScrollBox();
     LayoutEditor.frame = self
-    self:CreateItemButtons()
+
+    GuildBankLayouts:RegisterEvent("PLAYER_ENTERING_WORLD", function(isLogin)
+        self:RestoreLayouts();
+    end)
+
+
+    self.rightContainer.layoutTitle:SetScript("OnTextChanged", function(editBox)
+        if not self.activeLayout then
+            return
+        end
+        ---@type string
+        local newName = editBox:GetText();
+        if newName and newName ~= "" then
+            self.activeLayout.layoutInfo.name = newName;
+            GuildBankLayouts:SetVar("layouts", self.activeLayout.layoutInfo.id, self.activeLayout.layoutInfo);
+            self.activeLayout:SetText(newName);
+        end
+    end)
+
+    StaticPopupDialogs["GUILD_BANK_LAYOUTS_DELETE_LAYOUT"] = {
+        text = "Are you sure you want to delete this layout?",
+        button1 = "Yes",
+        button2 = "No",
+        OnAccept = function()
+            self:DeleteLayout()
+        end,
+        timeout = 0,
+        whileDead = true,
+        hideOnEscape = true,
+        preferredIndex = 3,
+    }
 end
 
 function GuildBankLayoutsLayoutEditorMixin:OnMouseDown()
@@ -121,10 +128,12 @@ end
 
 function GuildBankLayoutsLayoutEditorMixin:AddLayout()
     local newID = GuildBankLayouts:GenerateUUID('layout');
-    self.dataProvider:Insert({
+    local newLayout = {
         name = "New Layout",
-        id = newID
-    });
+        id = newID,
+        index = self.dataProvider:GetSize() + 1,
+    }
+    self.dataProvider:Insert(newLayout);
 
     -- set created button as active
     ---@type GuildBankLayoutsLayoutEditorTabMixin
@@ -134,26 +143,50 @@ function GuildBankLayoutsLayoutEditorMixin:AddLayout()
     if layoutButton then
         self:SetActiveLayout(layoutButton);
     end
+
+    GuildBankLayouts:SetVar("layouts", newID, newLayout)
 end
 
-function GuildBankLayoutsLayoutEditorMixin:ShowRightContainerChildren()
-    self.rightContainer.layoutTitle:Show()
-    self.rightContainer.itemSearchBox:Show()
-    self.rightContainer.tabContainer:Show()
-    self.rightContainer.itemButtonContainer:Show()
-    self.rightContainer.infoText:Hide()
+function GuildBankLayoutsLayoutEditorMixin:DeleteLayout()
+    if not self.activeLayout then
+        return
+    end
+
+    -- remove from data provider and from saved variables
+    self.dataProvider:Remove(self.activeLayout.layoutInfo);
+    GuildBankLayouts:DeleteVar("layouts", self.activeLayout.layoutInfo.id);
+    self:SetRightContainerChildrenVisibility(false)
+end
+
+function GuildBankLayoutsLayoutEditorMixin:SetRightContainerChildrenVisibility(show)
+    if show then
+        self.rightContainer.layoutTitle:Show()
+        self.rightContainer.itemSearchBox:Show()
+        self.rightContainer.tabContainer:Show()
+        self.rightContainer.itemButtonContainer:Show()
+        self.rightContainer.deleteButton:Show()
+        self.rightContainer.infoText:Hide()
+    else
+        self.rightContainer.layoutTitle:Hide()
+        self.rightContainer.itemSearchBox:Hide()
+        self.rightContainer.tabContainer:Hide()
+        self.rightContainer.itemButtonContainer:Hide()
+        self.rightContainer.deleteButton:Hide()
+        self.rightContainer.infoText:Show()
+    end
 end
 
 ---@param layoutButton GuildBankLayoutsLayoutEditorTabMixin
 function GuildBankLayoutsLayoutEditorMixin:SetActiveLayout(layoutButton)
-    self:ShowRightContainerChildren()
+    self:SetRightContainerChildrenVisibility(true)
     if (self.activeLayout) then
         self.activeLayout:SetInactive();
     end
     self.activeLayout = layoutButton;
+    LayoutEditor.activeLayout = layoutButton.layoutInfo;
     layoutButton:SetActive();
-    self.rightContainer.layoutTitle:SetText(layoutButton.layoutInfo.name == "New Layout" and
-        "Click here to set layout name" or layoutButton.layoutInfo.name);
+    self.rightContainer.layoutTitle:SetText(layoutButton.layoutInfo.name);
+    self.rightContainer.tabContainer:Update()
 end
 
 function LayoutEditor:Toggle()
@@ -168,6 +201,18 @@ GuildBankLayouts:SetDefaultAction(function()
     LayoutEditor:Toggle()
 end)
 
+function GuildBankLayoutsLayoutEditorMixin:RestoreLayouts()
+    ---@type table<string, Layout>
+    local savedLayouts = GuildBankLayouts:GetVar("layouts")
+    if not savedLayouts then
+        GuildBankLayouts:SetVar("layouts", {})
+    end
+    self.dataProvider:Flush();
+    -- sort saved layouts by index
+    for _, layout in pairs(savedLayouts) do
+        self.dataProvider:Insert(layout);
+    end
+end
 
 C_Timer.After(1, function()
     LayoutEditor:Toggle()

@@ -143,6 +143,27 @@
                         </Scripts>
                     </EditBox>
 
+                    <Button parentKey="deleteButton" hidden="true" alpha="0.8">
+                        <Size x="20" y="20" />
+                        <Anchors>
+                            <Anchor point="LEFT" relativePoint="RIGHT" x="5"
+                                relativeKey="$parent.layoutTitle" />
+                        </Anchors>
+                        <NormalTexture atlas="UI-QuestTracker-Objective-Fail" />
+                        <HighlightTexture atlas="128-RedButton-ArrowDown-Highlight" />
+                        <PushedTexture atlas="UI-QuestTracker-Objective-Fail">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="1" y="-1" />
+                                <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-1" y="1" />
+                            </Anchors>
+                        </PushedTexture>
+                        <Scripts>
+                            <OnClick>
+                                StaticPopup_Show("GUILD_BANK_LAYOUTS_DELETE_LAYOUT");
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
                     <Frame parentKey="tabContainer"
                         inherits="GuildBankLayoutsLayoutEditorTabBarTemplate" hidden="true">
                         <Size x="0" y="40" />
@@ -155,7 +176,8 @@
                     </Frame>
 
 
-                    <Frame parentKey="itemButtonContainer" hidden="true">
+                    <Frame parentKey="itemButtonContainer" hidden="true"
+                        inherits="GuildBankLayoutsItemGridTemplate">
                         <Anchors>
                             <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-5"
                                 relativeKey="$parent.tabContainer" />

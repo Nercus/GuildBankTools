@@ -6,5 +6,6 @@
     <Include file="TabButton.xml" />
     <Include file="LayoutEditorTabBar.xml" />
     <Include file="ItemButton.xml" />
+    <Include file="ItemGrid.xml" />
     <Include file="LayoutEditor.xml" />
 </Ui>

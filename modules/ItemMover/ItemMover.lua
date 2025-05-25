@@ -49,6 +49,7 @@ end
 ---@class Layout
 ---@field id string
 ---@field name string
+---@field index number
 ---@field restockStrategy RestockStrategy
 ---@field bankLayout BankLayout
 
@@ -121,22 +122,3 @@ GuildBankLayouts:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", function()
         tabsQueried = true
     end
 end)
-
-GuildBankLayouts:AddSlashCommand("layout", function()
-    ItemMover:ApplyLayout({
-        id = "test-layout",
-        name = "Test Layout",
-        bankLayout = {
-            [1] = {
-                [1] = { id = 124120, count = 1 },
-                [2] = { id = 124120, count = 2 },
-            },
-            [2] = {
-                [1] = { id = 124120, count = 3 },
-                [2] = { id = 124120, count = 4 },
-            }
-        },
-        restockStrategy = "storage-fallback",
-        storageTab = 6,
-    })
-end, "debug only remove later")
