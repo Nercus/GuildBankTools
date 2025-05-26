@@ -3,6 +3,7 @@ local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
 
 ---@class ItemMover
 local ItemMover = GuildBankLayouts:GetModule("ItemMover")
+ItemMover.tabsQueried = false
 
 local GUILD_BANK_TAB_SLOTS = 98
 
@@ -10,7 +11,6 @@ local GUILD_BANK_TAB_SLOTS = 98
 
 ---@type table<number, {name: string, icon: string, isViewable: boolean, canDeposit: boolean, numWithdrawals: number, remainingWithdrawals: number, filtered: boolean}>
 local tabInfos = {}
-local tabsQueried = false
 local activeLayout = {}
 local freeSpace = {}
 
@@ -55,7 +55,7 @@ end
 ---@field bankLayout BankLayout
 ---@field restockTab number|nil
 
-local function GetCurrentLayout()
+function ItemMover:GetCurrentLayout()
     ---@type BankLayout
     local currentLayout = {}
     for tab = 1, #tabInfos do
@@ -78,8 +78,6 @@ local function GetCurrentLayout()
     return currentLayout
 end
 
-
-
 local function UpdateTabsInfo()
     for i = 1, GetNumGuildBankTabs() do
         local name, icon, isViewable, canDeposit, numWithdrawals, remainingWithdrawals, filtered = GetGuildBankTabInfo(i)
@@ -97,7 +95,7 @@ end
 
 
 local function QueryAllTabs()
-    if tabsQueried then return end
+    if ItemMover.tabsQueried then return end
     for i = 1, GetNumGuildBankTabs() do
         QueryGuildBankTab(i)
     end
@@ -105,10 +103,10 @@ end
 
 ---@param layout Layout
 function ItemMover:ApplyLayout(layout)
-    if not tabsQueried then return end
+    if not ItemMover.tabsQueried then return end
     activeLayout = layout
     freeSpace = {}
-    local currentLayout = GetCurrentLayout()
+    local currentLayout = self:GetCurrentLayout()
     GuildBankLayouts:Debug(currentLayout)
     GuildBankLayouts:Debug(activeLayout)
 end
@@ -121,6 +119,6 @@ GuildBankLayouts:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", function()
     numTabsQueried = numTabsQueried + 1
     if numTabsQueried >= GetNumGuildBankTabs() then
         UpdateTabsInfo()
-        tabsQueried = true
+        ItemMover.tabsQueried = true
     end
 end)

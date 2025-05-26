@@ -99,6 +99,5 @@
                 },
             ]
         },
-    ],
-    "Lua.type.weakUnionCheck": true
+    ]
 }

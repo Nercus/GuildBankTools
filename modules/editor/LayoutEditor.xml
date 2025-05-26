@@ -124,6 +124,7 @@
                         </Scripts>
                     </EditBox>
 
+
                     <DropdownButton inherits="WowStyle1DropdownTemplate"
                         parentKey="strategyDropdown" hidden="true">
                         <Size x="200" y="30" />
@@ -131,6 +132,7 @@
                             <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-20" y="-10" />
                         </Anchors>
                     </DropdownButton>
+
 
                     <Button parentKey="deleteButton" hidden="true" alpha="0.8">
                         <Size x="20" y="20" />
@@ -152,6 +154,43 @@
                             </OnClick>
                         </Scripts>
                     </Button>
+
+                    <Button inherits="GuildBankLayoutsIconButtonTemplate" parentKey="importButton"
+                        text="Import from bank" hidden="true">
+                        <Size x="20" y="20" />
+                        <NormalTexture
+                            file="Interface\AddOns\GuildBankLayouts\assets\icons\IconImport_Yellow.png" />
+                        <HighlightTexture atlas="AftLevelup-WhiteIconGlow">
+                            <Color r="1.0" g="0.82" b="0" a="0.3" />
+                        </HighlightTexture>
+                        <PushedTexture
+                            file="Interface\AddOns\GuildBankLayouts\assets\icons\IconImport_Yellow.png">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="1" y="-1" />
+                                <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-1" y="1" />
+                            </Anchors>
+                        </PushedTexture>
+                        <DisabledTexture
+                            file="Interface\AddOns\GuildBankLayouts\assets\icons\IconImport_Yellow.png"
+                            desaturated="true" />
+                        <Anchors>
+                            <Anchor point="RIGHT" relativePoint="LEFT" x="-10"
+                                relativeKey="$parent.strategyDropdown" />
+                        </Anchors>
+                        <Scripts>
+                            <OnEnter>
+                                GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+                                GameTooltip:SetText("Import layout from guild bank");
+                            </OnEnter>
+                            <OnLeave>
+                                GameTooltip:Hide();
+                            </OnLeave>
+                            <OnClick>
+                                self:GetParent():GetParent():ImportLayoutFromBank();
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
 
                     <Frame parentKey="tabContainer"
                         inherits="GuildBankLayoutsLayoutEditorTabBarTemplate" hidden="true">

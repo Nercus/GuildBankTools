@@ -11,9 +11,10 @@ local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
 ---@class LayoutEditor
 ---@field frame GuildBankLayoutsLayoutEditorMixin
 local LayoutEditor = GuildBankLayouts:GetModule("LayoutEditor")
+local ItemMover = GuildBankLayouts:GetModule("ItemMover")
 
 ---@class GuildBankLayoutsLayoutEditorLeftContainer : Frame
----@field scrollBox ScrollBoxBaseTemplate
+---@field scrollBox ScrollBoxListMixin
 ---@field scrollBar ScrollBarBaseTemplate
 ---@field searchBox EditBox
 
@@ -26,6 +27,7 @@ local LayoutEditor = GuildBankLayouts:GetModule("LayoutEditor")
 ---@field itemButtonContainer GuildBankLayoutsItemGridMixin
 ---@field deleteButton Button
 ---@field strategyDropdown DropdownButton
+---@field importButton Button
 
 ---@class GuildBankLayoutsLayoutEditorMixin : PortraitFrameMixin,Frame
 ---@field leftContainer GuildBankLayoutsLayoutEditorLeftContainer
@@ -72,6 +74,8 @@ function GuildBankLayoutsLayoutEditorMixin:UpdateStrategyDropdown()
         return
     end
 
+
+
     ---@type AnyMenuEntry[]
     local baseMenu = {
         {
@@ -87,6 +91,7 @@ function GuildBankLayoutsLayoutEditorMixin:UpdateStrategyDropdown()
                 if layout then
                     layout.restockStrategy = "bag"
                     GuildBankLayouts:SetVar("layouts", layout.id, layout)
+                    self:UpdateStrategyDropdown()
                 end
             end,
         },
@@ -103,6 +108,7 @@ function GuildBankLayoutsLayoutEditorMixin:UpdateStrategyDropdown()
                 if layout then
                     layout.restockStrategy = "bag-fallback"
                     GuildBankLayouts:SetVar("layouts", layout.id, layout)
+                    self:UpdateStrategyDropdown()
                 end
             end,
         },
@@ -119,6 +125,7 @@ function GuildBankLayoutsLayoutEditorMixin:UpdateStrategyDropdown()
                 if layout then
                     layout.restockStrategy = "storage"
                     GuildBankLayouts:SetVar("layouts", layout.id, layout)
+                    self:UpdateStrategyDropdown()
                 end
             end,
         },
@@ -135,39 +142,56 @@ function GuildBankLayoutsLayoutEditorMixin:UpdateStrategyDropdown()
                 if layout then
                     layout.restockStrategy = "storage-fallback"
                     GuildBankLayouts:SetVar("layouts", layout.id, layout)
+                    self:UpdateStrategyDropdown()
                 end
             end,
-        },
-        {
+        }
+
+    }
+
+    local activeStrategy = LayoutEditor.activeLayout.restockStrategy
+    if activeStrategy ~= "bag" then
+        table.insert(baseMenu, {
             type = "divider"
-        },
-        {
+        })
+        table.insert(baseMenu, {
             type = "submenu",
             entry = {
                 type = "button",
                 label = "Select restock tab",
             },
             entries = GetRestockTabSubmenu(),
-        },
-    }
+        })
+    end
 
     local generatorFunction = GuildBankLayouts:GetGeneratorFunction(baseMenu)
-
-
-
 
     self.rightContainer.strategyDropdown:SetupMenu(generatorFunction)
 end
 
-function GuildBankLayoutsLayoutEditorMixin:InitScrollBox()
-    local view = CreateScrollBoxListLinearView();
-
+function GuildBankLayoutsLayoutEditorMixin:UpdateLayoutList()
+    ---@type Layout[]
+    local layouts = GuildBankLayouts:GetVar("layouts")
+    if not layouts then
+        GuildBankLayouts:SetVar("layouts", {})
+        ---@type Layout[]
+        layouts = GuildBankLayouts:GetVar("layouts")
+    end
     self.dataProvider = CreateDataProvider();
     self.dataProvider:SetSortComparator(function(a, b)
         return a.index < b.index;
     end)
-    view:SetDataProvider(self.dataProvider)
+    self.leftContainer.scrollBox:SetDataProvider(self.dataProvider)
+    local searchText = self.leftContainer.searchBox:GetText()
+    for _, layout in pairs(layouts) do
+        if layout.name:lower():find(searchText:lower(), 1, true) then
+            self.dataProvider:Insert(layout);
+        end
+    end
+end
 
+function GuildBankLayoutsLayoutEditorMixin:InitScrollBox()
+    local view = CreateScrollBoxListLinearView();
     ScrollUtil.InitScrollBoxListWithScrollBar(self.leftContainer.scrollBox, self.leftContainer.scrollBar, view);
 
     ---@param frame GuildBankLayoutsLayoutEditorTabMixin
@@ -186,6 +210,10 @@ function GuildBankLayoutsLayoutEditorMixin:InitScrollBox()
     view:SetElementInitializer("GuildBankLayoutsLayoutEditorTabTemplate", Initializer)
 end
 
+function GuildBankLayoutsLayoutEditorMixin:SearchTextChanged()
+    self:UpdateLayoutList()
+end
+
 function GuildBankLayoutsLayoutEditorMixin:OnLoad()
     self:SetTitle(GuildBankLayouts.name .. " - Layout Editor");
     self:RegisterForDrag("LeftButton")
@@ -193,12 +221,29 @@ function GuildBankLayoutsLayoutEditorMixin:OnLoad()
     table.insert(UISpecialFrames, self:GetName());
     self:InitScrollBox();
     self:UpdateStrategyDropdown();
+    self.rightContainer.importButton:SetEnabled(false)
+    self.leftContainer.searchBox:HookScript("OnTextChanged", function()
+        self:UpdateLayoutList()
+    end);
     LayoutEditor.frame = self
 
     GuildBankLayouts:RegisterEvent("PLAYER_ENTERING_WORLD", function(isLogin)
-        self:RestoreLayouts();
+        self:UpdateLayoutList()
     end)
 
+    GuildBankLayouts:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", function()
+        self:UpdateImportButtonEnabledState()
+    end)
+    GuildBankLayouts:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", function(_, interactionType)
+        if interactionType == Enum.PlayerInteractionType.GuildBanker then
+            self:UpdateImportButtonEnabledState()
+        end
+    end)
+    GuildBankLayouts:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", function(_, interactionType)
+        if interactionType == Enum.PlayerInteractionType.GuildBanker then
+            self:UpdateImportButtonEnabledState()
+        end
+    end)
 
     self.rightContainer.layoutTitle:SetScript("OnTextChanged", function(editBox)
         if not self.activeLayout then
@@ -291,6 +336,7 @@ function GuildBankLayoutsLayoutEditorMixin:SetRightContainerChildrenVisibility(s
         self.rightContainer.itemButtonContainer:Show()
         self.rightContainer.deleteButton:Show()
         self.rightContainer.strategyDropdown:Show()
+        self.rightContainer.importButton:Show()
         self.rightContainer.infoText:Hide()
     else
         self.rightContainer.layoutTitle:Hide()
@@ -299,6 +345,7 @@ function GuildBankLayoutsLayoutEditorMixin:SetRightContainerChildrenVisibility(s
         self.rightContainer.itemButtonContainer:Hide()
         self.rightContainer.deleteButton:Hide()
         self.rightContainer.strategyDropdown:Hide()
+        self.rightContainer.importButton:Hide()
         self.rightContainer.infoText:Show()
     end
 end
@@ -325,22 +372,34 @@ function LayoutEditor:Toggle()
     end
 end
 
+function LayoutEditor:ImportLayoutFromBank()
+    if not ItemMover.tabsQueried or not GuildBankFrame:IsVisible() then
+        return
+    end
+    if not self.activeLayout then
+        GuildBankLayouts:Print("No active layout selected. Please select a layout to import items into.")
+        return
+    end
+    local layout = self.activeLayout
+    local currentLayout = ItemMover:GetCurrentLayout()
+    self.activeLayout.bankLayout = currentLayout
+    GuildBankLayouts:SetVar("layouts", layout.id, layout)
+    GuildBankLayouts:Print("Imported items from guild bank into layout: " .. layout.name)
+end
+
+function GuildBankLayoutsLayoutEditorMixin:ImportLayoutFromBank()
+    LayoutEditor:ImportLayoutFromBank()
+    self.rightContainer.itemButtonContainer:UpdateButtons()
+end
+
+function GuildBankLayoutsLayoutEditorMixin:UpdateImportButtonEnabledState()
+    local enabled = ItemMover.tabsQueried and GuildBankFrame:IsVisible()
+    self.rightContainer.importButton:SetEnabled(enabled)
+end
+
 GuildBankLayouts:SetDefaultAction(function()
     LayoutEditor:Toggle()
 end)
-
-function GuildBankLayoutsLayoutEditorMixin:RestoreLayouts()
-    ---@type table<string, Layout>
-    local savedLayouts = GuildBankLayouts:GetVar("layouts")
-    if not savedLayouts then
-        GuildBankLayouts:SetVar("layouts", {})
-    end
-    self.dataProvider:Flush();
-    -- sort saved layouts by index
-    for _, layout in pairs(savedLayouts) do
-        self.dataProvider:Insert(layout);
-    end
-end
 
 C_Timer.After(1, function()
     LayoutEditor:Toggle()
