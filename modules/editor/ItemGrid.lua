@@ -1,7 +1,12 @@
+---@class GuildBankLayouts : NercUtilsAddon
+local GuildBankLayouts = LibStub("NercUtils"):GetAddon(...)
+
 ---@class GuildBankLayoutsItemGridMixin : Frame
 ---@field buttons GuildBankLayoutsItemButtonMixin[]
+---@field disabledText Frame
 GuildBankLayoutsItemGridMixin = {}
 
+local LayoutEditor = GuildBankLayouts:GetModule("LayoutEditor")
 
 function GuildBankLayoutsItemGridMixin:CreateItemButtons()
     local firstColButton = nil
@@ -34,6 +39,11 @@ end
 function GuildBankLayoutsItemGridMixin:UpdateButtons()
     if not self:IsShown() then
         self:Show()
+    end
+    if LayoutEditor.activeTab == LayoutEditor.activeLayout.restockTab then
+        self.disabledText:Show()
+    else
+        self.disabledText:Hide()
     end
     for _, button in ipairs(self.buttons) do
         button:Update();

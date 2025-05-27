@@ -13,6 +13,18 @@ local LayoutEditor = GuildBankLayouts:GetModule("LayoutEditor")
 GuildBankLayoutsItemButtonMixin = {}
 
 
+function GuildBankLayoutsItemButtonMixin:SetEnabledState(enabled)
+    if enabled then
+        self:SetAlpha(1)
+        self.icon:SetDesaturated(false)
+        self:Enable()
+    else
+        self:SetAlpha(0.2)
+        self.icon:SetDesaturated(true)
+        self:Disable()
+    end
+end
+
 function GuildBankLayoutsItemButtonMixin:Persist()
     local item = self.item
     local count = self.itemCount or 1
@@ -190,6 +202,13 @@ function GuildBankLayoutsItemButtonMixin:Update()
     if not activeTab or not bankLayout[activeTab] then
         return
     end
+
+    if activeTab == LayoutEditor.activeLayout.restockTab then
+        self:SetEnabledState(false)
+    else
+        self:SetEnabledState(true)
+    end
+
     local tabLayout = bankLayout[activeTab]
     if not tabLayout or not tabLayout[self.slot] then
         return

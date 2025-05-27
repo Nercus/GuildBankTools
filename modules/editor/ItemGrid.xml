@@ -7,5 +7,18 @@
         <Scripts>
             <OnLoad method="OnLoad" />
         </Scripts>
+        <Frames>
+            <Frame parentKey="disabledText" frameStrata="DIALOG" hidden="true" setAllPoints="true">
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString inherits="GameFontNormalHuge"
+                            setAllPoints="true" justifyH="CENTER"
+                            justifyV="MIDDLE"
+                            text="This tab is selected as a restock tab. You can't edit items in here!"
+                        />
+                    </Layer>
+                </Layers>
+            </Frame>
+        </Frames>
     </Frame>
 </Ui>
