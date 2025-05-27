@@ -57,6 +57,8 @@
         <Scripts>
             <OnClick method="OnClick" />
             <OnMouseWheel method="OnMouseWheel" />
+            <OnEnter method="OnEnter" />
+            <OnLeave method="OnLeave" />
         </Scripts>
     </Button>
 

@@ -9,6 +9,7 @@ local LayoutEditor = GuildBankLayouts:GetModule("LayoutEditor")
 ---@field tier Texture
 ---@field icon Texture
 ---@field slot number
+---@field item number
 GuildBankLayoutsItemButtonMixin = {}
 
 
@@ -51,8 +52,9 @@ end
 
 function GuildBankLayoutsItemButtonMixin:SetCount(count)
     if not self.item then return end
+    if not count then return end
     local maxCount = C_Item.GetItemMaxStackSizeByID(self.item)
-    if count > maxCount then
+    if maxCount and count > maxCount then
         count = maxCount
     end
     self.itemCount = count
@@ -77,6 +79,33 @@ function GuildBankLayoutsItemButtonMixin:DecrementCount()
     else
         self:SetCount(1)
     end
+end
+
+function GuildBankLayoutsItemButtonMixin:OnEnter()
+    if not self.item then return end
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetItemByID(self.item)
+    GameTooltip:AddLine(CreateAtlasMarkup("RecipeList-Divider", 272, 6))
+
+    local interactionBase = { CreateAtlasMarkup("plunderstorm-pickup-mouseclick-left", 16, 20), "Pickup Item" }
+    local interactionClear = { string.format(
+        "[%s] + " .. CreateAtlasMarkup("plunderstorm-pickup-mouseclick-left", 16, 20),
+        "CTRL"),
+        "Clear Item" }
+    local interactionCopy = { string.format(
+        "[%s] + " .. CreateAtlasMarkup("plunderstorm-pickup-mouseclick-left", 16, 20),
+        "ALT"),
+        "Clone Item" }
+
+
+    GameTooltip:AddDoubleLine(interactionBase[1], interactionBase[2], 1, 1, 1, 1, 1, 1)
+    GameTooltip:AddDoubleLine(interactionClear[1], interactionClear[2], 1, 1, 1, 1, 1, 1)
+    GameTooltip:AddDoubleLine(interactionCopy[1], interactionCopy[2], 1, 1, 1, 1, 1, 1)
+    GameTooltip:Show()
+end
+
+function GuildBankLayoutsItemButtonMixin:OnLeave()
+    GameTooltip:Hide()
 end
 
 function GuildBankLayoutsItemButtonMixin:SetItem(itemID)
@@ -120,39 +149,7 @@ function GuildBankLayoutsItemButtonMixin:OnMouseWheel(delta)
     end
 end
 
-function GuildBankLayoutsItemButtonMixin:ShowMenu()
-    if not self.item then return end
-    local _, itemLink = C_Item.GetItemInfo(self.item)
-    -- TODO: add a tooltip with the item
-    GuildBankLayouts:GenerateMenu(self, {
-        {
-            type = "title",
-            label = itemLink,
-
-        },
-        {
-            type = "button",
-            label = "Copy [Alt + Click]",
-            onClick = function()
-                self:CloneItem()
-            end,
-        },
-        {
-            type = "button",
-            label = "Reset [Ctrl + Click]",
-            onClick = function()
-                self:ResetItem()
-                self:Persist()
-            end,
-        },
-    })
-end
-
 function GuildBankLayoutsItemButtonMixin:OnClick(mouseButton)
-    if mouseButton == "RightButton" then
-        self:ShowMenu()
-        return
-    end
     if IsControlKeyDown() then
         self:ResetItem()
         self:Persist()
@@ -165,13 +162,17 @@ function GuildBankLayoutsItemButtonMixin:OnClick(mouseButton)
     local infoType, itemID = GetCursorInfo()
     if infoType == "item" then
         self:SetItem(itemID)
-    end
-    if LayoutEditor.cloneCount then
-        self:SetCount(LayoutEditor.cloneCount)
-    end
-    if not IsAltKeyDown() then
-        ClearCursor()
-        LayoutEditor.cloneCount = nil
+        if LayoutEditor.cloneCount then
+            self:SetCount(LayoutEditor.cloneCount)
+        end
+        if not IsAltKeyDown() then
+            ClearCursor()
+            LayoutEditor.cloneCount = nil
+        end
+    elseif infoType == nil then
+        PickupItem(self.item)
+        LayoutEditor.cloneCount = self.itemCount or 1
+        self:ResetItem()
     end
 end
 
