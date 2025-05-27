@@ -115,9 +115,6 @@ function GuildBankLayoutsLayoutEditorTabBarMixin:AddTab(setActive)
         self:SetActiveTab(button);
     end
 
-    button.deleteButton:SetScript("OnClick", function()
-        self:DeleteTab(button);
-    end)
 
     button:SetScript("OnClick", function()
         self:SetActiveTab(button);

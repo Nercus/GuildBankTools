@@ -57,7 +57,18 @@
                         <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-1" y="1" />
                     </Anchors>
                 </PushedTexture>
-
+                <Scripts>
+                    <OnClick>
+                        self:GetParent():GetParent():DeleteTab(self:GetParent())
+                    </OnClick>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                        GameTooltip:SetText("Delete Tab")
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
+                </Scripts>
             </Button>
         </Frames>
         <NormalFont style="GameFontNormal" />
