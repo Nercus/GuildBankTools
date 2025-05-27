@@ -60,6 +60,7 @@ local function GetRestockTabSubmenu()
                 if LayoutEditor.activeLayout then
                     LayoutEditor.activeLayout.restockTab = i
                     GuildBankLayouts:SetVar("layouts", LayoutEditor.activeLayout.id, LayoutEditor.activeLayout)
+                    LayoutEditor.frame.rightContainer.itemButtonContainer:UpdateButtons()
                 end
             end,
         }
