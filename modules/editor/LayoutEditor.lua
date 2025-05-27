@@ -390,6 +390,7 @@ end
 function GuildBankLayoutsLayoutEditorMixin:ImportLayoutFromBank()
     LayoutEditor:ImportLayoutFromBank()
     self.rightContainer.itemButtonContainer:UpdateButtons()
+    self.rightContainer.tabContainer:Update()
 end
 
 function GuildBankLayoutsLayoutEditorMixin:UpdateImportButtonEnabledState()
