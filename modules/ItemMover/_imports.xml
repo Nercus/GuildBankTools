@@ -3,4 +3,16 @@
 
     <Include file="MoveProgressBar.xml" />
     <Include file="ItemMover.lua" />
+
+
+    <Button inherits="GuildBankLayoutsButtonTemplate" text="test layout"
+        mixin="GuildBankLayoutsTestButtonMixin" parent="UIParent">
+        <Size x="200" y="50" />
+        <Anchors>
+            <Anchor point="CENTER" />
+        </Anchors>
+        <Scripts>
+            <OnClick method="OnClick" />
+        </Scripts>
+    </Button>
 </Ui>
